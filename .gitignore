@@ -38,6 +38,7 @@ AndroidNative/FormsViewGroup/gen/com/xamarin/formsviewgroup/R.java
 AndroidNative/FormsViewGroup/gen/com/xamarin/formsviewgroup/BuildConfig.java
 *.psess
 TestResults/
+AppPackages/
 Xamarin.Forms.UITest.Validator/UITestCoverage/index.html
 !Xamarin.Forms.UITest.TestCloud/test-cloud.exe
 Xamarin.Forms.ControlGallery.Windows/AppPackages/
