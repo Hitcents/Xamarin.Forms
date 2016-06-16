@@ -211,7 +211,7 @@ namespace Xamarin.Forms.Platform.iOS
 			};
 
 			if (thread)
-				CADisplayLinkTicker.Default.Invoke(update);
+                Device.BeginInvokeOnMainThread(update);
 			else
 				update();
 
