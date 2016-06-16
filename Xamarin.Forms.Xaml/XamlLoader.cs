@@ -35,7 +35,7 @@ using System.Xml;
 
 namespace Xamarin.Forms.Xaml
 {
-	internal static class XamlLoader
+	public static class XamlLoader
 	{
 		static readonly Dictionary<Type, string> XamlResources = new Dictionary<Type, string>();
 
@@ -49,7 +49,12 @@ namespace Xamarin.Forms.Xaml
 
 		public static void Load(BindableObject view, string xaml)
 		{
-			using (var reader = XmlReader.Create(new StringReader(xaml)))
+			Load(view, new StringReader(xaml));
+		}
+
+		public static void Load(BindableObject view, TextReader textReader)
+		{
+			using (var reader = XmlReader.Create(textReader))
 			{
 				while (reader.Read())
 				{
@@ -72,8 +77,13 @@ namespace Xamarin.Forms.Xaml
 
 		public static object Create (string xaml, bool doNotThrow = false)
 		{
+			return Create (new StringReader(xaml), doNotThrow);
+		}
+
+		public static object Create (TextReader textReader, bool doNotThrow = false)
+		{
 			object inflatedView = null;
-			using (var reader = XmlReader.Create (new StringReader (xaml))) {
+			using (var reader = XmlReader.Create (textReader)) {
 				while (reader.Read ()) {
 					//Skip until element
 					if (reader.NodeType == XmlNodeType.Whitespace)
@@ -225,7 +235,7 @@ namespace Xamarin.Forms.Xaml
 			return null;
 		}
 
-		public class RuntimeRootNode : RootNode
+		internal class RuntimeRootNode : RootNode
 		{
 			public RuntimeRootNode(XmlType xmlType, object root, IXmlNamespaceResolver resolver) : base (xmlType, resolver)
 			{
