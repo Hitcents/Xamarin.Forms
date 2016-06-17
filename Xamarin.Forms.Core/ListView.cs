@@ -536,5 +536,36 @@ namespace Xamarin.Forms
 			var template = (DataTemplate)value;
 			return template.CreateContent() is View;
 		}
-	}
+
+        protected override void OnBindingContextChanged()
+        {
+            base.OnBindingContextChanged();
+
+            //NOTE: BindingContext was not passing through ListView to its Header or Footer
+
+            var gotBindingContext = false;
+            object bc = null;
+
+            var header = Header as Element;
+            if (header != null)
+            {
+                bc = BindingContext;
+                gotBindingContext = true;
+
+                SetChildInheritedBindingContext(header, bc);
+            }
+
+            var footer = Footer as Element;
+            if (footer != null)
+            {
+                if (!gotBindingContext)
+                {
+                    bc = BindingContext;
+                    gotBindingContext = true;
+                }
+
+                SetChildInheritedBindingContext(footer, bc);
+            }
+        }
+    }
 }
