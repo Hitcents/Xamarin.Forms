@@ -54,3 +54,6 @@ using Xamarin.Forms;
 [assembly: InternalsVisibleTo("Xamarin.Forms.Pages")]
 [assembly: InternalsVisibleTo("Xamarin.Forms.Pages.UnitTests")]
 [assembly: Preserve]
+
+//Added for Unit tests at Hitcents
+[assembly: InternalsVisibleTo("ToE.Forms.Tests")]
