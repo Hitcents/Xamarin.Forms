@@ -27,7 +27,7 @@ namespace Xamarin.Forms
 			set { info = value; }
 		}
 
-		internal static bool IsInvokeRequired
+		public static bool IsInvokeRequired
 		{
 			get { return PlatformServices.IsInvokeRequired; }
 		}
