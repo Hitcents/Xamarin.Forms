@@ -15,6 +15,10 @@ namespace Xamarin.Forms.Xaml
 			if (typeResolver == null)
 				throw new ArgumentException("No IXamlTypeResolver in IServiceProvider");
 
+            //HACK: this fixes an extreme case in our app where we had our version of ItemsView in a ListView header, just taking this out for now and seeing what this will break
+            if (string.IsNullOrEmpty(TypeName))
+                return null;
+
 			return typeResolver.Resolve(TypeName, serviceProvider);
 		}
 
