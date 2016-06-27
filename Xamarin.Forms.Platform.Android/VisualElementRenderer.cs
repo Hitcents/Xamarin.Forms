@@ -19,7 +19,6 @@ namespace Xamarin.Forms.Platform.Android
 
 		readonly TapGestureHandler _tapGestureHandler;
 
-		bool _clickable;
 		NotifyCollectionChangedEventHandler _collectionChangeHandler;
 
 		VisualElementRendererFlags _flags = VisualElementRendererFlags.AutoPackage | VisualElementRendererFlags.AutoTrack;
@@ -28,7 +27,6 @@ namespace Xamarin.Forms.Platform.Android
 		VisualElementPackager _packager;
 		PropertyChangedEventHandler _propertyChangeHandler;
 		Lazy<ScaleGestureDetector> _scaleDetector;
-		VelocityTracker _velocity;
 
 		protected VisualElementRenderer() : base(Forms.Context)
 		{
@@ -43,9 +41,9 @@ namespace Xamarin.Forms.Platform.Android
 						_gestureListener =
 						new InnerGestureListener(_tapGestureHandler.OnTap, _tapGestureHandler.TapGestureRecognizers, _panGestureHandler.OnPan, _panGestureHandler.OnPanStarted, _panGestureHandler.OnPanComplete)));
 
-			_scaleDetector =
-				new Lazy<ScaleGestureDetector>(
-					() => new ScaleGestureDetector(Context, new InnerScaleListener(_pinchGestureHandler.OnPinch, _pinchGestureHandler.OnPinchStarted, _pinchGestureHandler.OnPinchEnded), Handler));
+			_scaleDetector = new Lazy<ScaleGestureDetector>(
+					() => new ScaleGestureDetector(Context, new InnerScaleListener(_pinchGestureHandler.OnPinch, _pinchGestureHandler.OnPinchStarted, _pinchGestureHandler.OnPinchEnded))
+					);
 		}
 
 		public TElement Element { get; private set; }
@@ -214,6 +212,12 @@ namespace Xamarin.Forms.Platform.Android
 			Performance.Stop();
 		}
 
+		/// <summary>
+		/// Determines whether the native control is disposed of when this renderer is disposed
+		/// Can be overridden in deriving classes 
+		/// </summary>
+		protected virtual bool ManageNativeControlLifetime => true;
+
 		protected override void Dispose(bool disposing)
 		{
 			if ((_flags & VisualElementRendererFlags.Disposed) != 0)
@@ -246,11 +250,14 @@ namespace Xamarin.Forms.Platform.Android
 					_gestureListener = null;
 				}
 
-				int count = ChildCount;
-				for (var i = 0; i < count; i++)
+				if (ManageNativeControlLifetime)
 				{
-					AView child = GetChildAt(i);
-					child.Dispose();
+					int count = ChildCount;
+					for (var i = 0; i < count; i++)
+					{
+						AView child = GetChildAt(i);
+						child.Dispose();
+					}
 				}
 
 				RemoveAllViews();
@@ -377,7 +384,7 @@ namespace Xamarin.Forms.Platform.Android
 				return;
 
 			bool newValue = view.ShouldBeMadeClickable();
-			if (force || _clickable != newValue)
+			if (force || newValue)
 				Clickable = newValue;
 		}
 

@@ -1,6 +1,7 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Xamarin.Forms;
+using Xamarin.Forms.Internals;
 
 [assembly: AssemblyTitle("Xamarin.Forms.Core")]
 [assembly: AssemblyDescription("")]
@@ -53,7 +54,9 @@ using Xamarin.Forms;
 [assembly: InternalsVisibleTo("Xamarin.Forms.Platform")]
 [assembly: InternalsVisibleTo("Xamarin.Forms.Pages")]
 [assembly: InternalsVisibleTo("Xamarin.Forms.Pages.UnitTests")]
+[assembly: InternalsVisibleTo("Xamarin.Forms.CarouselView")]
 [assembly: Preserve]
 
 //Added for Unit tests at Hitcents
 [assembly: InternalsVisibleTo("ToE.Forms.Tests")]
+

@@ -144,7 +144,7 @@ namespace Xamarin.Forms.Platform.WinPhone
 				var child = Element.LogicalChildren[i] as VisualElement;
 				if (child == null)
 					continue;
-				IVisualElementRenderer renderer = child.GetRenderer();
+				IVisualElementRenderer renderer = Platform.GetRenderer(child);
 				if (renderer == null)
 					continue;
 				Rectangle bounds = child.Bounds;

@@ -2,6 +2,7 @@
 using System.Diagnostics;
 
 using Xamarin.Forms.CustomAttributes;
+using Xamarin.Forms.Internals;
 
 namespace Xamarin.Forms.Controls
 {
@@ -15,8 +16,13 @@ namespace Xamarin.Forms.Controls
 
 			var label = new Label {
 				Text = "I should have a toolbar item",
+#pragma warning disable 618
 				XAlign = TextAlignment.Center,
+#pragma warning restore 618
+
+#pragma warning disable 618
 				YAlign = TextAlignment.Center
+#pragma warning restore 618
 			};
 
 			var refreshBtn = new ToolbarItem ("Refresh", null, () => label.Text = "Clicking it works");

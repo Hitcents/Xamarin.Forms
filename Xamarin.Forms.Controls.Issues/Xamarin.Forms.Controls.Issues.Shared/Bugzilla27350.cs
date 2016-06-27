@@ -5,7 +5,7 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-
+using Xamarin.Forms.Internals;
 #if UITEST
 using Xamarin.UITest;
 using NUnit.Framework;
@@ -30,7 +30,9 @@ namespace Xamarin.Forms.Controls
 
 			public ObservableCollection<RecipeGroup> RecipeGroups { get; set; }
 
+#pragma warning disable 1998 // considered for removal
 			public async Task LoadRecipesAsync ()
+#pragma warning restore 1998
 			{
 				var groups = new  ObservableCollection<RecipeGroup> ();
 				groups.Add (new RecipeGroup { Title = "Teste 1" });

@@ -21,7 +21,7 @@ using nuint=System.UInt32;
 
 namespace Xamarin.Forms.Platform.iOS
 {
-	public class TabbedRenderer : UITabBarController, IVisualElementRenderer
+	public class TabbedRenderer : UITabBarController, IVisualElementRenderer, IEffectControlProvider
 	{
 		bool _loaded;
 		Size _queuedSize;
@@ -73,6 +73,11 @@ namespace Xamarin.Forms.Platform.iOS
 
 			//disable edit/reorder of tabs
 			CustomizableViewControllers = null;
+
+			UpdateBarBackgroundColor();
+			UpdateBarTextColor();
+
+			EffectUtilities.RegisterEffectControlProvider(this, oldElement, element);
 		}
 
 		public void SetElementSize(Size size)
@@ -225,7 +230,7 @@ namespace Xamarin.Forms.Platform.iOS
 
 		void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
-			if (e.PropertyName == "CurrentPage")
+			if (e.PropertyName == nameof(TabbedPage.CurrentPage))
 			{
 				var current = Tabbed.CurrentPage;
 				if (current == null)
@@ -237,6 +242,10 @@ namespace Xamarin.Forms.Platform.iOS
 
 				SelectedViewController = controller;
 			}
+			else if (e.PropertyName == TabbedPage.BarBackgroundColorProperty.PropertyName)
+				UpdateBarBackgroundColor();
+			else if (e.PropertyName == TabbedPage.BarTextColorProperty.PropertyName)
+				UpdateBarTextColor();
 		}
 
 		void Reset()
@@ -290,6 +299,52 @@ namespace Xamarin.Forms.Platform.iOS
 			Platform.SetRenderer(page, null);
 		}
 
+		void UpdateBarBackgroundColor()
+		{
+			if (Tabbed == null || TabBar == null)
+				return;
+
+			var barBackgroundColor = Tabbed.BarBackgroundColor;
+
+			if (Forms.IsiOS7OrNewer)
+			{
+				TabBar.BarTintColor = barBackgroundColor == Color.Default ? UINavigationBar.Appearance.BarTintColor : barBackgroundColor.ToUIColor();
+			}
+			else
+			{
+				TabBar.TintColor = barBackgroundColor == Color.Default ? UINavigationBar.Appearance.TintColor : barBackgroundColor.ToUIColor();
+			}
+		}
+
+		void UpdateBarTextColor()
+		{
+			if (Tabbed == null || TabBar == null || TabBar.Items == null)
+				return;
+
+			var barTextColor = Tabbed.BarTextColor;
+
+			var globalAttributes = UINavigationBar.Appearance.GetTitleTextAttributes();
+
+			var attributes = new UITextAttributes { Font = globalAttributes.Font };
+
+			if (barTextColor == Color.Default)
+				attributes.TextColor = globalAttributes.TextColor;
+			else
+				attributes.TextColor = barTextColor.ToUIColor();
+
+			foreach (UITabBarItem item in TabBar.Items)
+			{
+				item.SetTitleTextAttributes(attributes, UIControlState.Normal);
+			}
+
+			// set TintColor for selected icon
+			// setting the unselected icon tint is not supported by iOS
+			if (Forms.IsiOS7OrNewer)
+			{
+				TabBar.TintColor = barTextColor == Color.Default ? UINavigationBar.Appearance.TintColor : barTextColor.ToUIColor();
+			}
+		}
+
 		void UpdateChildrenOrderIndex(UIViewController[] viewControllers)
 		{
 			for (var i = 0; i < viewControllers.Length; i++)
@@ -306,6 +361,13 @@ namespace Xamarin.Forms.Platform.iOS
 		void UpdateCurrentPage()
 		{
 			((TabbedPage)Element).CurrentPage = SelectedIndex >= 0 && SelectedIndex < Tabbed.InternalChildren.Count ? Tabbed.GetPageByIndex((int)SelectedIndex) : null;
+		}
+
+		void IEffectControlProvider.RegisterEffect(Effect effect)
+		{
+			var platformEffect = effect as PlatformEffect;
+			if (platformEffect != null)
+				platformEffect.Container = View;
 		}
 	}
 }

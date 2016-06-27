@@ -1,4 +1,5 @@
 ﻿using Xamarin.Forms.CustomAttributes;
+using Xamarin.Forms.Internals;
 
 #if UITEST
 using NUnit.Framework;
@@ -21,8 +22,13 @@ namespace Xamarin.Forms.Controls
 					Text = "I should have red text",
 					TextColor = Color.Red,
 					BackgroundColor = new Color (0.5, 0.5, 0.5),
+#pragma warning disable 618
 					XAlign = TextAlignment.Center,
+#pragma warning restore 618
+
+#pragma warning disable 618
 					YAlign = TextAlignment.Center
+#pragma warning restore 618
 				}
 			};
 		}

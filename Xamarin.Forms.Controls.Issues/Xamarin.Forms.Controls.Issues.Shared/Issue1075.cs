@@ -2,6 +2,7 @@
 using System.Reflection;
 
 using Xamarin.Forms.CustomAttributes;
+using Xamarin.Forms.Internals;
 
 namespace Xamarin.Forms.Controls
 {
@@ -16,7 +17,9 @@ namespace Xamarin.Forms.Controls
 			Label header = new Label
 			{
 				Text = "Picker",
+#pragma warning disable 618
 				Font = Font.BoldSystemFontOfSize(50),
+#pragma warning restore 618
 				HorizontalOptions = LayoutOptions.Center
 			};
 

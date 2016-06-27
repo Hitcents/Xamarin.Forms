@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.ComponentModel;
+using Xamarin.Forms.Internals;
 #if __UNIFIED__
 using UIKit;
 using Foundation;
@@ -12,15 +13,15 @@ using MonoTouch.Foundation;
 
 namespace Xamarin.Forms.Platform.iOS
 {
-	public class WebViewRenderer : UIWebView, IVisualElementRenderer, IWebViewRenderer
+	public class WebViewRenderer : UIWebView, IVisualElementRenderer, IWebViewDelegate
 	{
 		EventTracker _events;
 		bool _ignoreSourceChanges;
 		WebNavigationEvent _lastBackForwardEvent;
 		VisualElementPackager _packager;
-
+#pragma warning disable 0414
 		VisualElementTracker _tracker;
-
+#pragma warning restore 0414
 		public WebViewRenderer() : base(RectangleF.Empty)
 		{
 		}
@@ -65,9 +66,6 @@ namespace Xamarin.Forms.Platform.iOS
 
 			if (element != null)
 				element.SendViewInitialized(this);
-
-			if (Element != null && !string.IsNullOrEmpty(Element.AutomationId))
-				AccessibilityIdentifier = Element.AutomationId;
 		}
 
 		public void SetElementSize(Size size)
@@ -137,9 +135,9 @@ namespace Xamarin.Forms.Platform.iOS
 			UpdateCanGoBackForward();
 		}
 
-		void OnEvalRequested(object sender, EventArg<string> eventArg)
+		void OnEvalRequested(object sender, EvalRequested eventArg)
 		{
-			EvaluateJavascript(eventArg.Data);
+			EvaluateJavascript(eventArg.Script);
 		}
 
 		void OnGoBackRequested(object sender, EventArgs eventArgs)

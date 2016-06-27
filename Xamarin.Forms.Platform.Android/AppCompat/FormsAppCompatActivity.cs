@@ -8,6 +8,7 @@ using Android.Content;
 using Android.Content.Res;
 using Android.OS;
 using Android.Runtime;
+using Android.Support.V4.Content;
 using Android.Support.V7.App;
 using Android.Util;
 using Android.Views;
@@ -110,13 +111,18 @@ namespace Xamarin.Forms.Platform.Android
 				RegisterHandlerForDefaultRenderer(typeof(Picker), typeof(AppCompat.PickerRenderer), typeof(PickerRenderer));
 				RegisterHandlerForDefaultRenderer(typeof(Frame), typeof(AppCompat.FrameRenderer), typeof(FrameRenderer));
 				RegisterHandlerForDefaultRenderer(typeof(CarouselPage), typeof(AppCompat.CarouselPageRenderer), typeof(CarouselPageRenderer));
+
+				_renderersAdded = true;
 			}
 
 			if (application == null)
 				throw new ArgumentNullException("application");
 
 			_application = application;
+			(application as IApplicationController)?.SetAppIndexingProvider(new AndroidAppIndexProvider(this));
 			Xamarin.Forms.Application.Current = application;
+
+			CheckForAppLink(Intent);
 
 			application.PropertyChanged += AppOnPropertyChanged;
 
@@ -202,6 +208,7 @@ namespace Xamarin.Forms.Platform.Android
 		protected override void OnNewIntent(Intent intent)
 		{
 			base.OnNewIntent(intent);
+			CheckForAppLink(intent);
 		}
 
 		protected override void OnPause()
@@ -289,6 +296,17 @@ namespace Xamarin.Forms.Platform.Android
 				InternalSetPage(_application.MainPage);
 		}
 
+		void CheckForAppLink(Intent intent)
+		{
+			string action = intent.Action;
+			string strLink = intent.DataString;
+			if (Intent.ActionView != action || string.IsNullOrWhiteSpace(strLink))
+				return;
+
+			var link = new Uri(strLink);
+			_application?.SendOnAppLinkRequestReceived(link);
+		}
+
 		int GetColorPrimaryDark()
 		{
 			FormsAppCompatActivity context = this;
@@ -303,11 +321,12 @@ namespace Xamarin.Forms.Platform.Android
 						if (value.Type >= DataType.FirstInt && value.Type <= DataType.LastInt)
 							return value.Data;
 						if (value.Type == DataType.String)
-							return context.Resources.GetColor(value.ResourceId);
+							return ContextCompat.GetColor(context, value.ResourceId);
 					}
 				}
 				catch (Exception ex)
 				{
+					Log.Warning("Xamarin.Forms.Platform.Android.FormsAppCompatActivity", "Error retrieving color resource: {0}", ex);
 				}
 
 				return -1;
@@ -398,8 +417,8 @@ namespace Xamarin.Forms.Platform.Android
 
 		void RegisterHandlerForDefaultRenderer(Type target, Type handler, Type filter)
 		{
-			Type current = Registrar.Registered.GetHandlerType(filter);
-			if (current == target)
+			Type current = Registrar.Registered.GetHandlerType(target);
+			if (current != filter)
 				return;
 
 			Registrar.Registered.Register(target, handler);

@@ -13,7 +13,7 @@ namespace Xamarin.Forms.Platform.Android
 	public class ButtonRenderer : ViewRenderer<Button, AButton>, AView.IOnAttachStateChangeListener
 	{
 		ButtonDrawable _backgroundDrawable;
-		ColorStateList _buttonDefaulTextColors;
+		TextColorSwitcher _textColorSwitcher;
 		Drawable _defaultDrawable;
 		float _defaultFontSize;
 		Typeface _defaultTypeface;
@@ -78,7 +78,7 @@ namespace Xamarin.Forms.Platform.Android
 					button.SetOnClickListener(ButtonClickListener.Instance.Value);
 					button.Tag = this;
 					SetNativeControl(button);
-
+					_textColorSwitcher = new TextColorSwitcher(button.TextColors);
 					button.AddOnAttachStateChangeListener(this);
 				}
 			}
@@ -195,7 +195,7 @@ namespace Xamarin.Forms.Platform.Android
 					return;
 
 				if (_defaultDrawable != null)
-					Control.SetBackgroundDrawable(_defaultDrawable);
+					Control.SetBackground(_defaultDrawable);
 
 				_drawableEnabled = false;
 			}
@@ -212,7 +212,7 @@ namespace Xamarin.Forms.Platform.Android
 				if (_defaultDrawable == null)
 					_defaultDrawable = Control.Background;
 
-				Control.SetBackgroundDrawable(_backgroundDrawable);
+				Control.SetBackground(_backgroundDrawable);
 				_drawableEnabled = true;
 			}
 
@@ -255,22 +255,7 @@ namespace Xamarin.Forms.Platform.Android
 
 		void UpdateTextColor()
 		{
-			Color color = Element.TextColor;
-
-			if (color.IsDefault)
-			{
-				if (_buttonDefaulTextColors == null)
-					return;
-
-				NativeButton.SetTextColor(_buttonDefaulTextColors);
-			}
-			else
-			{
-				_buttonDefaulTextColors = _buttonDefaulTextColors ?? Control.TextColors;
-
-				// Set the new enabled state color, preserving the default disabled state color
-				NativeButton.SetTextColor(color.ToAndroidPreserveDisabled(_buttonDefaulTextColors));
-			}
+			_textColorSwitcher?.UpdateTextColor(Control, Element.TextColor);
 		}
 
 		class ButtonClickListener : Object, IOnClickListener

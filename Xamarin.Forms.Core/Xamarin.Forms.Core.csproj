@@ -22,7 +22,8 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <NoWarn>0618</NoWarn>
+    <NoWarn>
+    </NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -32,13 +33,17 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
     <DocumentationFile>..\docs\Xamarin.Forms.Core.xml</DocumentationFile>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <NoWarn>
+    </NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Turkey|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\Turkey\</OutputPath>
     <DefineConstants>DEBUG;</DefineConstants>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <NoWarn>0618</NoWarn>
+    <NoWarn>
+    </NoWarn>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
@@ -88,6 +93,7 @@
     <Compile Include="ElementEventArgs.cs" />
     <Compile Include="ElementTemplate.cs" />
     <Compile Include="EmailKeyboard.cs" />
+    <Compile Include="Internals\EvalRequested.cs" />
     <Compile Include="ExportEffectAttribute.cs" />
     <Compile Include="ExpressionSearch.cs" />
     <Compile Include="FileAccess.cs" />
@@ -131,14 +137,13 @@
     <Compile Include="IResourcesProvider.cs" />
     <Compile Include="IRootObjectProvider.cs" />
     <Compile Include="IScrollViewController.cs" />
-    <Compile Include="ItemsViewSimple.cs" />
     <Compile Include="ItemTappedEventArgs.cs" />
     <Compile Include="ItemVisibilityEventArgs.cs" />
     <Compile Include="IValueConverterProvider.cs" />
     <Compile Include="IValueProvider.cs" />
     <Compile Include="IViewController.cs" />
     <Compile Include="IVisualElementController.cs" />
-    <Compile Include="IWebViewRenderer.cs" />
+    <Compile Include="IWebViewDelegate.cs" />
     <Compile Include="IXamlTypeResolver.cs" />
     <Compile Include="IXmlLineInfoProvider.cs" />
     <Compile Include="KeyboardFlags.cs" />
@@ -175,7 +180,7 @@
     <Compile Include="PinchGestureUpdatedEventArgs.cs" />
     <Compile Include="PlatformEffect.cs" />
     <Compile Include="PointTypeConverter.cs" />
-    <Compile Include="PreserveAttribute.cs" />
+    <Compile Include="Internals\PreserveAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BindableObject.cs" />
     <Compile Include="BindableObjectExtensions.cs" />
@@ -225,7 +230,7 @@
     <Compile Include="TextChangedEventArgs.cs" />
     <Compile Include="TextKeyboard.cs" />
     <Compile Include="ThicknessTypeConverter.cs" />
-    <Compile Include="Ticker.cs" />
+    <Compile Include="Internals\Ticker.cs" />
     <Compile Include="ToggledEventArgs.cs" />
     <Compile Include="ToolbarItemEventArgs.cs" />
     <Compile Include="ToolbarItemOrder.cs" />
@@ -307,7 +312,6 @@
     <Compile Include="TabbedPage.cs" />
     <Compile Include="TemplateExtensions.cs" />
     <Compile Include="TimePicker.cs" />
-    <Compile Include="Toolbar.cs" />
     <Compile Include="ToolbarTracker.cs" />
     <Compile Include="ViewExtensions.cs" />
     <Compile Include="ViewState.cs" />
@@ -389,7 +393,12 @@
     <Compile Include="PinchGestureRecognizer.cs" />
     <Compile Include="IStyle.cs" />
     <Compile Include="MergedStyle.cs" />
+    <Compile Include="IAppLinks.cs" />
+    <Compile Include="IAppLinkEntry.cs" />
+    <Compile Include="AppLinkEntry.cs" />
     <Compile Include="IApplicationController.cs" />
+    <Compile Include="IAppIndexingProvider.cs" />
+    <Compile Include="ListStringTypeConverter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>

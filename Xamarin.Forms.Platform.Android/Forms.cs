@@ -15,6 +15,7 @@ using Android.Content;
 using Android.Content.Res;
 using Android.OS;
 using Android.Util;
+using Xamarin.Forms.Internals;
 using Xamarin.Forms.Platform.Android;
 using Resource = Android.Resource;
 using Trace = System.Diagnostics.Trace;
@@ -247,29 +248,9 @@ namespace Xamarin.Forms
 					activity.RunOnUiThread(action);
 			}
 
-			public ITimer CreateTimer(Action<object> callback)
+			public Ticker CreateTicker()
 			{
-				return new _Timer(new Timer(o => callback(o)));
-			}
-
-			public ITimer CreateTimer(Action<object> callback, object state, int dueTime, int period)
-			{
-				return new _Timer(new Timer(o => callback(o), state, dueTime, period));
-			}
-
-			public ITimer CreateTimer(Action<object> callback, object state, long dueTime, long period)
-			{
-				return new _Timer(new Timer(o => callback(o), state, dueTime, period));
-			}
-
-			public ITimer CreateTimer(Action<object> callback, object state, TimeSpan dueTime, TimeSpan period)
-			{
-				return new _Timer(new Timer(o => callback(o), state, dueTime, period));
-			}
-
-			public ITimer CreateTimer(Action<object> callback, object state, uint dueTime, uint period)
-			{
-				return new _Timer(new Timer(o => callback(o), state, dueTime, period));
+				return new AndroidTicker();
 			}
 
 			public Assembly[] GetAssemblies()
@@ -436,8 +417,7 @@ namespace Xamarin.Forms
 				}
 				catch (Exception ex)
 				{
-					// Before you ask, yes, Exception. I know. But thats what android throws, new Exception... YAY BINDINGS
-					// log exception using insights if possible
+					Log.Warning("Xamarin.Forms.Platform.Android.AndroidPlatformServices", "Error retrieving text appearance: {0}", ex);
 				}
 				return false;
 			}

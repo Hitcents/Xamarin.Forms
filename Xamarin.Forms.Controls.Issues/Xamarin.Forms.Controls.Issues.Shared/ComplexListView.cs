@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms.CustomAttributes;
+using Xamarin.Forms.Internals;
 
 namespace Xamarin.Forms.Controls
 {
@@ -56,10 +57,14 @@ namespace Xamarin.Forms.Controls
 			if (s_mImgRenewal == null)
 				s_mImgRenewal = ImageSource.FromFile ("bank.png");
 
+#pragma warning disable 618
 			var label1 = new Label { Text = "Label 1", Font = Font.SystemFontOfSize (NamedSize.Small, FontAttributes.Bold) };
+#pragma warning restore 618
 			label1.SetBinding (Label.TextProperty, new Binding ("."));
 
+#pragma warning disable 618
 			var label2 = new Label { Text = "Label 2", Font = Font.SystemFontOfSize (NamedSize.Small) };
+#pragma warning restore 618
 
 			// was ListButton?
 			var button = new Button {
@@ -71,7 +76,9 @@ namespace Xamarin.Forms.Controls
 			button.Clicked += (sender, e) => {
 				var b = (Button) sender;
 				var t = b.CommandParameter;
+#pragma warning disable 618
 				((ContentPage) ((ListView) ((StackLayout) b.ParentView).ParentView).ParentView).DisplayAlert ("Clicked",
+#pragma warning restore 618
 					t + " button was clicked", "OK");
 				Debug.WriteLine ("clicked" + t);
 			};

@@ -1,5 +1,6 @@
 ﻿using System;
 using Xamarin.Forms.CustomAttributes;
+using Xamarin.Forms.Internals;
 
 #if UITEST
 using Xamarin.UITest;
@@ -22,7 +23,9 @@ namespace Xamarin.Forms.Controls
 
 		protected override void Init ()
 		{
+#pragma warning disable 618
 			var label = new Label () { XAlign = TextAlignment.Center };
+#pragma warning restore 618
 			var image = new Image ();
 
 			image.PropertyChanged += (sender, e) => {

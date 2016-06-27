@@ -15,6 +15,7 @@ using Xamarin.Forms.ControlGallery.Android;
 using Xamarin.Forms.Controls;
 using Xamarin.Forms.Maps.Android;
 using Xamarin.Forms.Platform.Android;
+using Xamarin.Forms.Platform.Android.AppLinks;
 using System.IO;
 using System.IO.IsolatedStorage;
 
@@ -188,7 +189,7 @@ namespace Xamarin.Forms.ControlGallery.Android
 			base.OnCreate(bundle);
 
 			if (!Debugger.IsAttached)
-				Insights.Initialize(App.Secrets["InsightsApiKey"], this.ApplicationContext);
+				Insights.Initialize(App.Config["InsightsApiKey"], this.ApplicationContext);
 
 			Forms.Init(this, bundle);
 			FormsMaps.Init(this, bundle);
@@ -316,6 +317,7 @@ namespace Xamarin.Forms.ControlGallery.Android
 
 			Forms.Init (this, bundle);
 			FormsMaps.Init (this, bundle);
+			AndroidAppLinks.Init(this);
 			Forms.ViewInitialized += (sender, e) => {
 //				if (!string.IsNullOrWhiteSpace(e.View.StyleId)) {
 //					e.NativeView.ContentDescription = e.View.StyleId;

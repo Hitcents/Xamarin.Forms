@@ -343,7 +343,9 @@ namespace Xamarin.Forms.Platform.WinRT
 		readonly ToolbarTracker _toolbarTracker = new ToolbarTracker();
 		readonly FileImageSourcePathConverter _fileImageSourcePathConverter = new FileImageSourcePathConverter();
 
-		IToolbarProvider _toolbarProvider;
+#pragma warning disable 649
+        IToolbarProvider _toolbarProvider;
+#pragma warning restore 649
 
 		class ToolbarProvider : IToolbarProvider
 		{
@@ -491,7 +493,9 @@ namespace Xamarin.Forms.Platform.WinRT
 			return GetCommandBarAsync();
 		}
 
+#pragma warning disable 1998 // considered for removal
 		async Task<CommandBar> GetCommandBarAsync()
+#pragma warning restore 1998
 		{
 #if !WINDOWS_UWP
 			return _page.BottomAppBar as CommandBar;

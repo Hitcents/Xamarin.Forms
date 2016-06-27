@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms.CustomAttributes;
+using Xamarin.Forms.Internals;
 
 #if UITEST
 using NUnit.Framework;
@@ -278,7 +279,7 @@ namespace Xamarin.Forms.Controls
 			try {
 				IsPresented = !IsPresented;
 			} catch (InvalidOperationException ex) {
-				DisplayAlert ("Error", ex.Message, "ok");
+				await DisplayAlert ("Error", ex.Message, "ok");
 			}
 		
 		}

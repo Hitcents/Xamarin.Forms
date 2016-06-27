@@ -165,8 +165,6 @@ namespace Xamarin.Forms.Platform.WinRT
 
 		sealed class BrushedElement
 		{
-			bool _isBound;
-
 			public BrushedElement(FrameworkElement element, WBinding brushBinding = null, Brush brush = null)
 			{
 				Element = element;
@@ -280,7 +278,9 @@ namespace Xamarin.Forms.Platform.WinRT
 			ScrollTo(til.ListProxy.ProxiedEnumerable, til.ListProxy[0], ScrollToPosition.Start, true, true);
 		}
 
+#pragma warning disable 1998 // considered for removal
 		async void ScrollTo(object group, object item, ScrollToPosition toPosition, bool shouldAnimate, bool includeGroup = false, bool previouslyFailed = false)
+#pragma warning restore 1998
 		{
 			ScrollViewer viewer = GetScrollViewer();
 			if (viewer == null)
@@ -628,7 +628,7 @@ namespace Xamarin.Forms.Platform.WinRT
 		}
 #endif
 
-		bool _deferSelection;
+		bool _deferSelection = false;
 		Tuple<object, SelectedItemChangedEventArgs> _deferredSelectedItemChangedEvent;
 	}
 }

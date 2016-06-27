@@ -24,6 +24,9 @@
     <ConsolePause>false</ConsolePause>
     <MtouchDebug>true</MtouchDebug>
     <CodesignKey>iPhone Developer</CodesignKey>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <NoWarn>
+    </NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -35,6 +38,9 @@
     <ConsolePause>false</ConsolePause>
     <CodesignKey>iPhone Developer</CodesignKey>
     <DefineConstants>TRACE;__IOS__;__MOBILE__;</DefineConstants>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <NoWarn>
+    </NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Turkey|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -45,6 +51,14 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <NoWarn>
+    </NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'AppStore|AnyCPU'">
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <NoWarn>
+    </NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\Xamarin.Forms.Core\Properties\GlobalAssemblyInfo.cs">
@@ -53,6 +67,7 @@
     <Compile Include="CADisplayLinkTicker.cs" />
     <Compile Include="ContextActionCell.cs" />
     <Compile Include="ContextScrollViewDelegate.cs" />
+    <Compile Include="EffectUtilities.cs" />
     <Compile Include="Extensions\CellExtensions.cs" />
     <Compile Include="Forms.cs" />
     <Compile Include="GlobalCloseContextGestureRecognizer.cs" />
@@ -129,9 +144,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Renderers\TableViewRenderer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Renderers\TabletMasterDetailRenderer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Renderers\TimePickerRenderer.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Renderers\ToolbarRenderer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Renderers\WebViewRenderer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Properties\AssemblyInfo.cs" />
+    <Compile Include="iOSAppIndexingProvider.cs" />
+    <Compile Include="iOSAppLinks.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\StringResources.ar.resx" />

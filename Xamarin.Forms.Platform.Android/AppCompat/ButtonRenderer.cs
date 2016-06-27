@@ -4,6 +4,7 @@ using Android.Content;
 using Android.Content.Res;
 using Android.Graphics;
 using Android.Graphics.Drawables;
+using Android.Support.V4.Content;
 using Android.Support.V7.Widget;
 using Android.Util;
 using GlobalResource = Android.Resource;
@@ -13,10 +14,7 @@ namespace Xamarin.Forms.Platform.Android.AppCompat
 {
 	public class ButtonRenderer : ViewRenderer<Button, AppCompatButton>, global::Android.Views.View.IOnAttachStateChangeListener
 	{
-		static readonly int[][] States = { new[] { GlobalResource.Attribute.StateEnabled }, new[] { -GlobalResource.Attribute.StateEnabled } };
-
-		ColorStateList _buttonDefaulTextColors;
-		Color _currentTextColor;
+		TextColorSwitcher _textColorSwitcher;
 		float _defaultFontSize;
 		Typeface _defaultTypeface;
 		bool _isDisposed;
@@ -78,7 +76,7 @@ namespace Xamarin.Forms.Platform.Android.AppCompat
 
 					button.SetOnClickListener(ButtonClickListener.Instance.Value);
 					button.Tag = this;
-					_buttonDefaulTextColors = button.TextColors;
+					_textColorSwitcher = new TextColorSwitcher(button.TextColors);  
 					SetNativeControl(button);
 
 					button.AddOnAttachStateChangeListener(this);
@@ -127,13 +125,16 @@ namespace Xamarin.Forms.Platform.Android.AppCompat
 							{
 								Resources.Theme theme = context.Theme;
 								if (theme != null && theme.ResolveAttribute(id, value, true))
+#pragma warning disable 618
 									Control.SupportBackgroundTintList = Resources.GetColorStateList(value.Data);
+#pragma warning restore 618
 								else
-									Control.SupportBackgroundTintList = new ColorStateList(States, new[] { (int)0xffd7d6d6, 0x7fd7d6d6 });
+									Control.SupportBackgroundTintList = new ColorStateList(ColorExtensions.States, new[] { (int)0xffd7d6d6, 0x7fd7d6d6 });
 							}
 							catch (Exception ex)
 							{
-								Control.SupportBackgroundTintList = new ColorStateList(States, new[] { (int)0xffd7d6d6, 0x7fd7d6d6 });
+								Log.Warning("Xamarin.Forms.Platform.Android.ButtonRenderer", "Could not retrieve button background resource: {0}", ex);
+								Control.SupportBackgroundTintList = new ColorStateList(ColorExtensions.States, new[] { (int)0xffd7d6d6, 0x7fd7d6d6 });
 							}
 						}
 					}
@@ -143,7 +144,7 @@ namespace Xamarin.Forms.Platform.Android.AppCompat
 			{
 				int intColor = backgroundColor.ToAndroid().ToArgb();
 				int disableColor = backgroundColor.MultiplyAlpha(0.5).ToAndroid().ToArgb();
-				Control.SupportBackgroundTintList = new ColorStateList(States, new[] { intColor, disableColor });
+				Control.SupportBackgroundTintList = new ColorStateList(ColorExtensions.States, new[] { intColor, disableColor });
 			}
 		}
 
@@ -243,21 +244,7 @@ namespace Xamarin.Forms.Platform.Android.AppCompat
 
 		void UpdateTextColor()
 		{
-			Color color = Element.TextColor;
-			if (color == _currentTextColor)
-				return;
-
-			_currentTextColor = color;
-
-			if (color.IsDefault)
-				NativeButton.SetTextColor(_buttonDefaulTextColors);
-			else
-			{
-				// Set the new enabled state color, preserving the default disabled state color
-				int defaultDisabledColor = _buttonDefaulTextColors.GetColorForState(States[1], color.ToAndroid());
-
-				NativeButton.SetTextColor(new ColorStateList(States, new[] { color.ToAndroid().ToArgb(), defaultDisabledColor }));
-			}
+			_textColorSwitcher?.UpdateTextColor(Control, Element.TextColor);
 		}
 
 		class ButtonClickListener : Object, IOnClickListener

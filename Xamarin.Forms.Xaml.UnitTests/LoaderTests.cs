@@ -57,7 +57,9 @@ namespace Xamarin.Forms.Xaml.UnitTests
 	public class Catalog
 	{
 		public static readonly BindableProperty MessageProperty = 
+#pragma warning disable 618
 			BindableProperty.CreateAttached<Catalog, string> (bindable => GetMessage (bindable), default(string), 
+#pragma warning restore 618
 				propertyChanged: (bindable, oldvalue, newvalue) => {
 					var label = bindable as Label;
 					if (label != null)
@@ -503,7 +505,7 @@ namespace Xamarin.Forms.Xaml.UnitTests
 				xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml""
 				x:Class=""Xamarin.Forms.Xaml.UnitTests.CustEntry"" TextChanged=""onValueChanged"" />
 			</Entry>";
-			var view = new CustEntry ().LoadFromXaml (xaml);
+			new CustEntry ().LoadFromXaml (xaml);
 		}
 
 		[Test]

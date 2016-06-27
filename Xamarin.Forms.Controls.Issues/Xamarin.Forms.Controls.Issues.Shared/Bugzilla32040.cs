@@ -1,6 +1,7 @@
 ﻿using System;
 
 using Xamarin.Forms.CustomAttributes;
+using Xamarin.Forms.Internals;
 
 #if UITEST
 using Xamarin.UITest;
@@ -25,7 +26,9 @@ namespace Xamarin.Forms.Controls
 			};
 
 			var entryCell = new EntryCell { Text = "yaddayadda" };
+#pragma warning disable 618
 			entryCell.XAlign = TextAlignment.End;
+#pragma warning restore 618
 			entryCell.Label = "Click Here";
 			entryCell.Tapped += (s, e) =>
 			{

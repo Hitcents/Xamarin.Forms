@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using Xamarin.Forms.CustomAttributes;
+using Xamarin.Forms.Internals;
 
 #if UITEST
 using Xamarin.UITest;
@@ -56,7 +57,9 @@ namespace Xamarin.Forms.Controls
 	
 		}
 
+#pragma warning disable 1998 // considered for removal
 		public async void OnDelete (object sender, EventArgs e)
+#pragma warning restore 1998
 		{
 			var mi = ((MenuItem)sender);
 			if (mi.CommandParameter == null)
@@ -105,7 +108,9 @@ namespace Xamarin.Forms.Controls
 				}
 			}
 
+#pragma warning disable 1998 // considered for removal
 			public async Task ExecuteFavoritesCommand ()
+#pragma warning restore 1998
 			{
 				if (IsBusy)
 					return;

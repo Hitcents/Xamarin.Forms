@@ -4,6 +4,8 @@ using Xamarin.Forms;
 using Xamarin.Forms.CustomAttributes;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using Xamarin.Forms.Internals;
+
 #if UITEST
 using Xamarin.UITest.Queries;
 using NUnit.Framework;
@@ -118,7 +120,9 @@ namespace Xamarin.Forms.Controls
 	[Preserve (AllMembers = true)]
 	public class ButtonExtensions
 	{
+#pragma warning disable 618
 		public static readonly BindableProperty IsPrimaryProperty = BindableProperty.CreateAttached<ButtonExtensions, bool> (
+#pragma warning restore 618
 			                                                            bindable => GetIsPrimary (bindable),
 			                                                            false,
 			                                                            BindingMode.TwoWay,

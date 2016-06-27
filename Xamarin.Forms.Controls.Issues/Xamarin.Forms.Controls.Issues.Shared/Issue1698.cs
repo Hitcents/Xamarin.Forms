@@ -1,6 +1,7 @@
 ﻿using System;
 
 using Xamarin.Forms.CustomAttributes;
+using Xamarin.Forms.Internals;
 
 namespace Xamarin.Forms.Controls
 {
@@ -22,7 +23,7 @@ namespace Xamarin.Forms.Controls
 
 		public async void btn_Clicked(object sender, EventArgs e)
 		{
-			string x = await DisplayActionSheet("Action Sheet", "Cancel", null, new string[] { "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "Eleven", "twelve", "thirteen", "fourteen" });
+			await DisplayActionSheet("Action Sheet", "Cancel", null, new string[] { "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "Eleven", "twelve", "thirteen", "fourteen" });
 		}
 	}
 }

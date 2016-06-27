@@ -247,7 +247,8 @@ namespace Xamarin.Forms
 			set { SetValue(StyleProperty, value); }
 		}
 
-		public string StyleClass
+		[TypeConverter (typeof(ListStringTypeConverter))]
+		public IList<string> StyleClass
 		{
 			get { return _mergedStyle.StyleClass; }
 			set { _mergedStyle.StyleClass = value; }
@@ -511,14 +512,24 @@ namespace Xamarin.Forms
 
 		public SizeRequest Measure(double widthConstraint, double heightConstraint, MeasureFlags flags = MeasureFlags.None)
 		{
-			SizeRequest result = GetSizeRequest(widthConstraint, heightConstraint);
-
-			if ((flags & MeasureFlags.IncludeMargins) != 0)
+			bool includeMargins = (flags & MeasureFlags.IncludeMargins) != 0;
+			Thickness margin = default(Thickness);
+			if (includeMargins)
 			{
-				Thickness margin = default(Thickness);
 				var view = this as View;
 				if (view != null)
 					margin = view.Margin;
+				widthConstraint = Math.Max(0, widthConstraint - margin.HorizontalThickness);
+				heightConstraint = Math.Max(0, heightConstraint - margin.VerticalThickness);
+			}
+#pragma warning disable 0618 // retain until GetSizeRequest removed
+			SizeRequest result = GetSizeRequest(widthConstraint, heightConstraint);
+#pragma warning restore 0618
+
+			if (includeMargins)
+			{
+				
+				
 
 				if (!margin.IsDefault)
 				{
@@ -577,11 +588,14 @@ namespace Xamarin.Forms
 
 		protected virtual SizeRequest OnMeasure(double widthConstraint, double heightConstraint)
 		{
+#pragma warning disable 0618 // retain until OnSizeRequest removed
 			return OnSizeRequest(widthConstraint, heightConstraint);
+#pragma warning restore 0618
 		}
 
 		protected override void OnParentSet()
 		{
+#pragma warning disable 0618 // retain until ParentView removed
 			base.OnParentSet();
 
 			if (ParentView != null)
@@ -592,6 +606,7 @@ namespace Xamarin.Forms
 			{
 				NavigationProxy.Inner = null;
 			}
+#pragma warning restore 0618
 		}
 
 		protected virtual void OnSizeAllocated(double width, double height)

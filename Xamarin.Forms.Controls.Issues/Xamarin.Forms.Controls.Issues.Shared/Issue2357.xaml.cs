@@ -9,6 +9,7 @@ using System.Linq;
 using System.ComponentModel;
 using System.Text;
 using Xamarin.Forms.CustomAttributes;
+using Xamarin.Forms.Internals;
 
 namespace Xamarin.Forms.Controls
 {
@@ -210,7 +211,9 @@ namespace Xamarin.Forms.Controls
 			_mainMenuItems = new ObservableCollection<MainMenuItem> (Enumerable.Empty<MainMenuItem> ());
 		}
 
+#pragma warning disable 1998 // considered for removal
 		public async Task InitializeAsync ()
+#pragma warning restore 1998
 		{
 			var items = new List<MainMenuItem> ();
 			items.Add (new MainMenuItem {

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Collections.Generic;
-
+using Xamarin.Forms.Internals;
 #if UITEST
 using Xamarin.UITest;
 using NUnit.Framework;
@@ -26,10 +26,7 @@ namespace Xamarin.Forms.Controls
 		{
 			Title = "Contacts";
 			Content = CreateContent();
-			// Disable the await warning
-			#pragma warning disable 4014
 			LoadContactsAsync();
-			#pragma warning restore 4014
 		}
 
 		Layout CreateContent()

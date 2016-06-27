@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms.CustomAttributes;
+using Xamarin.Forms.Internals;
 
 namespace Xamarin.Forms.Controls
 {
@@ -92,7 +93,9 @@ namespace Xamarin.Forms.Controls
 				}
 			}
 
+#pragma warning disable 1998 // considered for removal
 			public async Task LoadData (int start, int numberOfRecords)
+#pragma warning restore 1998
 			{
 				IsLoading = true;
 				for (int counter = 0; counter < numberOfRecords; counter++)

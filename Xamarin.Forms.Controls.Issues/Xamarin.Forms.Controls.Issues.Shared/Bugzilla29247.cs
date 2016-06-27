@@ -1,7 +1,7 @@
 ﻿using System;
 
 using Xamarin.Forms.CustomAttributes;
-
+using Xamarin.Forms.Internals;
 #if UITEST
 using Xamarin.UITest;
 using NUnit.Framework;
@@ -19,7 +19,9 @@ namespace Xamarin.Forms.Controls
 				VerticalOptions = LayoutOptions.Center,
 				Children = {
 					new Label {
+#pragma warning disable 618
 						XAlign = TextAlignment.Center,
+#pragma warning restore 618
 						Text = "Welcome to Xamarin Forms!"
 					},
 					new Button {

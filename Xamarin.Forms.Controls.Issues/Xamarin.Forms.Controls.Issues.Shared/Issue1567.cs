@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Xamarin.Forms.CustomAttributes;
+using Xamarin.Forms.Internals;
 
 namespace Xamarin.Forms.Controls
 {
@@ -23,7 +24,7 @@ namespace Xamarin.Forms.Controls
 						Title = "Modal",
 						Content = new Label (){ Text = "Second screen" },
 				};
-				var np2 = new NavigationPage(cp2) { Title = "Modal" };
+				//var np2 = new NavigationPage(cp2) { Title = "Modal" };
 				try {
 					await Navigation.PushModalAsync (cp2);
 				} catch (InvalidOperationException ex) {

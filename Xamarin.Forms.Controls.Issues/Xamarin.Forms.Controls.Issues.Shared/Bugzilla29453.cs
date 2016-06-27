@@ -1,7 +1,7 @@
 ﻿using System;
 
 using Xamarin.Forms.CustomAttributes;
-
+using Xamarin.Forms.Internals;
 #if UITEST
 using Xamarin.UITest;
 using NUnit.Framework;
@@ -18,7 +18,9 @@ namespace Xamarin.Forms.Controls
 			var page1Layout = new StackLayout {
 				Children = {
 					new Label {
+#pragma warning disable 618
 						XAlign = TextAlignment.Center,
+#pragma warning restore 618
 						Text = "Page 1"
 					}
 				}
@@ -27,7 +29,9 @@ namespace Xamarin.Forms.Controls
 			var page2Layout = new StackLayout {
 				Children = {
 					new Label {
+#pragma warning disable 618
 						XAlign = TextAlignment.Center,
+#pragma warning restore 618
 						Text = "Page 2"
 					}
 				}

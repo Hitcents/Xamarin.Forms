@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Xamarin.Forms.CustomAttributes;
+using Xamarin.Forms.Internals;
 
 namespace Xamarin.Forms.Controls
 {
@@ -22,7 +23,8 @@ namespace Xamarin.Forms.Controls
 			_button = new Button { Text = "Button" };
  
 			// The same behavior happens for both Absolute and Relative layout.
-			var layout = true ? Relative() : Absolute();
+            //var layout = true ? Relative() : Absolute();
+			var layout = Relative();
  
 			Animate();
  
@@ -62,7 +64,7 @@ namespace Xamarin.Forms.Controls
 			// Comment this delay out to see the bug
 			// await Task.Delay(500);
  
-			_button.LayoutTo(new Rectangle(100, 100, 100, 100), 1000);
+			await _button.LayoutTo(new Rectangle(100, 100, 100, 100), 1000);
 		}
 	}
 }

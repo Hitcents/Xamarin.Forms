@@ -2,6 +2,7 @@
 
 using Xamarin.Forms;
 using Xamarin.Forms.CustomAttributes;
+using Xamarin.Forms.Internals;
 
 namespace Xamarin.Forms.Controls
 {
@@ -15,7 +16,9 @@ namespace Xamarin.Forms.Controls
 				VerticalOptions = LayoutOptions.FillAndExpand,
 				Children = {
 					new Label {
+#pragma warning disable 618
 						XAlign = TextAlignment.Center,
+#pragma warning restore 618
 						Text = "Tap input field, then try to scroll"
 					},
 					new WebView {

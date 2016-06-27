@@ -27,6 +27,8 @@
     <DefineConstants>TRACE;DEBUG;PERF;APP</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <NoWarn>0114;0108;0109;4014;0649;0169;0472;0414;0168;0219;0429</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -35,6 +37,8 @@
     <DefineConstants>TRACE;APP</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <NoWarn>0114;0108;0109;4014;0649;0169;0472;0414;0168;0219;0429</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Turkey|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -46,6 +50,8 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <WarningLevel>4</WarningLevel>
     <Optimize>false</Optimize>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <NoWarn>0114;0108;0109;4014;0649;0169;0472;0414;0168;0219;0429</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
@@ -65,6 +71,10 @@
     <ProjectReference Include="..\Xamarin.Forms.Maps\Xamarin.Forms.Maps.csproj">
       <Project>{7d13bac2-c6a4-416a-b07e-c169b199e52b}</Project>
       <Name>Xamarin.Forms.Maps</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Xamarin.Forms.Pages\Xamarin.Forms.Pages.csproj">
+      <Project>{d6133dbd-6c60-4bd5-bea2-07e0a3927c31}</Project>
+      <Name>Xamarin.Forms.Pages</Name>
     </ProjectReference>
     <ProjectReference Include="..\Xamarin.Forms.Xaml\Xamarin.Forms.Xaml.csproj">
       <Project>{9db2f292-8034-4e06-89ad-98bbda4306b9}</Project>
@@ -200,7 +210,6 @@
     <Compile Include="GalleryPages\TableViewGallery.cs" />
     <Compile Include="GalleryPages\TemplatedCarouselGallery.cs" />
     <Compile Include="GalleryPages\TemplatedTabbedGallery.cs" />
-    <Compile Include="GalleryPages\ToolbarGallery.cs" />
     <Compile Include="GalleryPages\UnevenListGallery.cs" />
     <Compile Include="GalleryPages\WebViewGallery.cs" />
     <Compile Include="GalleryPages\StyleGallery.cs" />
@@ -217,6 +226,7 @@
     <Compile Include="ControlGalleryPages\PinchGestureTestPage.cs" />
     <Compile Include="ControlGalleryPages\AppearingGalleryPage.cs" />
     <Compile Include="ControlGalleryPages\AutomationIDGallery.cs" />
+    <Compile Include="GalleryPages\AppLinkPageGallery.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <Import Project="..\.nuspec\Xamarin.Forms.targets" />

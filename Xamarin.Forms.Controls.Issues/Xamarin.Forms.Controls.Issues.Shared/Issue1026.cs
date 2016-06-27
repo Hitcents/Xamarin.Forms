@@ -1,4 +1,5 @@
 using Xamarin.Forms.CustomAttributes;
+using Xamarin.Forms.Internals;
 
 namespace Xamarin.Forms.Controls
 {
@@ -77,8 +78,13 @@ namespace Xamarin.Forms.Controls
 						new Label {
 							Text = "by subscribing, you accept the general conditions.",
 							TextColor = Color.White,
+#pragma warning disable 618
 							XAlign = TextAlignment.Center,
+#pragma warning restore 618
+
+#pragma warning disable 618
 							Font = Font.SystemFontOfSize (NamedSize.Micro),
+#pragma warning restore 618
 							WidthRequest = 262,
 							HorizontalOptions = LayoutOptions.Center,
 						},

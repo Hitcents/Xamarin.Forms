@@ -1,4 +1,5 @@
 ﻿using Xamarin.Forms.CustomAttributes;
+using Xamarin.Forms.Internals;
 
 namespace Xamarin.Forms.Controls
 {
@@ -10,7 +11,9 @@ namespace Xamarin.Forms.Controls
 		{
 			var header = new Label {
 				Text = "ScrollView",
+#pragma warning disable 618
 				Font = Font.SystemFontOfSize (50, FontAttributes.Bold),
+#pragma warning restore 618
 				HorizontalOptions = LayoutOptions.Center
 			};
 
@@ -43,7 +46,9 @@ namespace Xamarin.Forms.Controls
 					       "only at runtime, you should probably put it in " +
 					       "a StackLayout just to be sure your stuff doesn't " +
 					       "go running off the bottom of the screen.",
+#pragma warning disable 618
 					Font = Font.SystemFontOfSize (NamedSize.Large)
+#pragma warning restore 618
 				}
 			};
 

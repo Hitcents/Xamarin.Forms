@@ -8,7 +8,7 @@ using System.Windows.Input;
 
 using Xamarin.Forms;
 using Xamarin.Forms.CustomAttributes;
-
+using Xamarin.Forms.Internals;
 #if UITEST
 using NUnit.Framework;
 using Xamarin.UITest;
@@ -363,7 +363,9 @@ namespace Xamarin.Forms.Controls
 			public CustomViewCell ()
 			{
 				var jobId = new Label {
+#pragma warning disable 618
 					Font = Font.SystemFontOfSize(20),
+#pragma warning restore 618
 					WidthRequest = 105,
 					VerticalOptions = LayoutOptions.Center,
 
@@ -381,7 +383,9 @@ namespace Xamarin.Forms.Controls
 				var hours = new Label {
 					WidthRequest = 45,
 					VerticalOptions = LayoutOptions.Center,
+#pragma warning disable 618
 					XAlign = TextAlignment.End,
+#pragma warning restore 618
 					HorizontalOptions = LayoutOptions.EndAndExpand,
 
 				};

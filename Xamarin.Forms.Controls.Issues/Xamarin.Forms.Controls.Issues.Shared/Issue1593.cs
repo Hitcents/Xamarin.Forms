@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Xamarin.Forms;
 using Xamarin.Forms.CustomAttributes;
+using Xamarin.Forms.Internals;
 
 namespace Xamarin.Forms.Controls
 {
@@ -14,7 +15,9 @@ namespace Xamarin.Forms.Controls
 		{
 			var title = new Label {
 				Text = "Select League",
+#pragma warning disable 618
 				Font = Font.SystemFontOfSize (NamedSize.Large),
+#pragma warning restore 618
 				TextColor = Color.White
 			};
 
@@ -22,7 +25,9 @@ namespace Xamarin.Forms.Controls
 
 			var seasonLabel = new Label {
 				Text = "Season",
+#pragma warning disable 618
 				Font = Font.SystemFontOfSize (NamedSize.Small),
+#pragma warning restore 618
 				TextColor = Color.White
 			};
 
@@ -45,7 +50,9 @@ namespace Xamarin.Forms.Controls
 
 			var sportLabel = new Label {
 				Text = "Sport",
+#pragma warning disable 618
 				Font = Font.SystemFontOfSize (NamedSize.Small),
+#pragma warning restore 618
 				TextColor = Color.White
 			};
 
@@ -96,8 +103,9 @@ namespace Xamarin.Forms.Controls
 				BackgroundColor = Color.Gray,
 				ItemTemplate = new DataTemplate (() => {
 					var leagueName = new Label {
-						Font =
-							Font.SystemFontOfSize (NamedSize.Large),
+#pragma warning disable 618
+						Font = Font.SystemFontOfSize (NamedSize.Large),
+#pragma warning restore 618
 						BackgroundColor = Color.Transparent,
 						TextColor = Color.White,
 						VerticalOptions = LayoutOptions.CenterAndExpand,

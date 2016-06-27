@@ -2,6 +2,7 @@
 using System.IO;
 using System.Text;
 using Xamarin.Forms.CustomAttributes;
+using Xamarin.Forms.Internals;
 
 #if UITEST
 using Xamarin.UITest;
@@ -29,7 +30,9 @@ namespace Xamarin.Forms.Controls
 			Content = new StackLayout {
 				Children = {
 						btn,
+#pragma warning disable 618
                     new Label {Text = "GeneratedImage", Font=Font.BoldSystemFontOfSize(NamedSize.Medium)},
+#pragma warning restore 618
                     generatedImage
                 },
 				Padding = new Thickness (0, 20, 0, 0),
