@@ -52,7 +52,7 @@ namespace Xamarin.Forms.Xaml
 			Load(view, new StringReader(xaml));
 		}
 
-		public static void Load(BindableObject view, TextReader textReader)
+		public static void Load(object view, TextReader textReader)
 		{
 			using (var reader = XmlReader.Create(textReader))
 			{
