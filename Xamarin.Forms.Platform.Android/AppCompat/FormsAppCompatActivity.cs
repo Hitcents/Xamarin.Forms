@@ -18,6 +18,7 @@ using AToolbar = Android.Support.V7.Widget.Toolbar;
 using AColor = Android.Graphics.Color;
 using AlertDialog = Android.Support.V7.App.AlertDialog;
 using ARelativeLayout = Android.Widget.RelativeLayout;
+using ARect = Android.Graphics.Rect;
 
 #endregion
 
@@ -283,11 +284,9 @@ namespace Xamarin.Forms.Platform.Android
 			if (_statusBarHeight >= 0)
 				return _statusBarHeight;
 
-			var result = 0;
-			int resourceId = Resources.GetIdentifier("status_bar_height", "dimen", "android");
-			if (resourceId > 0)
-				result = Resources.GetDimensionPixelSize(resourceId);
-			return _statusBarHeight = result;
+			var rect = new ARect();
+			Window.DecorView.GetWindowVisibleDisplayFrame(rect);
+			return _statusBarHeight = rect.Top;
 		}
 
 		void AppOnPropertyChanged(object sender, PropertyChangedEventArgs args)
