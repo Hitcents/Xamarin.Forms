@@ -30,7 +30,7 @@ namespace Xamarin.Forms
 
 		public delegate bool ValidateValueDelegate<in TPropertyType>(BindableObject bindable, TPropertyType value);
 
-		public static readonly Dictionary<Type, TypeConverter> WellKnownConvertTypes = new  Dictionary<Type,TypeConverter>
+		static readonly Dictionary<Type, TypeConverter> WellKnownConvertTypes = new  Dictionary<Type,TypeConverter>
 		{
 			{ typeof(Uri), new UriTypeConverter() },
 			{ typeof(Color), new ColorTypeConverter() },
