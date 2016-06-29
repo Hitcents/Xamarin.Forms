@@ -19,6 +19,7 @@ namespace Xamarin.Forms.Xaml
 			XmlName.xFactoryMethod,
 			XmlName.xName
 		};
+		static readonly ConcurrentDictionary<Type, Dictionary<string, FieldInfo>> _bindablePropertiesCache = new ConcurrentDictionary<Type, Dictionary<string, FieldInfo>>();
 
 		public ApplyPropertiesVisitor(HydratationContext context, bool stopOnResourceDictionary = false)
 		{
@@ -273,8 +274,15 @@ namespace Xamarin.Forms.Xaml
 		static BindableProperty GetBindableProperty(Type elementType, string localName, IXmlLineInfo lineInfo,
 			bool throwOnError = false)
 		{
-			var bindableFieldInfo =
-				elementType.GetFields().FirstOrDefault(fi => fi.Name == localName + "Property" && fi.IsStatic && fi.IsPublic);
+			Dictionary<string, FieldInfo> fields;
+			if (!_bindablePropertiesCache.TryGetValue(elementType, out fields))
+			{
+				_bindablePropertiesCache[elementType] =
+					fields = elementType.GetFields().Where(fi => fi.Name.EndsWith("Property", StringComparison.Ordinal) && fi.IsStatic && fi.IsPublic).ToDictionary(fi => fi.Name);
+			}
+
+			FieldInfo bindableFieldInfo;
+			fields.TryGetValue(localName + "Property", out bindableFieldInfo);
 
 			Exception exception = null;
 			if (exception == null && bindableFieldInfo == null)
