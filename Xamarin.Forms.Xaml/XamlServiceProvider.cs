@@ -19,8 +19,7 @@ namespace Xamarin.Forms.Xaml.Internals
 				IRootObjectProvider = new XamlRootObjectProvider(context.RootElement);
 			if (node != null)
 			{
-				IXamlTypeResolver = new XamlTypeResolver(node.NamespaceResolver, XamlParser.GetElementType,
-					context.RootElement.GetType().GetTypeInfo().Assembly);
+				IXamlTypeResolver = new XamlTypeResolver(node.NamespaceResolver, context.RootElement.GetType().GetTypeInfo().Assembly);
 
 				var enode = node;
 				while (enode != null && !(enode is IElementNode))
@@ -171,25 +170,15 @@ namespace Xamarin.Forms.Xaml.Internals
 	public class XamlTypeResolver : IXamlTypeResolver
 	{
 		readonly Assembly currentAssembly;
-		readonly GetTypeFromXmlName getTypeFromXmlName;
 		readonly IXmlNamespaceResolver namespaceResolver;
 
-		public XamlTypeResolver(IXmlNamespaceResolver namespaceResolver, Assembly currentAssembly)
-			: this(namespaceResolver, XamlParser.GetElementType, currentAssembly)
-		{
-		}
-
-		internal XamlTypeResolver(IXmlNamespaceResolver namespaceResolver, GetTypeFromXmlName getTypeFromXmlName,
-			Assembly currentAssembly)
+		internal XamlTypeResolver(IXmlNamespaceResolver namespaceResolver, Assembly currentAssembly)
 		{
 			this.currentAssembly = currentAssembly;
 			if (namespaceResolver == null)
 				throw new ArgumentNullException();
-			if (getTypeFromXmlName == null)
-				throw new ArgumentNullException();
 
 			this.namespaceResolver = namespaceResolver;
-			this.getTypeFromXmlName = getTypeFromXmlName;
 		}
 
 		Type IXamlTypeResolver.Resolve(string qualifiedTypeName, IServiceProvider serviceProvider)
@@ -242,11 +231,8 @@ namespace Xamarin.Forms.Xaml.Internals
 				return null;
 			}
 
-			return getTypeFromXmlName(new XmlType(namespaceuri, name, null), xmlLineInfo, currentAssembly, out exception);
+			return XamlParser.GetElementType(new XmlType(namespaceuri, name, null), xmlLineInfo, currentAssembly, out exception);
 		}
-
-		internal delegate Type GetTypeFromXmlName(
-			XmlType xmlType, IXmlLineInfo xmlInfo, Assembly currentAssembly, out XamlParseException exception);
 	}
 
 	internal class XamlRootObjectProvider : IRootObjectProvider
