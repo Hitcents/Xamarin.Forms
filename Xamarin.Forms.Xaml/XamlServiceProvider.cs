@@ -172,7 +172,7 @@ namespace Xamarin.Forms.Xaml.Internals
 		readonly Assembly currentAssembly;
 		readonly IXmlNamespaceResolver namespaceResolver;
 
-		internal XamlTypeResolver(IXmlNamespaceResolver namespaceResolver, Assembly currentAssembly)
+		public XamlTypeResolver(IXmlNamespaceResolver namespaceResolver, Assembly currentAssembly)
 		{
 			this.currentAssembly = currentAssembly;
 			if (namespaceResolver == null)
