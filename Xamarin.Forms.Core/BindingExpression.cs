@@ -40,18 +40,20 @@ namespace Xamarin.Forms
 		/// </summary>
 		internal void Apply(bool fromTarget = false)
 		{
-			if (_weakSource == null || _weakTarget == null)
+			var weakSource = _weakSource;
+			var weakTarget = _weakTarget;
+			if (weakSource == null || weakTarget == null)
 				return;
 
 			BindableObject target;
-			if (!_weakTarget.TryGetTarget(out target))
+			if (!weakTarget.TryGetTarget(out target))
 			{
 				Unapply();
 				return;
 			}
 
 			object source;
-			if (_weakSource.TryGetTarget(out source) && _targetProperty != null)
+			if (weakSource.TryGetTarget(out source) && _targetProperty != null)
 				ApplyCore(source, target, _targetProperty, fromTarget);
 		}
 
@@ -79,7 +81,8 @@ namespace Xamarin.Forms
 		internal void Unapply()
 		{
 			object sourceObject;
-			if (_weakSource != null && _weakSource.TryGetTarget(out sourceObject))
+			var weakSource = _weakSource;
+			if (weakSource != null && weakSource.TryGetTarget(out sourceObject))
 			{
 				for (var i = 0; i < _parts.Count - 1; i++)
 				{
