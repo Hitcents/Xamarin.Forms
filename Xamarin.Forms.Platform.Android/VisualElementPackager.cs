@@ -136,8 +136,8 @@ namespace Xamarin.Forms.Platform.Android
 		{
 			IVisualElementRenderer renderer = Platform.GetRenderer(view);
 			_childViews.Remove(renderer);
-			renderer.ViewGroup.RemoveFromParent();
-			renderer.Dispose();
+			renderer?.ViewGroup?.RemoveFromParent();
+			renderer?.Dispose();
 		}
 
 		void SetElement(VisualElement oldElement, VisualElement newElement)
