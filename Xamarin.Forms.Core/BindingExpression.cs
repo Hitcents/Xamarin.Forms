@@ -415,13 +415,13 @@ namespace Xamarin.Forms
 
 		class BindingExpressionPart
 		{
-			readonly WeakReference<BindingExpression> _expression;
+			readonly BindingExpression _expression;
 
 			public readonly PropertyChangedEventHandler ChangeHandler;
 
 			public BindingExpressionPart(BindingExpression expression, string content, bool isIndexer = false)
 			{
-				_expression = new WeakReference<BindingExpression>(expression);
+				_expression = expression;
 				IsSelf = content == Forms.Binding.SelfPath;
 				Content = content;
 				IsIndexer = isIndexer;
@@ -475,9 +475,7 @@ namespace Xamarin.Forms
 					}
 				}
 
-				BindingExpression expression;
-				if (_expression.TryGetTarget(out expression))
-					Device.BeginInvokeOnMainThread(() => expression.Apply());
+				Device.BeginInvokeOnMainThread(() => _expression.Apply());
 			}
 
 			public bool TryGetValue(object source, out object value)
