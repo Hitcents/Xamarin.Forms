@@ -1,13 +1,14 @@
-﻿using System;
+﻿using NUnit.Framework;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
-using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using NUnit.Framework;
-using CategoryAttribute=NUnit.Framework.CategoryAttribute;
-using DescriptionAttribute=NUnit.Framework.DescriptionAttribute;
+using System.Threading.Tasks;
+using CategoryAttribute = NUnit.Framework.CategoryAttribute;
+using DescriptionAttribute = NUnit.Framework.DescriptionAttribute;
 
 namespace Xamarin.Forms.Core.UnitTests
 {
@@ -2601,6 +2602,42 @@ namespace Xamarin.Forms.Core.UnitTests
 			button.BindingContext = viewmodel;
 
 			Assert.That (viewmodel.InvocationListSize (), Is.EqualTo (1));
+		}
+
+		class NestedViewModel : TestViewModel
+		{
+			public NestedViewModel()
+			{
+				Test = new TestViewModel();
+			}
+
+			public TestViewModel Test { get; set; }
+		}
+
+		[Test]
+		public async Task NestedBindingDoesNotKeepViewAlive()
+		{
+			NestedViewModel nestedViewModel = new NestedViewModel();
+			WeakReference buttonRef;
+
+			{
+				var button = new Button();
+				button.SetBinding(Button.TextProperty, "Test.Foo");
+				button.BindingContext = nestedViewModel;
+
+				buttonRef = new WeakReference(button);
+			}
+
+			Assume.That(nestedViewModel.InvocationListSize(), Is.EqualTo(1));
+
+			//NOTE: this was the only way I could "for sure" get the button to get GC'd
+			GC.Collect();
+			await Task.Delay(10);
+			GC.Collect();
+
+			nestedViewModel.OnPropertyChanged("Test");
+
+			Assert.IsFalse(buttonRef.IsAlive, "Button should not be alive!");
 		}
 
 		public class IndexedViewModel : INotifyPropertyChanged
