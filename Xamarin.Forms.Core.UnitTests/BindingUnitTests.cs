@@ -2629,13 +2629,12 @@ namespace Xamarin.Forms.Core.UnitTests
 			}
 
 			Assume.That(nestedViewModel.InvocationListSize(), Is.EqualTo(1));
+			Assume.That(nestedViewModel.Test.InvocationListSize(), Is.EqualTo(1));
 
 			//NOTE: this was the only way I could "for sure" get the button to get GC'd
 			GC.Collect();
 			await Task.Delay(10);
 			GC.Collect();
-
-			nestedViewModel.OnPropertyChanged("Test");
 
 			Assert.IsFalse(buttonRef.IsAlive, "Button should not be alive!");
 		}
