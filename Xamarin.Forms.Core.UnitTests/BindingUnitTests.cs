@@ -2639,6 +2639,33 @@ namespace Xamarin.Forms.Core.UnitTests
 			Assert.IsFalse(buttonRef.IsAlive, "Button should not be alive!");
 		}
 
+		[Test]
+		public async Task NestedBindingDoesNotKeepBindingAlive()
+		{
+			NestedViewModel nestedViewModel = new NestedViewModel();
+			WeakReference bindingRef;
+
+			{
+				var binding = new Binding("Test.Foo");
+
+				var button = new Button();
+				button.SetBinding(Button.TextProperty, binding);
+				button.BindingContext = nestedViewModel;
+
+				bindingRef = new WeakReference(binding);
+			}
+
+			Assume.That(nestedViewModel.InvocationListSize(), Is.EqualTo(1));
+			Assume.That(nestedViewModel.Test.InvocationListSize(), Is.EqualTo(1));
+
+			//NOTE: this was the only way I could "for sure" get the binding to get GC'd
+			GC.Collect();
+			await Task.Delay(10);
+			GC.Collect();
+
+			Assert.IsFalse(bindingRef.IsAlive, "Binding should not be alive!");
+		}
+
 		public class IndexedViewModel : INotifyPropertyChanged
 		{
 			Dictionary<string, object> dict = new Dictionary<string, object> ();
