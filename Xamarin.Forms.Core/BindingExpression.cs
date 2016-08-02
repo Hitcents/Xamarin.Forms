@@ -93,7 +93,7 @@ namespace Xamarin.Forms
 						part.TryGetValue(sourceObject, out sourceObject);
 					}
 
-					part.Disconnect();
+					part.Unsubscribe();
 				}
 			}
 
@@ -409,18 +409,18 @@ namespace Xamarin.Forms
 			public object Source { get; private set; }
 		}
 
-		class WeakPropertyChangedListener
+		class WeakPropertyChangedProxy
 		{
 			WeakReference _source, _listener;
 
-			public WeakPropertyChangedListener(INotifyPropertyChanged source, PropertyChangedEventHandler listener)
+			public WeakPropertyChangedProxy(INotifyPropertyChanged source, PropertyChangedEventHandler listener)
 			{
 				source.PropertyChanged += OnPropertyChanged;
 				_source = new WeakReference(source);
 				_listener = new WeakReference(listener);
 			}
 
-			public void Disconnect()
+			public void Unsubscribe()
 			{
 				if (_source != null)
 				{
@@ -445,12 +445,12 @@ namespace Xamarin.Forms
 					}
 					else
 					{
-						Disconnect();
+						Unsubscribe();
 					}
 				}
 				else
 				{
-					Disconnect();
+					Unsubscribe();
 				}
 			}
 		}
@@ -459,7 +459,7 @@ namespace Xamarin.Forms
 		{
 			readonly BindingExpression _expression;
 			readonly PropertyChangedEventHandler _changeHandler;
-			WeakPropertyChangedListener _listener;
+			WeakPropertyChangedProxy _listener;
 
 			public BindingExpressionPart(BindingExpression expression, string content, bool isIndexer = false)
 			{
@@ -474,17 +474,17 @@ namespace Xamarin.Forms
 			public void Subscribe(INotifyPropertyChanged handler)
 			{
 				//Don't want to subscribe twice
-				Disconnect();
+				Unsubscribe();
 
-				_listener = new WeakPropertyChangedListener(handler, _changeHandler);
+				_listener = new WeakPropertyChangedProxy(handler, _changeHandler);
 			}
 
-			public void Disconnect()
+			public void Unsubscribe()
 			{
 				var listener = _listener;
 				if (listener != null)
 				{
-					listener.Disconnect();
+					listener.Unsubscribe();
 					_listener = null;
 				}
 			}
