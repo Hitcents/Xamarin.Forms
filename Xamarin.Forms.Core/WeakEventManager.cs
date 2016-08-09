@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Reflection;
 
 namespace Xamarin.Forms
@@ -26,6 +27,21 @@ namespace Xamarin.Forms
 		}
 
 		public void AddEventHandler(string eventName, EventHandler handler)
+		{
+			if (eventName == null)
+			{
+				throw new ArgumentNullException(nameof(eventName));
+			}
+
+			if (handler == null)
+			{
+				throw new ArgumentNullException(nameof(handler));
+			}
+
+			AddEventHandler(eventName, handler.Target, handler.GetMethodInfo());
+		}
+
+		public void AddEventHandler(string eventName, PropertyChangedEventHandler handler)
 		{
 			if (eventName == null)
 			{
@@ -86,6 +102,21 @@ namespace Xamarin.Forms
 		}
 
 		public void RemoveEventHandler(string eventName, EventHandler handler)
+		{
+			if (eventName == null)
+			{
+				throw new ArgumentNullException(nameof(eventName));
+			}
+
+			if (handler == null)
+			{
+				throw new ArgumentNullException(nameof(handler));
+			}
+
+			RemoveEventHandler(eventName, handler.Target, handler.GetMethodInfo());
+		}
+
+		public void RemoveEventHandler(string eventName, PropertyChangedEventHandler handler)
 		{
 			if (eventName == null)
 			{
