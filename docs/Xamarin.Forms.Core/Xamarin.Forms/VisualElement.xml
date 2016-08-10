@@ -1829,6 +1829,25 @@
         <remarks>The x value of an element is set during the Layout phase.</remarks>
       </Docs>
     </Member>
+    <Member MemberName="Xamarin.Forms.IVisualElementController.InvalidateMeasure">
+      <MemberSignature Language="C#" Value="void IVisualElementController.InvalidateMeasure (Xamarin.Forms.Internals.InvalidationTrigger trigger);" />
+      <MemberSignature Language="ILAsm" Value=".method hidebysig newslot virtual instance void Xamarin.Forms.IVisualElementController.InvalidateMeasure(valuetype Xamarin.Forms.Internals.InvalidationTrigger trigger) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>2.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="trigger" Type="Xamarin.Forms.Internals.InvalidationTrigger" />
+      </Parameters>
+      <Docs>
+        <param name="trigger">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
     <Member MemberName="Xamarin.Forms.IVisualElementController.NativeSizeChanged">
       <MemberSignature Language="C#" Value="void IVisualElementController.NativeSizeChanged ();" />
       <MemberSignature Language="ILAsm" Value=".method hidebysig newslot virtual instance void Xamarin.Forms.IVisualElementController.NativeSizeChanged() cil managed" />

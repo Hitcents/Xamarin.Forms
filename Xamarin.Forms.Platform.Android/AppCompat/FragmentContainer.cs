@@ -11,6 +11,7 @@ namespace Xamarin.Forms.Platform.Android.AppCompat
 	{
 		readonly WeakReference _pageReference;
 
+		Action<PageContainer> _onCreateCallback;
 		bool? _isVisible;
 		PageContainer _pageContainer;
 		IVisualElementRenderer _visualElementRenderer;
@@ -30,6 +31,8 @@ namespace Xamarin.Forms.Platform.Android.AppCompat
 
 		public Page Page => (Page)_pageReference?.Target;
 
+		IPageController PageController => Page as IPageController;
+
 		public override bool UserVisibleHint
 		{
 			get { return base.UserVisibleHint; }
@@ -40,15 +43,20 @@ namespace Xamarin.Forms.Platform.Android.AppCompat
 					return;
 				_isVisible = value;
 				if (_isVisible.Value)
-					Page?.SendAppearing();
+					PageController?.SendAppearing();
 				else
-					Page?.SendDisappearing();
+					PageController?.SendDisappearing();
 			}
 		}
 
 		public static Fragment CreateInstance(Page page)
 		{
 			return new FragmentContainer(page) { Arguments = new Bundle() };
+		}
+
+		public void SetOnCreateCallback(Action<PageContainer> callback)
+		{
+			_onCreateCallback = callback;
 		}
 
 		public override AView OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -59,30 +67,39 @@ namespace Xamarin.Forms.Platform.Android.AppCompat
 				Android.Platform.SetRenderer(Page, _visualElementRenderer);
 
 				_pageContainer = new PageContainer(Forms.Context, _visualElementRenderer, true);
+
+				_onCreateCallback?.Invoke(_pageContainer);
+
 				return _pageContainer;
 			}
 
 			return null;
 		}
-
+		
 		public override void OnDestroyView()
 		{
 			if (Page != null)
 			{
-				IVisualElementRenderer renderer = _visualElementRenderer;
-				PageContainer container = _pageContainer;
-
-				if (container.Handle != IntPtr.Zero && renderer.ViewGroup.Handle != IntPtr.Zero)
+				if (_visualElementRenderer != null)
 				{
-					container.RemoveFromParent();
-					renderer.ViewGroup.RemoveFromParent();
-					Page.ClearValue(Android.Platform.RendererProperty);
+					if (_visualElementRenderer.ViewGroup.Handle != IntPtr.Zero)
+					{
+						_visualElementRenderer.ViewGroup.RemoveFromParent();
+					}
 
-					container.Dispose();
-					renderer.Dispose();
+					_visualElementRenderer.Dispose();
 				}
+
+				if (_pageContainer != null && _pageContainer.Handle != IntPtr.Zero)
+				{
+					_pageContainer.RemoveFromParent();
+					_pageContainer.Dispose();
+				}
+
+				Page?.ClearValue(Android.Platform.RendererProperty);
 			}
 
+			_onCreateCallback = null;
 			_visualElementRenderer = null;
 			_pageContainer = null;
 
@@ -97,20 +114,20 @@ namespace Xamarin.Forms.Platform.Android.AppCompat
 				return;
 
 			if (hidden)
-				Page.SendDisappearing();
+				PageController?.SendDisappearing();
 			else
-				Page.SendAppearing();
+				PageController?.SendAppearing();
 		}
 
 		public override void OnPause()
 		{
-			Page?.SendDisappearing();
+			PageController?.SendDisappearing();
 			base.OnPause();
 		}
 		
 		public override void OnResume()
 		{
-			Page?.SendAppearing();
+			PageController?.SendAppearing();
 			base.OnResume();
 		}
 	}

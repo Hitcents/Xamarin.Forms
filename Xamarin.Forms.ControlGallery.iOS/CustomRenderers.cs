@@ -325,7 +325,7 @@ namespace Xamarin.Forms.ControlGallery.iOS
 		public IEnumerable<DataSource> Items
 		{
 			//get{ }
-			set { _tableItems = value.ToList(); }
+			set { _tableItems =  new List<DataSource>(value); }
 		}
 
 		public NativeiOSListViewSource(NativeListView2 view)
@@ -408,7 +408,8 @@ namespace Xamarin.Forms.ControlGallery.iOS
 
 		public IEnumerable<string> Items
 		{
-			set { _tableItems = value.ToList(); }
+			set { _tableItems = new List<string>(value); 
+			}
 		}
 
 		public NativeListViewSource(NativeListView view)

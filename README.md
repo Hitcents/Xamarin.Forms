@@ -9,7 +9,7 @@ Read more about the platform at https://www.xamarin.com/forms.
 ##### Install Visual Studio 2015 #####
 VS 2015 is required for developing Xamarin.Forms. If you do not already have it installed, you can download it [here](https://www.visualstudio.com/downloads/download-visual-studio-vs). VS 2015 Community is completely free. If you are installing VS 2015 for the first time, select the "Custom" installation type and select the following from the features list to install:
 
-- C#/.NET (Xamarin) [3rd Party]
+- C#/.NET (Xamarin v4.0.3)
 - Universal Windows App Development Tools
 - Windows 8.1 and Windows Phone 8.0/8.1 Tools
 
@@ -54,4 +54,13 @@ We follow the style used by the [.NET Foundation](https://github.com/dotnet/core
 ## Contributing ##
 
 - [How to Contribute](https://github.com/xamarin/xamarin.forms/wiki/Contributing-Code)
-- Use [Bugzilla](https://bugzilla.xamarin.com/) to track open issues.
+
+### Mailing Lists
+
+To discuss this project, and participate in the design, we use the [forms-devel@lists.xamarin.com](http://lists.xamarin.com/mailman/listinfo/forms-devel) mailing list.   
+
+### Reporting Bugs
+
+We use [Bugzilla](https://bugzilla.xamarin.com/newbug) to track issues.
+
+

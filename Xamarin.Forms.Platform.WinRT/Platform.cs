@@ -11,9 +11,12 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
+using Xamarin.Forms.Internals;
 
 #if WINDOWS_UWP
+using Windows.Foundation;
 using Windows.Foundation.Metadata;
+using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 #endif
 
@@ -76,8 +79,9 @@ namespace Xamarin.Forms.Platform.WinRT
 
 			UpdateBounds();
 
+
 #if WINDOWS_UWP
-			if (ApiInformation.IsTypePresent(typeof(StatusBar).ToString()))
+			if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
 			{
 				StatusBar statusBar = StatusBar.GetForCurrentView();
 				statusBar.Showing += (sender, args) => UpdateBounds();
@@ -96,6 +100,7 @@ namespace Xamarin.Forms.Platform.WinRT
 			_navModel.Push(newRoot, null);
 			newRoot.NavigationProxy.Inner = this;
 			SetCurrent(newRoot, false, true);
+			((Application)newRoot.RealParent).NavigationProxy.Inner = this;
 		}
 
 		public IReadOnlyList<Page> NavigationStack
@@ -417,7 +422,7 @@ namespace Xamarin.Forms.Platform.WinRT
 		{
 			_bounds = new Rectangle(0, 0, _page.ActualWidth, _page.ActualHeight);
 #if WINDOWS_UWP
-			if (ApiInformation.IsTypePresent(typeof(StatusBar).ToString()))
+			if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
 			{
 				StatusBar statusBar = StatusBar.GetForCurrentView();
 
@@ -590,6 +595,17 @@ namespace Xamarin.Forms.Platform.WinRT
 				options.SetResult((string)e.ClickedItem);
 			};
 
+			TypedEventHandler<CoreWindow, CharacterReceivedEventArgs> onEscapeButtonPressed = delegate(CoreWindow window, CharacterReceivedEventArgs args)
+			{
+				if (args.KeyCode == 27)
+				{
+					dialog.Hide();
+					options.SetResult(ContentDialogResult.None.ToString());
+				}
+			};
+
+			Window.Current.CoreWindow.CharacterReceived += onEscapeButtonPressed;
+
 			_actionSheetOptions = options;
 
 			if (options.Cancel != null)
@@ -603,6 +619,8 @@ namespace Xamarin.Forms.Platform.WinRT
 				options.SetResult(options.Cancel);
 			else if (result == ContentDialogResult.Primary)
 				options.SetResult(options.Destruction);
+
+			Window.Current.CoreWindow.CharacterReceived -= onEscapeButtonPressed;
 		}
 #else
 		void OnPageActionSheet(Page sender, ActionSheetArguments options)
