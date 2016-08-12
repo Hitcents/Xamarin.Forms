@@ -241,11 +241,20 @@ namespace Xamarin.Forms
 			double _microSize;
 			double _smallSize;
 
-			public void BeginInvokeOnMainThread(Action action)
+			public async void BeginInvokeOnMainThread(Action action)
 			{
-				var activity = Context as Activity;
-				if (activity != null)
-					activity.RunOnUiThread(action);
+				//NOTE: RunOnUiThread runs synchronously if you are on a UI thread, so let's check and do Task.Delay()
+				if (IsInvokeRequired)
+				{
+					var activity = Context as Activity;
+					if (activity != null)
+						activity.RunOnUiThread(action);
+				}
+				else
+				{
+					await Task.Delay(0);
+					action();
+				}
 			}
 
 			public Ticker CreateTicker()
