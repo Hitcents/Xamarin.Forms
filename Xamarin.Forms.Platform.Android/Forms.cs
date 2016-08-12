@@ -252,7 +252,8 @@ namespace Xamarin.Forms
 				}
 				else
 				{
-					await Task.Delay(0);
+					//5ms seems "about right", why not?
+					await Task.Delay(5);
 					action();
 				}
 			}
