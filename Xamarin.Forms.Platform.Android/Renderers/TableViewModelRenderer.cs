@@ -121,7 +121,8 @@ namespace Xamarin.Forms.Platform.Android
 				bline = layout.GetChildAt(1);
 
 			if (isHeader)
-				bline.SetBackgroundColor(Color.Accent.ToAndroid());
+                //NOTE: Headers seperator color default to transparent for headings
+                bline.SetBackgroundColor(Color.Transparent.ToAndroid());
 			else if (nextIsHeader)
 				bline.SetBackgroundColor(global::Android.Graphics.Color.Transparent);
 			else

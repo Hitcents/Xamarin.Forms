@@ -533,7 +533,8 @@ namespace Xamarin.Forms.Platform.Android
 			Color separatorColor = _listView.SeparatorColor;
 
 			if (isHeader || !separatorColor.IsDefault)
-				bline.SetBackgroundColor(separatorColor.ToAndroid(Color.Accent));
+                //NOTE: Headers seperator color default to transparent for headings
+				bline.SetBackgroundColor(separatorColor.ToAndroid(Color.Transparent));
 			else
 			{
 				if (s_dividerHorizontalDarkId == int.MinValue)
