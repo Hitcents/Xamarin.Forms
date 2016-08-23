@@ -80,8 +80,7 @@ namespace Xamarin.Forms.Platform.iOS
 			if (e.NewElement != null)
 			{
 				SetAspect();
-				if (e.NewElement.IsVisible)
-					SetImage(e.OldElement);
+				SetImage(e.OldElement);
 				SetOpacity();
 			}
 
@@ -91,25 +90,12 @@ namespace Xamarin.Forms.Platform.iOS
 		protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
 			base.OnElementPropertyChanged(sender, e);
-
 			if (e.PropertyName == Image.SourceProperty.PropertyName)
-			{
-				if (Element.IsVisible)
-					SetImage(Element);
-			}
-			else if (e.PropertyName == Image.IsVisibleProperty.PropertyName)
-			{
-				if (Element.IsVisible)
-					SetImage(Element);
-			}
+				SetImage();
 			else if (e.PropertyName == Image.IsOpaqueProperty.PropertyName)
-			{
 				SetOpacity();
-			}
 			else if (e.PropertyName == Image.AspectProperty.PropertyName)
-			{
 				SetAspect();
-			}
 		}
 
 		void SetAspect()
