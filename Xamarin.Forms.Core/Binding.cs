@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
@@ -8,6 +9,92 @@ using System.Text;
 
 namespace Xamarin.Forms
 {
+	public sealed class StaticBinding<TViewModel, TValue> : BindingBase
+	{
+		public Func<TViewModel, TValue> Getter { get; set; }
+
+		public Action<TViewModel, TValue> Setter { get; set; }
+
+		public string Path { get; set; }
+
+		object _context;
+		BindableProperty _targetProperty;
+		BindableObject _bindableObject;
+
+		public StaticBinding(string path, Func<TViewModel, TValue> getter, Action<TViewModel, TValue> setter, BindingMode mode = BindingMode.Default)
+		{
+			Path = path;
+			Getter = getter;
+			Setter = setter;
+			Mode = mode;
+		}
+
+		internal override void Apply(bool fromTarget)
+		{
+			base.Apply(fromTarget);
+
+			ApplyCore();
+		}
+
+		internal override void Apply(object context, BindableObject bindObj, BindableProperty targetProperty)
+		{
+			base.Apply(context, bindObj, targetProperty);
+
+			var inpc = _context as INotifyPropertyChanged;
+			if (inpc != null && !string.IsNullOrEmpty(Path))
+			{
+				inpc.PropertyChanged -= OnContextPropertyChanged;
+			}
+
+			_context = context;
+			_targetProperty = targetProperty;
+			_bindableObject = bindObj;
+
+			inpc = _context as INotifyPropertyChanged;
+			if (inpc != null && !string.IsNullOrEmpty(Path))
+			{
+				inpc.PropertyChanged += OnContextPropertyChanged;
+			}
+
+			ApplyCore();
+		}
+
+		void ApplyCore()
+		{
+			var mode = Mode;
+			if (mode == BindingMode.Default)
+				mode = _targetProperty.DefaultBindingMode;
+
+			if (_context == null)
+			{
+				
+			}
+
+			switch (mode)
+			{
+				case BindingMode.TwoWay:
+					break;
+				case BindingMode.OneWay:
+					break;
+				case BindingMode.OneWayToSource:
+					break;
+			}
+		}
+
+		void OnContextPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+		{
+			if (propertyChangedEventArgs.PropertyName == Path)
+			{
+				ApplyCore();
+			}
+		}
+
+		internal override BindingBase Clone()
+		{
+			return new StaticBinding<TViewModel, TValue>(Path, Getter, Setter, Mode);
+		}
+	}
+
 	public sealed class Binding : BindingBase
 	{
 		internal const string SelfPath = ".";

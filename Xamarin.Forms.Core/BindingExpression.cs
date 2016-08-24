@@ -8,7 +8,8 @@ using System.Reflection;
 
 namespace Xamarin.Forms
 {
-	internal class BindingExpression
+	internal class 
+		BindingExpression
 	{
 		internal const string PropertyNotFoundErrorMessage = "'{0}' property not found on '{1}', target property: '{2}.{3}'";
 

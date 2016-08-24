@@ -2708,5 +2708,24 @@ namespace Xamarin.Forms.Core.UnitTests
 
 			Assert.AreEqual ("Baz", label.Text);
 		}
+
+		[Test]
+		public void StaticBindingBaselineTest()
+		{
+			var label = new Label();
+			var viewModel = new TestViewModel();
+
+			label.SetBinding(Label.TextProperty, new StaticBinding<TestViewModel, string>("Foo", vm => vm.Foo, (vm, val) => vm.Foo = val));
+			Assert.AreEqual(null, label.Text);
+
+			label.BindingContext = viewModel;
+
+			Assert.AreEqual(null, label.Text);
+
+			viewModel.Foo = "Bar";
+			viewModel.OnPropertyChanged("Foo");
+
+			Assert.AreEqual("Bar", label.Text);
+		}
 	}
 }
