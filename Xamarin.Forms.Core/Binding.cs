@@ -67,7 +67,8 @@ namespace Xamarin.Forms
 
 			if (_context == null)
 			{
-				
+				_bindableObject?.SetValueCore(_targetProperty, default(TValue), BindableObject.SetValueFlags.ClearDynamicResource, BindableObject.SetValuePrivateFlags.Default | BindableObject.SetValuePrivateFlags.Converted);
+				return;
 			}
 
 			switch (mode)
@@ -75,8 +76,10 @@ namespace Xamarin.Forms
 				case BindingMode.TwoWay:
 					break;
 				case BindingMode.OneWay:
+					_bindableObject.SetValueCore(_targetProperty, Getter((TViewModel)_context), BindableObject.SetValueFlags.ClearDynamicResource, BindableObject.SetValuePrivateFlags.Default | BindableObject.SetValuePrivateFlags.Converted);
 					break;
 				case BindingMode.OneWayToSource:
+					Setter((TViewModel)_context, (TValue)_bindableObject.GetValue(_targetProperty));
 					break;
 			}
 		}
