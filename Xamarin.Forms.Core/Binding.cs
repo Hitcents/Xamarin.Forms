@@ -22,7 +22,7 @@ namespace Xamarin.Forms
 		BindableProperty _targetProperty;
 		BindableObject _bindableObject;
 
-		public StaticBinding(string path, Func<TViewModel, TValue> getter, Action<TViewModel, TValue> setter, BindingMode mode = BindingMode.Default, object source = null)
+		public StaticBinding(string path, Func<TViewModel, TValue> getter, Action<TViewModel, TValue> setter = null, BindingMode mode = BindingMode.Default, object source = null)
 		{
 			Path = path;
 			Getter = getter;
@@ -78,10 +78,15 @@ namespace Xamarin.Forms
 				case BindingMode.TwoWay:
 					break;
 				case BindingMode.OneWay:
-					_bindableObject.SetValueCore(_targetProperty, Getter((TViewModel)_context), BindableObject.SetValueFlags.ClearDynamicResource, BindableObject.SetValuePrivateFlags.Default | BindableObject.SetValuePrivateFlags.Converted);
+					object value = Getter((TViewModel)_context);
+					if (value != null)
+					{
+						value = Convert.ChangeType(value, _targetProperty.ReturnType, CultureInfo.InvariantCulture);
+						_bindableObject.SetValueCore(_targetProperty, value, BindableObject.SetValueFlags.ClearDynamicResource, BindableObject.SetValuePrivateFlags.Default | BindableObject.SetValuePrivateFlags.Converted);
+					}
 					break;
 				case BindingMode.OneWayToSource:
-					Setter((TViewModel)_context, (TValue)_bindableObject.GetValue(_targetProperty));
+					Setter?.Invoke((TViewModel)_context, (TValue)_bindableObject.GetValue(_targetProperty));
 					break;
 			}
 		}
