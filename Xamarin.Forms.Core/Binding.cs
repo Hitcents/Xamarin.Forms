@@ -17,16 +17,18 @@ namespace Xamarin.Forms
 
 		public string Path { get; set; }
 
+		object _source;
 		object _context;
 		BindableProperty _targetProperty;
 		BindableObject _bindableObject;
 
-		public StaticBinding(string path, Func<TViewModel, TValue> getter, Action<TViewModel, TValue> setter, BindingMode mode = BindingMode.Default)
+		public StaticBinding(string path, Func<TViewModel, TValue> getter, Action<TViewModel, TValue> setter, BindingMode mode = BindingMode.Default, object source = null)
 		{
 			Path = path;
 			Getter = getter;
 			Setter = setter;
 			Mode = mode;
+			_source = source;
 		}
 
 		internal override void Apply(bool fromTarget)
@@ -46,7 +48,7 @@ namespace Xamarin.Forms
 				inpc.PropertyChanged -= OnContextPropertyChanged;
 			}
 
-			_context = context;
+			_context = _source ?? context;
 			_targetProperty = targetProperty;
 			_bindableObject = bindObj;
 

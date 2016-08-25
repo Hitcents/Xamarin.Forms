@@ -2727,5 +2727,20 @@ namespace Xamarin.Forms.Core.UnitTests
 
 			Assert.AreEqual("Bar", label.Text);
 		}
+
+		[Test]
+		public void StaticBindingWithSourceTest()
+		{
+			var label = new Label();
+			var viewModel = new TestViewModel();
+
+			label.SetBinding(Label.TextProperty, new StaticBinding<TestViewModel, string>("Foo", vm => vm.Foo, (vm, val) => vm.Foo = val, source: viewModel));
+			Assert.AreEqual(null, label.Text);
+
+			viewModel.Foo = "Bar";
+			viewModel.OnPropertyChanged("Foo");
+
+			Assert.AreEqual("Bar", label.Text);
+		}
 	}
 }
