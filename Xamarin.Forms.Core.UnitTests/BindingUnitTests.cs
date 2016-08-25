@@ -2546,7 +2546,7 @@ namespace Xamarin.Forms.Core.UnitTests
 				remove { PropertyChanged -= value; }
 			}
 
-			public string Foo { get; set; }
+			public object Foo { get; set; }
 
 			public int InvocationListSize ()
 			{
@@ -2715,7 +2715,7 @@ namespace Xamarin.Forms.Core.UnitTests
 			var label = new Label();
 			var viewModel = new TestViewModel();
 
-			label.SetBinding(Label.TextProperty, new StaticBinding<TestViewModel, string>("Foo", vm => vm.Foo, (vm, val) => vm.Foo = val));
+			label.SetBinding(Label.TextProperty, new StaticBinding<TestViewModel, object>("Foo", vm => vm.Foo, (vm, val) => vm.Foo = val));
 			Assert.AreEqual(null, label.Text);
 
 			label.BindingContext = viewModel;
@@ -2734,7 +2734,7 @@ namespace Xamarin.Forms.Core.UnitTests
 			var label = new Label();
 			var viewModel = new TestViewModel();
 
-			label.SetBinding(Label.TextProperty, new StaticBinding<TestViewModel, string>("Foo", vm => vm.Foo, (vm, val) => vm.Foo = val, source: viewModel));
+			label.SetBinding(Label.TextProperty, new StaticBinding<TestViewModel, object>("Foo", vm => vm.Foo, (vm, val) => vm.Foo = val, source: viewModel));
 			Assert.AreEqual(null, label.Text);
 
 			viewModel.Foo = "Bar";
