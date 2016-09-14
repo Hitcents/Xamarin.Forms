@@ -332,6 +332,7 @@
     <Compile Include="Internals\ToolbarTracker.cs" />
     <Compile Include="ViewExtensions.cs" />
     <Compile Include="ViewState.cs" />
+    <Compile Include="WeakEventManager.cs" />
     <Compile Include="WeakReferenceExtensions.cs" />
     <Compile Include="WebNavigatedEventArgs.cs" />
     <Compile Include="WebNavigatingEventArgs.cs" />
@@ -416,6 +417,7 @@
     <Compile Include="IApplicationController.cs" />
     <Compile Include="IAppIndexingProvider.cs" />
     <Compile Include="ListStringTypeConverter.cs" />
+    <Compile Include="PoppedToRootEventArgs.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>

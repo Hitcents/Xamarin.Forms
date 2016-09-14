@@ -68,6 +68,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup Condition=" '$(OS)' != 'Unix' ">
+	<Compile Include="BrushHelpers.cs" />
     <Compile Include="NativeViewWrapper.cs" />
     <Compile Include="NativeViewWrapperRenderer.cs" />
     <Compile Include="ViewExtensions.cs" />
@@ -125,7 +126,7 @@
     <Compile Include="HeightConverter.cs" />
     <Compile Include="ICellRenderer.cs" />
     <Compile Include="IImageSourceHandler.cs" />
-    <Compile Include="ImageLoaderSourceHandler.cs" />
+    <Compile Include="UriImageSourceHandler.cs" />
     <Compile Include="ImageRenderer.cs" />
     <Compile Include="IVisualElementRenderer.cs" />
     <Compile Include="LabelRenderer.cs" />

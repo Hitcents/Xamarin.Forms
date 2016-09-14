@@ -382,6 +382,8 @@ namespace Xamarin.Forms.Platform.Android.AppCompat
 				ToolbarVisible = NavigationPage.GetHasNavigationBar(Current);
 			else if (e.PropertyName == Page.TitleProperty.PropertyName)
 				UpdateToolbar();
+			else if (e.PropertyName == NavigationPage.HasBackButtonProperty.PropertyName)
+				UpdateToolbar();
 		}
 
 #pragma warning disable 1998 // considered for removal
@@ -571,6 +573,7 @@ namespace Xamarin.Forms.Platform.Android.AppCompat
 
 			Current = view;
 
+			((Platform)Element.Platform).NavAnimationInProgress = true;
 			FragmentTransaction transaction = fm.BeginTransaction();
 
 			if (animated)
@@ -618,7 +621,7 @@ namespace Xamarin.Forms.Platform.Android.AppCompat
 
 			// The fragment transitions don't really SUPPORT telling you when they end
 			// There are some hacks you can do, but they actually are worse than just doing this:
-
+			
 			if (animated)
 			{
 				if (!removed)
@@ -651,6 +654,7 @@ namespace Xamarin.Forms.Platform.Android.AppCompat
 			}
 
 			Context.HideKeyboard(this);
+			((Platform)Element.Platform).NavAnimationInProgress = false;
 
 			// 200ms is how long the animations are, and they are "reversible" in the sense that starting another one slightly before it's done is fine
 

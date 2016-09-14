@@ -84,6 +84,7 @@ namespace Xamarin.Forms.Platform.Android
 
 			_isAttached = true;
 			_adapter.IsAttachedToWindow = _isAttached;
+			UpdateIsRefreshing(isInitialValue: true);
 		}
 
 		protected override void OnDetachedFromWindow()
@@ -141,7 +142,6 @@ namespace Xamarin.Forms.Platform.Android
 				UpdateHeader();
 				UpdateFooter();
 				UpdateIsSwipeToRefreshEnabled();
-				UpdateIsRefreshing();
 			}
 		}
 
@@ -249,7 +249,8 @@ namespace Xamarin.Forms.Platform.Android
 			var footer = (VisualElement)Controller.FooterElement;
 			if (_footerRenderer != null && (footer == null || Registrar.Registered.GetHandlerType(footer.GetType()) != _footerRenderer.GetType()))
 			{
-				_footerView.Child = null;
+				if (_footerView != null)
+					_footerView.Child = null;
 				_footerRenderer.Dispose();
 				_footerRenderer = null;
 			}
@@ -262,7 +263,8 @@ namespace Xamarin.Forms.Platform.Android
 			else
 			{
 				_footerRenderer = Platform.CreateRenderer(footer);
-				_footerView.Child = _footerRenderer;
+				if (_footerView != null)
+					_footerView.Child = _footerRenderer;
 			}
 
 			Platform.SetRenderer(footer, _footerRenderer);
@@ -273,7 +275,8 @@ namespace Xamarin.Forms.Platform.Android
 			var header = (VisualElement)Controller.HeaderElement;
 			if (_headerRenderer != null && (header == null || Registrar.Registered.GetHandlerType(header.GetType()) != _headerRenderer.GetType()))
 			{
-				_headerView.Child = null;
+				if (_headerView != null)
+					_headerView.Child = null;
 				_headerRenderer.Dispose();
 				_headerRenderer = null;
 			}
@@ -286,20 +289,35 @@ namespace Xamarin.Forms.Platform.Android
 			else
 			{
 				_headerRenderer = Platform.CreateRenderer(header);
-				_headerView.Child = _headerRenderer;
+				if (_headerView != null)
+					_headerView.Child = _headerRenderer;
 			}
 
 			Platform.SetRenderer(header, _headerRenderer);
 		}
 
-		void UpdateIsRefreshing()
+		void UpdateIsRefreshing(bool isInitialValue = false)
 		{
-			_refresh.Refreshing = Element.IsRefreshing;
+			if (_refresh != null)
+			{
+				var isRefreshing = Element.IsRefreshing;
+				if (isRefreshing && isInitialValue)
+				{
+					_refresh.Refreshing = false;
+					_refresh.Post(() =>
+					{
+						_refresh.Refreshing = true;
+					});
+				}
+				else
+					_refresh.Refreshing = isRefreshing;
+			}
 		}
 
 		void UpdateIsSwipeToRefreshEnabled()
 		{
-			_refresh.Enabled = Element.IsPullToRefreshEnabled && (Element as IListViewController).RefreshAllowed;
+			if (_refresh != null)
+				_refresh.Enabled = Element.IsPullToRefreshEnabled && (Element as IListViewController).RefreshAllowed;
 		}
 
 		internal class Container : ViewGroup

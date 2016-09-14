@@ -41,6 +41,7 @@ namespace Xamarin.Forms.Platform.iOS
 		FormsUITableViewController _tableViewController;
 		IListViewController Controller => Element;
 		ITemplatedItemsView<Cell> TemplatedItemsView => Element;
+		public override UIViewController ViewController => _tableViewController;
 
 		public override SizeRequest GetDesiredSize(double widthConstraint, double heightConstraint)
 		{
@@ -927,7 +928,7 @@ namespace Xamarin.Forms.Platform.iOS
 
 			ITemplatedItemsList<Cell> GetSectionList(int section)
 			{
-				return (ITemplatedItemsList<Cell>)((IList)TemplatedItemsView.TemplatedItems) [section];
+				return (ITemplatedItemsList<Cell>)((IList)TemplatedItemsView.TemplatedItems)[section];
 			}
 
 			void OnSectionPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -1089,6 +1090,14 @@ namespace Xamarin.Forms.Platform.iOS
 
 		public override void ViewWillAppear(bool animated)
 		{
+			base.ViewWillAppear(animated);
+
+			if (_list.IsRefreshing && _refresh.Refreshing)
+			{
+				// Restart the refreshing to get the animation to trigger
+				UpdateIsRefreshing(false);
+				UpdateIsRefreshing(true);
+			}
 		}
 
 		protected override void Dispose(bool disposing)

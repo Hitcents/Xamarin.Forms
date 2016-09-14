@@ -81,15 +81,15 @@ namespace Xamarin.Forms.Platform.Android
 		public bool OnActionItemClicked(ActionMode mode, IMenuItem item)
 		{
 			OnActionItemClickedImpl(item);
-			if (mode != null && mode.Handle != IntPtr.Zero)
-				mode.Finish();
+			_actionMode?.Finish();
 			return true;
 		}
 
 		bool global::Android.Support.V7.View.ActionMode.ICallback.OnActionItemClicked(global::Android.Support.V7.View.ActionMode mode, IMenuItem item)
 		{
 			OnActionItemClickedImpl(item);
-			mode.Finish();
+
+			_supportActionMode?.Finish();
 			return true;
 		}
 
@@ -210,6 +210,9 @@ namespace Xamarin.Forms.Platform.Android
 		bool HandleContextMode(AView view, int position)
 		{
 			Cell cell = GetCellForPosition(position);
+
+			if (cell == null)
+				return false;
 
 			if (_actionMode != null || _supportActionMode != null)
 			{

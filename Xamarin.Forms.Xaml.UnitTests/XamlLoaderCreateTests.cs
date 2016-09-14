@@ -5,6 +5,8 @@ using Xamarin.Forms.Core.UnitTests;
 
 namespace Xamarin.Forms.Xaml.UnitTests
 {
+#pragma warning disable 0618 //retaining legacy call to obsolete code
+
 	[TestFixture]
 	public class XamlLoaderCreateTests
 	{
@@ -37,4 +39,5 @@ namespace Xamarin.Forms.Xaml.UnitTests
 			Assert.NotNull (button);
 		}
 	}
+#pragma warning restore 0618
 }

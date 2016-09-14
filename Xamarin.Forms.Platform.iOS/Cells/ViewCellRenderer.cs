@@ -81,10 +81,7 @@ namespace Xamarin.Forms.Platform.iOS
 				}
 			}
 
-			Element INativeElementView.Element
-			{
-				get { return ViewCell; }
-			}
+			Element INativeElementView.Element => ViewCell;
 
 			internal bool SupressSeparator { get; set; }
 
@@ -93,10 +90,11 @@ namespace Xamarin.Forms.Platform.iOS
 				//This sets the content views frame.
 				base.LayoutSubviews();
 
-				if (SupressSeparator)
+				//TODO: Determine how best to hide the separator line when there is an accessory on the cell
+				if (SupressSeparator && Accessory == UITableViewCellAccessory.None)
 				{
 					var oldFrame = Frame;
-					ContentView.Bounds = Frame = new RectangleF(oldFrame.Location, new SizeF(oldFrame.Width, oldFrame.Height + 0.5f));
+					ContentView.Bounds = new RectangleF(oldFrame.Location, new SizeF(oldFrame.Width, oldFrame.Height + 0.5f));
 				}
 
 				var contentFrame = ContentView.Frame;
@@ -117,6 +115,9 @@ namespace Xamarin.Forms.Platform.iOS
 				IVisualElementRenderer renderer;
 				if (!_rendererRef.TryGetTarget(out renderer))
 					return base.SizeThatFits(size);
+
+				if (renderer.Element == null)
+					return SizeF.Empty;
 
 				double width = size.Width;
 				var height = size.Height > 0 ? size.Height : double.PositiveInfinity;

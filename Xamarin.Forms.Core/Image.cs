@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Reflection;
 using Xamarin.Forms.Internals;
 using Xamarin.Forms.Platform;
 
@@ -7,8 +9,8 @@ namespace Xamarin.Forms
 	[RenderWith(typeof(_ImageRenderer))]
 	public class Image : View, IImageController
 	{
-		public static readonly BindableProperty SourceProperty = BindableProperty.Create("Source", typeof(ImageSource), typeof(Image), default(ImageSource), propertyChanging: OnSourcePropertyChanging,
-			propertyChanged: OnSourcePropertyChanged);
+		public static readonly BindableProperty SourceProperty = BindableProperty.Create("Source", typeof(ImageSource), typeof(Image), default(ImageSource), 
+			propertyChanging: OnSourcePropertyChanging, propertyChanged: OnSourcePropertyChanged);
 
 		public static readonly BindableProperty AspectProperty = BindableProperty.Create("Aspect", typeof(Aspect), typeof(Image), Aspect.AspectFit);
 
@@ -126,6 +128,7 @@ namespace Xamarin.Forms
 				newvalue.SourceChanged += OnSourceChanged;
 				SetInheritedBindingContext(newvalue, BindingContext);
 			}
+
 			InvalidateMeasureInternal(InvalidationTrigger.MeasureChanged);
 		}
 
@@ -138,9 +141,16 @@ namespace Xamarin.Forms
 		{
 			if (oldvalue == null)
 				return;
-
+			
 			oldvalue.SourceChanged -= OnSourceChanged;
-			await oldvalue.Cancel();
+			try
+			{
+				await oldvalue.Cancel();
+			}
+			catch(ObjectDisposedException)
+			{ 
+				// Workaround bugzilla 37792 https://bugzilla.xamarin.com/show_bug.cgi?id=37792
+			}
 		}
 
 		void IImageController.SetIsLoading(bool isLoading)

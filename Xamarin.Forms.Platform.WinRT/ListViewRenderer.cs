@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
+using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
@@ -76,10 +77,10 @@ namespace Xamarin.Forms.Platform.WinRT
 					// and prevented from bubbling up) rather than ListView.ItemClick
 					List.Tapped += ListOnTapped;
 
-					if (ShouldCustomHighlight)
-					{
-						List.SelectionChanged += OnControlSelectionChanged;
-					}
+					// We also want to watch for the Enter key being pressed for selection
+					List.KeyUp += OnKeyPressed;
+					
+					List.SelectionChanged += OnControlSelectionChanged;
 
 					List.SetBinding(ItemsControl.ItemsSourceProperty, "");
 				}
@@ -140,11 +141,9 @@ namespace Xamarin.Forms.Platform.WinRT
 			if (List != null)
 			{
 				List.Tapped -= ListOnTapped;
+				List.KeyUp -= OnKeyPressed;
 
-				if (ShouldCustomHighlight)
-				{
-					List.SelectionChanged -= OnControlSelectionChanged;
-				}
+				List.SelectionChanged -= OnControlSelectionChanged;
 
 				List.DataContext = null;
 				List = null;
@@ -198,18 +197,6 @@ namespace Xamarin.Forms.Platform.WinRT
 		ScrollViewer _scrollViewer;
 		ContentControl _headerControl;
 		readonly List<BrushedElement> _highlightedElements = new List<BrushedElement>();
-
-		bool ShouldCustomHighlight
-		{
-			get
-			{
-#if WINDOWS_UWP
-				return false;
-#else
-				return Device.Idiom == TargetIdiom.Phone;
-#endif
-			}
-		}
 
 		void ClearSizeEstimate()
 		{
@@ -521,6 +508,12 @@ namespace Xamarin.Forms.Platform.WinRT
 #endif
 		}
 
+		void OnKeyPressed(object sender, KeyRoutedEventArgs e)
+		{
+			if (e.Key == VirtualKey.Enter)
+				OnListItemClicked(List.SelectedIndex);
+		}
+
 		void OnControlSelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			RestorePreviousSelectedVisual();
@@ -532,13 +525,22 @@ namespace Xamarin.Forms.Platform.WinRT
 			if (cell == null)
 				return;
 
-			if (ShouldCustomHighlight)
+#if !WINDOWS_UWP
+			if (Device.Idiom == TargetIdiom.Phone)
 			{
 				FrameworkElement element = FindElement(cell);
 				if (element != null)
 				{
 					SetSelectedVisual(element);
 				}
+			}
+#endif
+
+			// This is used for respecting ListView selection changes via keyboard, as the SelectedItem
+			// value is otherwise not set.
+			if (Element.SelectedItem != List.SelectedItem)
+			{
+				((IElementController)Element).SetValueFromRenderer(ListView.SelectedItemProperty, List.SelectedItem);
 			}
 		}
 
