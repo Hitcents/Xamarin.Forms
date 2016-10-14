@@ -1076,11 +1076,14 @@ namespace Xamarin.Forms.Platform.iOS
 
 		public override void ViewWillAppear(bool animated)
 		{
-		    if (!_list.IsRefreshing || !_refresh.Refreshing) return;
+			base.ViewWillAppear(animated);
 
-		    // Restart the refreshing to get the animation to trigger
-		    UpdateIsRefreshing(false);
-		    UpdateIsRefreshing(true);
+			if (_list.IsRefreshing && _refresh.Refreshing)
+			{
+				// Restart the refreshing to get the animation to trigger
+				UpdateIsRefreshing(false);
+				UpdateIsRefreshing(true);
+			}
 		}
 
 		protected override void Dispose(bool disposing)
