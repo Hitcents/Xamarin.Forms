@@ -23,7 +23,7 @@ namespace Xamarin.Forms.Xaml.UnitTests
 			nsManager.AddNamespace ("sys", "clr-namespace:System;assembly=mscorlib");
 			nsManager.AddNamespace ("x", "http://schemas.microsoft.com/winfx/2006/xaml");
 
-			typeResolver = new Internals.XamlTypeResolver (nsManager, XamlParser.GetElementType, Assembly.GetCallingAssembly ());
+			typeResolver = new Internals.XamlTypeResolver (nsManager, Assembly.GetCallingAssembly ());
 
 			serviceProvider = new Internals.XamlServiceProvider (null, null) { 
 				IXamlTypeResolver = typeResolver,

@@ -96,7 +96,7 @@ namespace Xamarin.Forms.Xaml.UnitTests
 			nsManager.AddNamespace ("local", "clr-namespace:Xamarin.Forms.Xaml.UnitTests;assembly=Xamarin.Forms.Xaml.UnitTests");
 			nsManager.AddNamespace ("x", "http://schemas.microsoft.com/winfx/2006/xaml");
 
-			typeResolver = new Internals.XamlTypeResolver (nsManager, XamlParser.GetElementType, Assembly.GetCallingAssembly ());
+			typeResolver = new Internals.XamlTypeResolver (nsManager, Assembly.GetCallingAssembly ());
 		}
 
 		[Test]
