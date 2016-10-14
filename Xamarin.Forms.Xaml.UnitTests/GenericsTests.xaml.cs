@@ -19,7 +19,7 @@ namespace Xamarin.Forms.Xaml.UnitTests
 			//this stub will be replaced at compile time
 		}
 
-		[TestFixture]
+		[TestFixture, Ignore]
 		public class Tests
 		{
 			[Test]
