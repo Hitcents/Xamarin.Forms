@@ -84,6 +84,7 @@
   <ItemGroup>
     <Compile Include="App.cs" />
     <Compile Include="AppLifeCycle.cs" />
+    <Compile Include="Bugzilla44596SplashPage.cs" />
     <Compile Include="ControlGalleryPages\CellForceUpdateSizeGalleryPage.cs" />
     <Compile Include="ControlGalleryPages\LayoutAddPerformance.xaml.cs">
       <DependentUpon>LayoutAddPerformance.xaml</DependentUpon>
@@ -99,8 +100,16 @@
       <DependentUpon>ControlTemplateXamlPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="GalleryPages\LayoutPerformanceGallery.cs" />
+    <Compile Include="GalleryPages\PlatformSpecificsGalleries\MasterDetailPageWindows.cs" />
     <Compile Include="GalleryPages\NavigationPropertiesGallery.cs" />
     <Compile Include="ControlGalleryPages\ListViewSelectionColor.cs" />
+    <Compile Include="GalleryPages\PlatformSpecificsGalleries\NavigationPageiOS.cs" />
+    <Compile Include="GalleryPages\PlatformSpecificsGalleries\NavigationPageWindows.cs" />
+    <Compile Include="GalleryPages\PlatformSpecificsGalleries\ApplicationAndroid.cs" />
+    <Compile Include="GalleryPages\PlatformSpecificsGalleries\TabbedPageWindows.cs" />
+    <Compile Include="GalleryPages\PlatformSpecificsGalleries\VisualElementiOS.cs" />
+    <Compile Include="GalleryPages\PlatformSpecificsGalleries\WindowsPlatformSpecificsGalleryHelpers.cs" />
+    <Compile Include="GalleryPages\PlatformSpecificsGallery.cs" />
     <Compile Include="LegacyRepro\Page1.xaml.cs">
       <DependentUpon>Page1.xaml</DependentUpon>
     </Compile>
@@ -227,6 +236,10 @@
     <Compile Include="ControlGalleryPages\AppearingGalleryPage.cs" />
     <Compile Include="ControlGalleryPages\AutomationIDGallery.cs" />
     <Compile Include="GalleryPages\AppLinkPageGallery.cs" />
+    <Compile Include="ControlGalleryPages\NativeBindingGalleryPage.cs" />
+    <Compile Include="GalleryPages\XamlNativeViews.xaml.cs">
+      <DependentUpon>XamlNativeViews.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <Import Project="..\.nuspec\Xamarin.Forms.targets" />
@@ -246,6 +259,9 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="GalleryPages\StyleXamlGallery.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GalleryPages\XamlNativeViews.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>

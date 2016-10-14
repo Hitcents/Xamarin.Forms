@@ -506,8 +506,8 @@ namespace Xamarin.Forms.Platform.WinRT
 			return _page.BottomAppBar as CommandBar;
 #else
 			IToolbarProvider provider = GetToolbarProvider();
-			var titleProvider = provider as ITitleProvider;
-			if (provider == null || (titleProvider != null && !titleProvider.ShowTitle))
+			//var titleProvider = provider as ITitleProvider; 
+			if (provider == null) // || (titleProvider != null && !titleProvider.ShowTitle))
 				return null;
 
 			return await provider.GetCommandBarAsync();
@@ -521,6 +521,7 @@ namespace Xamarin.Forms.Platform.WinRT
 			_page.BottomAppBar = commandBar;
 			return commandBar;
 #else
+
 			var bar = new FormsCommandBar();
 			if (Device.Idiom != TargetIdiom.Phone)
 				bar.Style = (Windows.UI.Xaml.Style)Windows.UI.Xaml.Application.Current.Resources["TitleToolbar"];
@@ -643,7 +644,6 @@ namespace Xamarin.Forms.Platform.WinRT
 			list.ItemClick += (s, e) =>
 			{
 				_currentActionSheet.IsOpen = false;
-				_currentActionSheet = null;
 				options.SetResult((string)e.ClickedItem);
 			};
 
@@ -738,13 +738,13 @@ namespace Xamarin.Forms.Platform.WinRT
 			if (options.Accept != null)
 			{
 				dialog.Commands.Add(new UICommand(options.Accept));
-				dialog.DefaultCommandIndex = (uint)dialog.Commands.Count - 1;
+				dialog.DefaultCommandIndex = 0;
 			}
 
 			if (options.Cancel != null)
 			{
 				dialog.Commands.Add(new UICommand(options.Cancel));
-				dialog.CancelCommandIndex = 0;
+				dialog.CancelCommandIndex = (uint)dialog.Commands.Count - 1;
 			}
 
 			IUICommand command = await dialog.ShowAsync();

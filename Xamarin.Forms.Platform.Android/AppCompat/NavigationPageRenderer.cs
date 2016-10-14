@@ -170,6 +170,7 @@ namespace Xamarin.Forms.Platform.Android.AppCompat
 				if (_drawerLayout != null && _drawerListener != null)
 				{
 					_drawerLayout.RemoveDrawerListener(_drawerListener);
+					_drawerListener = null;
 				}
 
 				_drawerToggle = null;
@@ -668,6 +669,9 @@ namespace Xamarin.Forms.Platform.Android.AppCompat
 
 		void UpdateMenu()
 		{
+			if (_disposed)
+				return;
+
 			AToolbar bar = _toolbar;
 			Context context = Context;
 			IMenu menu = bar.Menu;

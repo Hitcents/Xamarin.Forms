@@ -8,8 +8,7 @@ using System.Reflection;
 
 namespace Xamarin.Forms
 {
-	internal class 
-		BindingExpression
+	internal class BindingExpression
 	{
 		internal const string PropertyNotFoundErrorMessage = "'{0}' property not found on '{1}', target property: '{2}.{3}'";
 
@@ -41,20 +40,18 @@ namespace Xamarin.Forms
 		/// </summary>
 		internal void Apply(bool fromTarget = false)
 		{
-			var weakSource = _weakSource;
-			var weakTarget = _weakTarget;
-			if (weakSource == null || weakTarget == null)
+			if (_weakSource == null || _weakTarget == null)
 				return;
 
 			BindableObject target;
-			if (!weakTarget.TryGetTarget(out target))
+			if (!_weakTarget.TryGetTarget(out target))
 			{
 				Unapply();
 				return;
 			}
 
 			object source;
-			if (weakSource.TryGetTarget(out source) && _targetProperty != null)
+			if (_weakSource.TryGetTarget(out source) && _targetProperty != null)
 				ApplyCore(source, target, _targetProperty, fromTarget);
 		}
 
@@ -82,8 +79,7 @@ namespace Xamarin.Forms
 		internal void Unapply()
 		{
 			object sourceObject;
-			var weakSource = _weakSource;
-			if (weakSource != null && weakSource.TryGetTarget(out sourceObject))
+			if (_weakSource != null && _weakSource.TryGetTarget(out sourceObject))
 			{
 				for (var i = 0; i < _parts.Count - 1; i++)
 				{
@@ -413,6 +409,7 @@ namespace Xamarin.Forms
 		class WeakPropertyChangedProxy
 		{
 			WeakReference _source, _listener;
+			internal WeakReference Source => _source;
 
 			public WeakPropertyChangedProxy(INotifyPropertyChanged source, PropertyChangedEventHandler listener)
 			{
@@ -474,7 +471,13 @@ namespace Xamarin.Forms
 
 			public void Subscribe(INotifyPropertyChanged handler)
 			{
-				//Don't want to subscribe twice
+				if (ReferenceEquals(handler, _listener?.Source?.Target))
+				{
+					// Already subscribed
+					return;
+				}
+
+				// Clear out the old subscription if necessary
 				Unsubscribe();
 
 				_listener = new WeakPropertyChangedProxy(handler, _changeHandler);

@@ -1,14 +1,14 @@
-﻿using NUnit.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using CategoryAttribute = NUnit.Framework.CategoryAttribute;
-using DescriptionAttribute = NUnit.Framework.DescriptionAttribute;
+using NUnit.Framework;
+using CategoryAttribute=NUnit.Framework.CategoryAttribute;
+using DescriptionAttribute=NUnit.Framework.DescriptionAttribute;
 
 namespace Xamarin.Forms.Core.UnitTests
 {
@@ -2593,6 +2593,32 @@ namespace Xamarin.Forms.Core.UnitTests
 		}
 
 		[Test]
+		public async Task BindingDoesNotStayAliveForDeadTarget()
+		{
+			TestViewModel viewModel = new TestViewModel();
+			WeakReference bindingRef;
+
+			{ 
+				var binding = new Binding("Foo");
+
+				var button = new Button();
+				button.SetBinding(Button.TextProperty, binding);
+				button.BindingContext = viewModel;
+
+				bindingRef = new WeakReference(binding);
+			}
+
+			Assume.That(viewModel.InvocationListSize(), Is.EqualTo(1));
+
+			//NOTE: this was the only way I could "for sure" get the binding to get GC'd
+			GC.Collect();
+			await Task.Delay(10);
+			GC.Collect();
+
+			Assert.IsFalse(bindingRef.IsAlive, "Binding should not be alive!");
+		}
+
+		[Test]
 		public void BindingCreatesSingleSubscription ()
 		{
 			TestViewModel viewmodel = new TestViewModel();
@@ -2602,68 +2628,6 @@ namespace Xamarin.Forms.Core.UnitTests
 			button.BindingContext = viewmodel;
 
 			Assert.That (viewmodel.InvocationListSize (), Is.EqualTo (1));
-		}
-
-		class NestedViewModel : TestViewModel
-		{
-			public NestedViewModel()
-			{
-				Test = new TestViewModel();
-			}
-
-			public TestViewModel Test { get; set; }
-		}
-
-		[Test]
-		public async Task NestedBindingDoesNotKeepViewAlive()
-		{
-			NestedViewModel nestedViewModel = new NestedViewModel();
-			WeakReference buttonRef;
-
-			{
-				var button = new Button();
-				button.SetBinding(Button.TextProperty, "Test.Foo");
-				button.BindingContext = nestedViewModel;
-
-				buttonRef = new WeakReference(button);
-			}
-
-			Assume.That(nestedViewModel.InvocationListSize(), Is.EqualTo(1));
-			Assume.That(nestedViewModel.Test.InvocationListSize(), Is.EqualTo(1));
-
-			//NOTE: this was the only way I could "for sure" get the button to get GC'd
-			GC.Collect();
-			await Task.Delay(10);
-			GC.Collect();
-
-			Assert.IsFalse(buttonRef.IsAlive, "Button should not be alive!");
-		}
-
-		[Test]
-		public async Task NestedBindingDoesNotKeepBindingAlive()
-		{
-			NestedViewModel nestedViewModel = new NestedViewModel();
-			WeakReference bindingRef;
-
-			{
-				var binding = new Binding("Test.Foo");
-
-				var button = new Button();
-				button.SetBinding(Button.TextProperty, binding);
-				button.BindingContext = nestedViewModel;
-
-				bindingRef = new WeakReference(binding);
-			}
-
-			Assume.That(nestedViewModel.InvocationListSize(), Is.EqualTo(1));
-			Assume.That(nestedViewModel.Test.InvocationListSize(), Is.EqualTo(1));
-
-			//NOTE: this was the only way I could "for sure" get the binding to get GC'd
-			GC.Collect();
-			await Task.Delay(10);
-			GC.Collect();
-
-			Assert.IsFalse(bindingRef.IsAlive, "Binding should not be alive!");
 		}
 
 		public class IndexedViewModel : INotifyPropertyChanged
@@ -2707,40 +2671,6 @@ namespace Xamarin.Forms.Core.UnitTests
 			viewModel["Foo"] = "Baz";
 
 			Assert.AreEqual ("Baz", label.Text);
-		}
-
-		[Test]
-		public void StaticBindingBaselineTest()
-		{
-			var label = new Label();
-			var viewModel = new TestViewModel();
-
-			label.SetBinding(Label.TextProperty, new StaticBinding<TestViewModel, string>("Foo", vm => vm.Foo, (vm, val) => vm.Foo = val));
-			Assert.AreEqual(null, label.Text);
-
-			label.BindingContext = viewModel;
-
-			Assert.AreEqual(null, label.Text);
-
-			viewModel.Foo = "Bar";
-			viewModel.OnPropertyChanged("Foo");
-
-			Assert.AreEqual("Bar", label.Text);
-		}
-
-		[Test]
-		public void StaticBindingWithSourceTest()
-		{
-			var label = new Label();
-			var viewModel = new TestViewModel();
-
-			label.SetBinding(Label.TextProperty, new StaticBinding<TestViewModel, string>("Foo", vm => vm.Foo, (vm, val) => vm.Foo = val, source: viewModel));
-			Assert.AreEqual(null, label.Text);
-
-			viewModel.Foo = "Bar";
-			viewModel.OnPropertyChanged("Foo");
-
-			Assert.AreEqual("Bar", label.Text);
 		}
 	}
 }

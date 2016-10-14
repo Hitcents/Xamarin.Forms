@@ -138,6 +138,7 @@
     <Compile Include="PageTests.cs" />
     <Compile Include="PanGestureRecognizerUnitTests.cs" />
     <Compile Include="PinTests.cs" />
+    <Compile Include="PlatformSpecificsTests.cs" />
     <Compile Include="PointTests.cs" />
     <Compile Include="PositionTests.cs" />
     <Compile Include="ProgressBarTests.cs" />
@@ -168,6 +169,7 @@
     <Compile Include="TypeUnitTests.cs" />
     <Compile Include="ViewCellTests.cs" />
     <Compile Include="ViewUnitTests.cs" />
+    <Compile Include="WeakEventManagerTests.cs" />
     <Compile Include="WebViewUnitTests.cs" />
     <Compile Include="ImageSourceTests.cs" />
     <Compile Include="DataTemplateTests.cs" />
@@ -192,6 +194,7 @@
     <Compile Include="TriggerTests.cs" />
     <Compile Include="PinchGestureRecognizerTests.cs" />
     <Compile Include="AppLinkEntryTests.cs" />
+    <Compile Include="NativeBindingTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Xamarin.Forms.Core\Xamarin.Forms.Core.csproj">

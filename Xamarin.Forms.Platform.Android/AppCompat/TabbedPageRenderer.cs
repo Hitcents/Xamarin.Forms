@@ -190,7 +190,8 @@ namespace Xamarin.Forms.Platform.Android.AppCompat
 			base.OnElementPropertyChanged(sender, e);
 
 			if (e.PropertyName == nameof(TabbedPage.CurrentPage))
-				ScrollToCurrentPage();
+				if(Element.CurrentPage != null)
+					ScrollToCurrentPage();
 			else if (e.PropertyName == NavigationPage.BarBackgroundColorProperty.PropertyName)
 				UpdateBarBackgroundColor();
 			else if (e.PropertyName == NavigationPage.BarTextColorProperty.PropertyName)
@@ -248,10 +249,14 @@ namespace Xamarin.Forms.Platform.Android.AppCompat
 			TabLayout tabs = _tabLayout;
 
 			((FormsFragmentPagerAdapter<Page>)pager.Adapter).CountOverride = Element.Children.Count;
+			
 			pager.Adapter.NotifyDataSetChanged();
 
 			if (Element.Children.Count == 0)
+			{
 				tabs.RemoveAllTabs();
+				tabs.SetupWithViewPager(null);
+			}
 			else
 			{
 				tabs.SetupWithViewPager(pager);

@@ -81,16 +81,21 @@
       <Link>MockPlatformServices.cs</Link>
     </Compile>
     <Compile Include="FontConverterTests.cs" />
+    <Compile Include="Issues\Bz43450.xaml.cs">
+      <DependentUpon>Bz43450.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Issues\Bz41296.xaml.cs">
       <DependentUpon>Bz41296.xaml</DependentUpon>
     </Compile>
     <Compile Include="LoaderTests.cs" />
+    <Compile Include="PlatformSpecifics.xaml.cs">
+      <DependentUpon>PlatformSpecifics.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewExtensionsTest.cs" />
     <Compile Include="MarkupExpressionParserTests.cs" />
     <Compile Include="MarkupExtensionTests.cs" />
     <Compile Include="NameScopeTests.cs" />
     <Compile Include="OnPlatformTests.cs" />
-    <Compile Include="StaticExtensionTests.cs" />
     <Compile Include="NullExtensionTests.cs" />
     <Compile Include="TypeExtensionTests.cs" />
     <Compile Include="FactoryMethodTests.cs" />
@@ -355,6 +360,16 @@
     </Compile>
     <Compile Include="TypeExtension.xaml.cs">
       <DependentUpon>TypeExtension.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="NativeViewsAndBindings.xaml.cs">
+      <DependentUpon>NativeViewsAndBindings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MockCompiler.cs" />
+    <Compile Include="XStaticException.xaml.cs">
+      <DependentUpon>XStaticException.xaml</DependentUpon>
+    </Compile>
+     <Compile Include="CompiledTypeConverter.xaml.cs" >
+       <DependentUpon>CompiledTypeConverter.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
@@ -635,6 +650,15 @@
     <EmbeddedResource Include="TypeExtension.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
+    <EmbeddedResource Include="NativeViewsAndBindings.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="XStaticException.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CompiledTypeConverter.xaml" >
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
@@ -652,6 +676,16 @@
   </Target>
   <ItemGroup>
     <EmbeddedResource Include="Issues\Bz41296.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="PlatformSpecifics.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Issues\Bz43450.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>

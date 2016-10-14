@@ -62,6 +62,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Bugzilla34007.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bugzilla35078.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bugzilla35127.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bugzilla35132.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bugzilla35157.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bugzilla35294.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bugzilla35472.cs" />
@@ -121,6 +122,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Bugzilla42075.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bugzilla42329.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bugzilla42364.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bugzilla42519.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bugzilla43516.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bugzilla44166.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CarouselAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bugzilla34561.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bugzilla34727.cs" />
@@ -168,13 +172,22 @@
     <Compile Include="$(MSBuildThisFileDirectory)Bugzilla39829.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bugzilla39458.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bugzilla39853.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PlatformSpecifics_iOSTranslucentNavBarX.xaml.cs">
+      <DependentUpon>PlatformSpecifics_iOSTranslucentNavBarX.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)TestPages\ScreenshotConditionalApp.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bugzilla41842.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bugzilla42277.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ImageLoadingErrorHandling.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bugzilla33561.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bugzilla43214.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bugzilla42602.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bugzilla43161.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bugzilla39768.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bugzilla41271.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bugzilla41153.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bugzilla44129.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)_Template.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Issue1028.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Issue1075.cs" />
@@ -429,6 +442,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Bugzilla39486.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Issue55555.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bugzilla41029.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bugzilla39908.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Bugzilla22229.xaml">
@@ -553,6 +567,12 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Bugzilla39636.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)PlatformSpecifics_iOSTranslucentNavBarX.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
