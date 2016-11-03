@@ -257,7 +257,10 @@ namespace Xamarin.Forms.Platform.iOS
 		protected virtual void SetBlur(BlurEffectStyle blur)
 		{
 			if (_previousBlur == blur)
+			{
+				SetNeedsDisplay();
 				return;
+			}
 
 			_previousBlur = blur;
 
