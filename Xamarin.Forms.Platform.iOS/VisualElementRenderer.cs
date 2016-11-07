@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using CoreGraphics;
 using UIKit;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
-using RectangleF = CoreGraphics.CGRect;
-using SizeF = CoreGraphics.CGSize;
-
 
 namespace Xamarin.Forms.Platform.iOS
 {
@@ -34,7 +32,7 @@ namespace Xamarin.Forms.Platform.iOS
 		UIVisualEffectView _blur;
 		BlurEffectStyle _previousBlur;
 
-		protected VisualElementRenderer() : base(RectangleF.Empty)
+		protected VisualElementRenderer() : base(CGRect.Empty)
 		{
 			_propertyChangedHandler = OnElementPropertyChanged;
 			BackgroundColor = UIColor.Clear;
@@ -165,17 +163,17 @@ namespace Xamarin.Forms.Platform.iOS
 				SetAutomationId(Element.AutomationId);
 		}
 
-		public override SizeF SizeThatFits(SizeF size)
+		public override CGSize SizeThatFits(CGSize size)
 		{
-			return new SizeF(0, 0);
+			return new CGSize(0, 0);
 		}
 
-		public override void Draw(RectangleF rect)
+		public override void LayoutSubviews()
 		{
-			base.Draw(rect);
+			base.LayoutSubviews();
 			if (_blur != null)
 			{
-				_blur.Frame = rect;
+				_blur.Frame = new CGRect(CGPoint.Empty, Frame.Size);
 				if (_blur.Superview == null)
 					Superview.Add(_blur);
 			}
