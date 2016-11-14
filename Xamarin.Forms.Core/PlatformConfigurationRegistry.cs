@@ -11,7 +11,7 @@ namespace Xamarin.Forms
 		where TElement : Element
 	{
 		readonly TElement _element;
-		readonly Dictionary<Type, object> _platformSpecifics = new Dictionary<Type, object>();
+		readonly Dictionary<Type, object> _platformSpecifics = new Dictionary<Type, object>(0);
 
 		internal PlatformConfigurationRegistry(TElement element)
 		{
