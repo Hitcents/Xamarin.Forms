@@ -146,8 +146,11 @@ namespace Xamarin.Forms
 
 		protected void UnapplyBindings()
 		{
-			foreach (BindablePropertyContext context in _properties)
+			BindablePropertyContext context;
+			for (var i = 0; i < _properties.Count; i++)
 			{
+				context = _properties[i];
+
 				if (context.Binding == null)
 					continue;
 
@@ -168,9 +171,10 @@ namespace Xamarin.Forms
 		{
 			var values = new object[2];
 
+			BindablePropertyContext context;
 			for (var i = 0; i < _properties.Count; i++)
 			{
-				BindablePropertyContext context = _properties[i];
+				context = _properties[i];
 				if (context == null)
 					continue;
 
@@ -201,9 +205,10 @@ namespace Xamarin.Forms
 		{
 			var values = new object[3];
 
+			BindablePropertyContext context;
 			for (var i = 0; i < _properties.Count; i++)
 			{
-				BindablePropertyContext context = _properties[i];
+				context = _properties[i];
 				if (context == null)
 					continue;
 
@@ -399,8 +404,11 @@ namespace Xamarin.Forms
 
 		void ApplyBindings(object oldContext, bool skipBindingContext)
 		{
-			foreach (BindablePropertyContext context in _properties.ToArray())
+			BindablePropertyContext context;
+			for (var i = 0; i < _properties.Count; i++)
 			{
+				context = _properties[i];
+
 				BindingBase binding = context.Binding;
 				if (binding == null)
 					continue;
@@ -485,11 +493,10 @@ namespace Xamarin.Forms
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		BindablePropertyContext GetContext(BindableProperty property)
 		{
-			List<BindablePropertyContext> properties = _properties;
-
-			for (var i = 0; i < properties.Count; i++)
+			BindablePropertyContext context;
+			for (var i = 0; i < _properties.Count; i++)
 			{
-				BindablePropertyContext context = properties[i];
+				context = _properties[i];
 				if (context != null && ReferenceEquals(context.Property, property))
 					return context;
 			}
