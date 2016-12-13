@@ -68,27 +68,31 @@ namespace Xamarin.Forms
 			return true;
 		}
 
-		public static void Animate(this IAnimatable self, string name, Animation animation, uint rate = 16, uint length = 250, Easing easing = null, Action<double, bool> finished = null,
-								   Func<bool> repeat = null)
+		public static void Animate<TView>(this TView self, string name, Animation animation, uint rate = 16, uint length = 250, Easing easing = null, Action<TView, double, bool> finished = null,
+								   Func<TView, bool> repeat = null)
+			where TView : IAnimatable
 		{
-			self.Animate(name, animation.GetCallback(), rate, length, easing, finished, repeat);
+			self.Animate(name, animation.GetCallback<TView>(), rate, length, easing, finished, repeat);
 		}
 
-		public static void Animate(this IAnimatable self, string name, Action<double> callback, double start, double end, uint rate = 16, uint length = 250, Easing easing = null,
-								   Action<double, bool> finished = null, Func<bool> repeat = null)
+		public static void Animate<TView>(this TView self, string name, Action<TView, double> callback, double start, double end, uint rate = 16, uint length = 250, Easing easing = null,
+								   Action<TView, double, bool> finished = null, Func<TView, bool> repeat = null)
+			where TView : IAnimatable
 		{
-			self.Animate(name, Interpolate(start, end), callback, rate, length, easing, finished, repeat);
+			self.Animate(name, Interpolate<TView>(start, end), callback, rate, length, easing, finished, repeat);
 		}
 
-		public static void Animate(this IAnimatable self, string name, Action<double> callback, uint rate = 16, uint length = 250, Easing easing = null, Action<double, bool> finished = null,
-								   Func<bool> repeat = null)
+		public static void Animate<TView>(this TView self, string name, Action<TView, double> callback, uint rate = 16, uint length = 250, Easing easing = null, Action<TView, double, bool> finished = null,
+								   Func<TView, bool> repeat = null)
+			where TView : IAnimatable
 		{
-			self.Animate(name, x => x, callback, rate, length, easing, finished, repeat);
+			self.Animate(name, (v, x) => x, callback, rate, length, easing, finished, repeat);
 		}
 
-		public static void Animate<T>(this IAnimatable self, string name, Func<double, T> transform, Action<T> callback,
+		public static void Animate<TView, TValue>(this TView self, string name, Func<TView, double, TValue> transform, Action<TView, TValue> callback,
 			uint rate = 16, uint length = 250, Easing easing = null,
-			Action<T, bool> finished = null, Func<bool> repeat = null)
+			Action<TView, TValue, bool> finished = null, Func<TView, bool> repeat = null)
+			where TView : IAnimatable
 		{
 			if (transform == null)
 				throw new ArgumentNullException(nameof(transform));
@@ -130,10 +134,11 @@ namespace Xamarin.Forms
 			return s_animations.ContainsKey(key);
 		}
 
-		public static Func<double, double> Interpolate(double start, double end = 1.0f, double reverseVal = 0.0f, bool reverse = false)
+		public static Func<TView, double, double> Interpolate<TView>(double start, double end = 1.0f, double reverseVal = 0.0f, bool reverse = false)
+			where TView : IAnimatable
 		{
 			double target = reverse ? reverseVal : end;
-			return x => start + (target - start) * x;
+			return (v, x) => start + (target - start) * x;
 		}
 
 		static void AbortAnimation(AnimatableKey key)
@@ -147,7 +152,9 @@ namespace Xamarin.Forms
 			info.Tweener.ValueUpdated -= HandleTweenerUpdated;
 			info.Tweener.Finished -= HandleTweenerFinished;
 			info.Tweener.Stop();
-			info.Finished?.Invoke(1.0f, true);
+			IAnimatable owner;
+			if (info.Owner.TryGetTarget(out owner))
+				info.Finished?.Invoke(owner, 1.0f, true);
 
 			s_animations.Remove(key);
 		}
@@ -163,17 +170,18 @@ namespace Xamarin.Forms
 			s_kinetics.Remove(key);
 		}
 
-		static void AnimateInternal<T>(IAnimatable self, string name, Func<double, T> transform, Action<T> callback,
-			uint rate, uint length, Easing easing, Action<T, bool> finished, Func<bool> repeat)
+		static void AnimateInternal<TView, TValue>(TView self, string name, Func<TView, double, TValue> transform, Action<TView, TValue> callback,
+			uint rate, uint length, Easing easing, Action<TView, TValue, bool> finished, Func<TView, bool> repeat)
+			where TView : IAnimatable
 		{
 			var key = new AnimatableKey(self, name);
 
 			AbortAnimation(key);
 
-			Action<double> step = f => callback(transform(f));
-			Action<double, bool> final = null;
+			Action<TView, double> step = (v, f) => callback(v, transform(v, f));
+			Action<TView, double, bool> final = null;
 			if (finished != null)
-				final = (f, b) => finished(transform(f), b);
+				final = (v, f, b) => finished(v, transform(v, f), b);
 
 			var info = new Info { Rate = rate, Length = length, Easing = easing ?? Easing.Linear };
 
@@ -183,14 +191,14 @@ namespace Xamarin.Forms
 			tweener.Finished += HandleTweenerFinished;
 
 			info.Tweener = tweener;
-			info.Callback = step;
-			info.Finished = final;
-			info.Repeat = repeat;
-			info.Owner = new WeakReference<IAnimatable>(self);
+			info.Callback = (v, f) => step((TView)v, f);
+			info.Finished = (v, f, b) => final((TView)v, f, b);
+			info.Repeat = v => repeat((TView)v);
+			info.Owner = new WeakReference(self);
 
 			s_animations[key] = info;
 
-			info.Callback(0.0f);
+			info.Callback(self, 0.0f);
 			tweener.Start();
 		}
 
@@ -232,14 +240,17 @@ namespace Xamarin.Forms
 			Info info;
 			if (tweener != null && s_animations.TryGetValue(tweener.Handle, out info))
 			{
-				var repeat = false;
-				if (info.Repeat != null)
-					repeat = info.Repeat();
-
 				IAnimatable owner;
-				if (info.Owner.TryGetTarget(out owner))
+
+				var repeat = false;
+				if (info.Owner.TryGetTarget(out owner) && info.Repeat != null)
+					repeat = info.Repeat(owner);
+
+				if (owner != null)
+				{
 					owner.BatchBegin();
-				info.Callback(tweener.Value);
+					info.Callback(owner, tweener.Value);
+				}
 
 				if (!repeat)
 				{
@@ -248,10 +259,11 @@ namespace Xamarin.Forms
 					tweener.Finished -= HandleTweenerFinished;
 				}
 
-				info.Finished?.Invoke(tweener.Value, false);
-
-				if (info.Owner.TryGetTarget(out owner))
+				if (owner != null)
+				{
+					info.Finished?.Invoke(owner, tweener.Value, false);
 					owner.BatchCommit();
+				}
 
 				if (repeat)
 				{
@@ -269,23 +281,23 @@ namespace Xamarin.Forms
 			if (tweener != null && s_animations.TryGetValue(tweener.Handle, out info) && info.Owner.TryGetTarget(out owner))
 			{
 				owner.BatchBegin();
-				info.Callback(info.Easing.Ease(tweener.Value));
+				info.Callback(owner, info.Easing.Ease(tweener.Value));
 				owner.BatchCommit();
 			}
 		}
 
 		class Info
 		{
-			public Action<double> Callback;
-			public Action<double, bool> Finished;
-			public Func<bool> Repeat;
+			public Action<IAnimatable, double> Callback;
+			public Action<IAnimatable, double, bool> Finished;
+			public Func<IAnimatable, bool> Repeat;
 			public Tweener Tweener;
 
 			public Easing Easing { get; set; }
 
 			public uint Length { get; set; }
 
-			public WeakReference<IAnimatable> Owner { get; set; }
+			public WeakReference Owner { get; set; }
 
 			public uint Rate { get; set; }
 		}
