@@ -192,8 +192,14 @@ namespace Xamarin.Forms
 
 			info.Tweener = tweener;
 			info.Callback = (v, f) => step((TView)v, f);
-			info.Finished = (v, f, b) => final((TView)v, f, b);
-			info.Repeat = v => repeat((TView)v);
+			if (final != null)
+			{
+				info.Finished = (v, f, b) => final((TView)v, f, b);
+			}
+			if (repeat != null)
+			{
+				info.Repeat = v => repeat((TView)v);
+			}
 			info.Owner = new WeakReference(self);
 
 			s_animations[key] = info;

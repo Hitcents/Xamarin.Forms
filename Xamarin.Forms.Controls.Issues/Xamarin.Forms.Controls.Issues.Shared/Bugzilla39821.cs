@@ -99,7 +99,7 @@ namespace Xamarin.Forms.Controls.Issues
 		async Task Animate(BoxView box)
 #pragma warning restore 1998
 		{
-			box.Animate("animate", d => d, d => { }, 100, 1);
+			box.Animate("animate", (v, d) => d, (v, d) => { }, 100, 1);
 		}
 
 #pragma warning disable 1998 // considered for removal
