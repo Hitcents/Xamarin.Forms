@@ -111,7 +111,7 @@ namespace Xamarin.Forms
 				easing = Easing.Linear;
 
 			var tcs = new TaskCompletionSource<bool>();
-			view.Animate("ScaleTo", (v, f) => v.Scale = f, view.Rotation, scale, length: length, easing: easing, finished: (v, f, a) => tcs.SetResult(a));
+			view.Animate("ScaleTo", (v, f) => v.Scale = f, view.Scale, scale, length: length, easing: easing, finished: (v, f, a) => tcs.SetResult(a));
 			return tcs.Task;
 		}
 
