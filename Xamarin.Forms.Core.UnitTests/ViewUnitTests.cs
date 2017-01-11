@@ -623,7 +623,7 @@ namespace Xamarin.Forms.Core.UnitTests
 		[Test]
 		public void TestOpenUriAction ()
 		{
-			var uri = "http://www.xamarin.com/";
+			var uri = new Uri ("http://www.xamarin.com/");
 			var invoked = false;
 			Device.PlatformServices = new MockPlatformServices (openUriAction: u => {
 				Assert.AreSame (uri, u);
@@ -638,7 +638,8 @@ namespace Xamarin.Forms.Core.UnitTests
 		public void OpenUriThrowsWhenNull ()
 		{
 			Device.PlatformServices = null;
-			Assert.Throws<InvalidOperationException> (() => Device.OpenUri ("http://www.xamarin.com/"));
+			var uri = new Uri ("http://www.xamarin.com/");
+			Assert.Throws<InvalidOperationException> (() => Device.OpenUri (uri));
 		}
 
 		[Test]

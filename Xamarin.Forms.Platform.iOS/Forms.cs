@@ -227,9 +227,9 @@ namespace Xamarin.Forms
 				get { return !NSThread.IsMain; }
 			}
 
-			public void OpenUriAction(string uri)
+			public void OpenUriAction(Uri uri)
 			{
-				UIApplication.SharedApplication.OpenUrl(new NSUrl(uri));
+				UIApplication.SharedApplication.OpenUrl(new NSUrl(uri.AbsoluteUri));
 			}
 
 			public void StartTimer(TimeSpan interval, Func<bool> callback)

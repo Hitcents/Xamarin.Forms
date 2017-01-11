@@ -104,7 +104,7 @@ namespace Xamarin.Forms
 			return iOS;
 		}
 
-		public static void OpenUri(string uri)
+		public static void OpenUri(Uri uri)
 		{
 			PlatformServices.OpenUriAction(uri);
 		}

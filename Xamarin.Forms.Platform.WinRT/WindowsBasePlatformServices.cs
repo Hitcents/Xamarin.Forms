@@ -117,9 +117,9 @@ namespace Xamarin.Forms.Platform.WinRT
 
 		public bool IsInvokeRequired => !CoreApplication.MainView.CoreWindow.Dispatcher.HasThreadAccess;
 
-		public void OpenUriAction(string uri)
+		public void OpenUriAction(Uri uri)
 		{
-			Launcher.LaunchUriAsync(new Uri(uri)).WatchForError();
+			Launcher.LaunchUriAsync(uri).WatchForError();
 		}
 
 		public void StartTimer(TimeSpan interval, Func<bool> callback)

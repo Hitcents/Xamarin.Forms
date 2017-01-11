@@ -157,7 +157,7 @@ namespace Xamarin.Forms.Controls
 					//if external link is clicked
 					Debug.WriteLine ("WebView_OnNavigating, DIfferent Uri, so open in Native Browser");
 					e.Cancel = true;
-					Device.OpenUri (e.Url);    
+					Device.OpenUri (new Uri (e.Url));    
 				}
 			}
 		}
