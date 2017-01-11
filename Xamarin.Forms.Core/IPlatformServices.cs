@@ -25,7 +25,7 @@ namespace Xamarin.Forms
 
 		IIsolatedStorageFile GetUserStoreForApplication();
 
-		void OpenUriAction(Uri uri);
+		void OpenUriAction(string uri);
 
 		void StartTimer(TimeSpan interval, Func<bool> callback);
 	}

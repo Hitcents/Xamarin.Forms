@@ -23,9 +23,9 @@ namespace Xamarin.Forms.Core.UnitTests
 	internal class MockPlatformServices : IPlatformServices
 	{
 		Action<Action> invokeOnMainThread;
-		Action<Uri> openUriAction;
+		Action<string> openUriAction;
 		Func<Uri, CancellationToken, Task<Stream>> getStreamAsync;
-		public MockPlatformServices (Action<Action> invokeOnMainThread = null, Action<Uri> openUriAction = null, Func<Uri, CancellationToken, Task<Stream>> getStreamAsync = null)
+		public MockPlatformServices (Action<Action> invokeOnMainThread = null, Action<string> openUriAction = null, Func<Uri, CancellationToken, Task<Stream>> getStreamAsync = null)
 		{
 			this.invokeOnMainThread = invokeOnMainThread;
 			this.openUriAction = openUriAction;
@@ -69,7 +69,7 @@ namespace Xamarin.Forms.Core.UnitTests
 			}
 		}
 
-		public void OpenUriAction (Uri uri)
+		public void OpenUriAction (string uri)
 		{
 			if (openUriAction != null)
 				openUriAction (uri);

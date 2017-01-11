@@ -372,9 +372,9 @@ namespace Xamarin.Forms
 				}
 			}
 
-			public void OpenUriAction(Uri uri)
+			public void OpenUriAction(string uri)
 			{
-				global::Android.Net.Uri aUri = global::Android.Net.Uri.Parse(uri.ToString());
+				global::Android.Net.Uri aUri = global::Android.Net.Uri.Parse(uri);
 				var intent = new Intent(Intent.ActionView, aUri);
 				Context.StartActivity(intent);
 			}
