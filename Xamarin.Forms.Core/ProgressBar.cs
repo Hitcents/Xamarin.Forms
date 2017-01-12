@@ -26,7 +26,7 @@ namespace Xamarin.Forms
 		{
 			var tcs = new TaskCompletionSource<bool>();
 
-			this.Animate("Progress", d => Progress = d, Progress, value, length: length, easing: easing, finished: (d, finished) => tcs.SetResult(finished));
+			this.Animate("Progress", (p, d) => p.Progress = d, Progress, value, length: length, easing: easing, finished: (p, d, finished) => tcs.SetResult(finished));
 
 			return tcs.Task;
 		}

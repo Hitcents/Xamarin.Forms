@@ -61,19 +61,19 @@ namespace Xamarin.Forms.Core.UnitTests
 		[Test]
 		public void ThrowsWithNullCallback ()
 		{
-			Assert.Throws<ArgumentNullException> (() => new View().Animate ("Test", (Action<double>) null));
+			Assert.Throws<ArgumentNullException> (() => new View().Animate ("Test", (Action<View, double>) null));
 		}
 
 		[Test]
 		public void ThrowsWithNullTransform ()
 		{
-			Assert.Throws<ArgumentNullException> (() => new View().Animate<float> ("Test", null, f => { }));
+			Assert.Throws<ArgumentNullException> (() => new View().Animate<View, float> ("Test", null, (v, f) => { }));
 		}
 
 		[Test]
 		public void ThrowsWithNullSelf ()
 		{
-			Assert.Throws<ArgumentNullException> (() => AnimationExtensions.Animate (null, "Foo", d => (float)d, f => { }));
+			Assert.Throws<ArgumentNullException> (() => AnimationExtensions.Animate<View, float> (null, "Foo", (v, d) => (float)d, (v, f) => { }));
 		}
 
 		[Test]
