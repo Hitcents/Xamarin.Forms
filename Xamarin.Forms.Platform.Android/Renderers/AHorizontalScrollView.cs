@@ -56,7 +56,7 @@ namespace Xamarin.Forms.Platform.Android
 		{
 			base.OnScrollChanged(l, t, oldl, oldt);
 
-			_renderer.UpdateScrollPosition(Forms.Context.FromPixels(l), Forms.Context.FromPixels(t));
+			_renderer.UpdateScrollPosition(Forms.Context.FromPixels(l), null);
 		}
 	}
 }

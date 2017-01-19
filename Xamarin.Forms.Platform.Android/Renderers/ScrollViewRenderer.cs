@@ -190,13 +190,13 @@ namespace Xamarin.Forms.Platform.Android
 		{
 			base.OnScrollChanged(l, t, oldl, oldt);
 
-			UpdateScrollPosition(Forms.Context.FromPixels(l), Forms.Context.FromPixels(t));
+			UpdateScrollPosition(null, Forms.Context.FromPixels(t));
 		}
 
-		internal void UpdateScrollPosition(double x, double y)
+		internal void UpdateScrollPosition(double? x, double? y)
 		{
 			if (_view != null)
-				Controller.SetScrolledPosition(x, y);
+				Controller.SetScrolledPosition(x ?? _view.ScrollX, y ?? _view.ScrollY);
 		}
 
 		static int GetDistance(double start, double position, double v)
