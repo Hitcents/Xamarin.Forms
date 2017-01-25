@@ -61,3 +61,4 @@ using Xamarin.Forms.Internals;
 //Added for Unit tests at Hitcents
 [assembly: InternalsVisibleTo("ToE.Forms.Tests")]
 
+[assembly: XmlnsDefinition("http://xamarin.com/schemas/2014/forms", "Xamarin.Forms")]

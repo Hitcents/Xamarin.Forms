@@ -73,10 +73,6 @@ namespace Xamarin.Forms.Platform.WinRT
 			
 			_commandBar = GetTemplateChild("CommandBar") as CommandBar;
 
-#if WINDOWS_UWP
-			_toolbarPlacementHelper.Initialize(_commandBar, () => ToolbarPlacement, GetTemplateChild);
-#endif
-
 			TaskCompletionSource<CommandBar> tcs = _commandBarTcs;
 		    tcs?.SetResult(_commandBar);
 		}

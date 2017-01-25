@@ -96,5 +96,6 @@
 			</local:MockViewWithValues.Bar>
 		</local:MockViewWithValues>
 		<!--<local:MockViewWithValues x:Name="implicit3" Foo="Foo" />-->
+		<local:MockViewWithValues x:Name="mockView0" UShort="32" ADecimal="42" />
 	</StackLayout>
 </ContentPage>

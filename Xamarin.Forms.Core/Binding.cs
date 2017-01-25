@@ -182,6 +182,7 @@ namespace Xamarin.Forms
 			}
 		}
 
+		[Obsolete]
 		public static Binding Create<TSource>(Expression<Func<TSource, object>> propertyGetter, BindingMode mode = BindingMode.Default, IValueConverter converter = null, object converterParameter = null,
 											  string stringFormat = null)
 		{
@@ -243,6 +244,7 @@ namespace Xamarin.Forms
 				_expression.Unapply();
 		}
 
+		[Obsolete]
 		static string GetBindingPath<TSource>(Expression<Func<TSource, object>> propertyGetter)
 		{
 			Expression expr = propertyGetter.Body;

@@ -235,8 +235,6 @@ namespace Xamarin.Forms.Platform.UWP
 			_detailPresenter = GetTemplateChild("DetailPresenter") as FrameworkElement;
 
 			_commandBar = GetTemplateChild("CommandBar") as CommandBar;
-			_toolbarPlacementHelper.Initialize(_commandBar, () => ToolbarPlacement, GetTemplateChild);
-			
 			UpdateMode(); 
 
 			if (_commandBarTcs != null)

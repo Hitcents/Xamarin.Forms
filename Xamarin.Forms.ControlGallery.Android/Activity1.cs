@@ -21,7 +21,8 @@ using System.IO.IsolatedStorage;
 
 using Droid = Android;
 using System.Globalization;
-
+using Java.Interop;
+using Xamarin.Forms.Controls.Issues;
 
 [assembly: Dependency (typeof (CacheService))]
 [assembly: Dependency (typeof (TestCloudService))]
@@ -205,17 +206,8 @@ namespace Xamarin.Forms.ControlGallery.Android
 
 			var app = new App ();
 
-			var mdp = app.MainPage as MasterDetailPage;
-			var detail = mdp?.Detail as NavigationPage;
-			if (detail != null) {
-				detail.Pushed += (sender, args) => {
-					var nncgPage = args.Page as NestedNativeControlGalleryPage;
-
-					if (nncgPage != null) {
-						AddNativeControls (nncgPage);
-					}
-				};
-			} 
+			// When the native control gallery loads up, it'll let us know so we can add the nested native controls
+			MessagingCenter.Subscribe<NestedNativeControlGalleryPage>(this, NestedNativeControlGalleryPage.ReadyForNativeControlsMessage, AddNativeControls);
 
 			LoadApplication (app);
 		}
@@ -283,6 +275,12 @@ namespace Xamarin.Forms.ControlGallery.Android
 		{
 			base.OnDestroy();
 		}
+
+		[Export("NavigateToTest")]
+		public bool NavigateToTest(string test)
+		{
+			return _app.NavigateToTestPage(test);
+		}
 	}
 #else
 
@@ -306,6 +304,8 @@ namespace Xamarin.Forms.ControlGallery.Android
 	]
 	public class Activity1 : FormsAppCompatActivity
 	{
+		App _app;
+
 		protected override void OnCreate (Bundle bundle)
 		{
 			ToolbarResource = Resource.Layout.Toolbar;
@@ -327,29 +327,16 @@ namespace Xamarin.Forms.ControlGallery.Android
 			// uncomment to verify turning off title bar works. This is not intended to be dynamic really.
 			//Forms.SetTitleBarVisibility (AndroidTitleBarVisibility.Never);
 
-			var app = new App ();
+			var app = new App();
+			_app = app;
 
-			var mdp = app.MainPage as MasterDetailPage;
-			var detail = mdp?.Detail as NavigationPage;
-			if (detail != null) {
-				detail.Pushed += (sender, args) => {
-					var nncgPage = args.Page as NestedNativeControlGalleryPage;
+			// When the native control gallery loads up, it'll let us know so we can add the nested native controls
+			MessagingCenter.Subscribe<NestedNativeControlGalleryPage>(this, NestedNativeControlGalleryPage.ReadyForNativeControlsMessage, AddNativeControls);
 
-					if (nncgPage != null) {
-						AddNativeControls (nncgPage);
-					}
+			// When the native binding gallery loads up, it'll let us know so we can set up the native bindings
+			MessagingCenter.Subscribe<NativeBindingGalleryPage >(this, NativeBindingGalleryPage.ReadyForNativeBindingsMessage, AddNativeBindings);
 
-					var nncgPage1 = args.Page as NativeBindingGalleryPage;
-
-					if (nncgPage1 != null)
-					{
-						AddNativeBindings(nncgPage1);
-					}
-
-				};
-			}
-
-			LoadApplication (app);
+			LoadApplication(app);
 		}
 
 		public override void OnConfigurationChanged (global::Android.Content.Res.Configuration newConfig)
@@ -468,6 +455,18 @@ namespace Xamarin.Forms.ControlGallery.Android
 
 				return null;
 			}
+		}
+
+		[Export("NavigateToTest")]
+		public bool NavigateToTest(string test)
+		{
+			return _app.NavigateToTestPage(test);
+		}
+
+		[Export("Reset")]
+		public void Reset()
+		{
+			_app.Reset();
 		}
 	}
 #endif

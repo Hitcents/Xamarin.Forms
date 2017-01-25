@@ -136,11 +136,6 @@ namespace Xamarin.Forms.Xaml.Internals
 		readonly object[] objectAndParents;
 		readonly object targetProperty;
 
-		[Obsolete("TargetProperty is now supported, use it")]
-		public SimpleValueTargetProvider(object[] objectAndParents) : this (objectAndParents, null)
-		{
-		}
-
 		public SimpleValueTargetProvider(object[] objectAndParents, object targetProperty)
 		{
 			if (objectAndParents == null)
@@ -225,7 +220,7 @@ namespace Xamarin.Forms.Xaml.Internals
 					xmlLineInfo = lineInfoProvider.XmlLineInfo;
 			}
 
-			var namespaceuri = prefix == null ? "" : namespaceResolver.LookupNamespace(prefix);
+			var namespaceuri = namespaceResolver.LookupNamespace(prefix);
 			if (namespaceuri == null)
 			{
 				exception = new XamlParseException(string.Format("No xmlns declaration for prefix \"{0}\"", prefix), xmlLineInfo);

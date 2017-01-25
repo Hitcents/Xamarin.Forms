@@ -2,6 +2,7 @@
 using System.Linq;
 
 using NUnit.Framework;
+using Xamarin.Forms.Core.UnitTests;
 
 namespace Xamarin.Forms.Xaml.UnitTests
 {
@@ -92,6 +93,18 @@ namespace Xamarin.Forms.Xaml.UnitTests
 		[TestFixture]
 		public class Tests
 		{
+			[SetUp]
+			public void Setup()
+			{
+				Device.PlatformServices = new MockPlatformServices();
+			}
+
+			[TearDown]
+			public void TearDown()
+			{
+				Device.PlatformServices = null;
+			}
+
 			[TestCase (false)]
 			[TestCase (true)]
 			public void SetValueToBP (bool useCompiledXaml)
@@ -312,6 +325,13 @@ namespace Xamarin.Forms.Xaml.UnitTests
 			//	var page = new SetValue(useCompiledXaml);
 			//	Assert.AreEqual("Foo", page.implicit3.Foo.Value);
 			//}
+
+			public void MorePrimitiveTypes(bool useCompiledXaml)
+			{ 
+				var page = new SetValue(useCompiledXaml);
+				Assert.AreEqual((ushort)32, page.mockView0.UShort);
+				Assert.AreEqual((decimal)42, page.mockView0.ADecimal);
+			}
 		}
 	}
 }
