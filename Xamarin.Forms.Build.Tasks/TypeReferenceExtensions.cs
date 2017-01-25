@@ -84,9 +84,6 @@ namespace Xamarin.Forms.Build.Tasks
 
 		public static bool InheritsFromOrImplements(this TypeReference typeRef, TypeReference baseClass)
 		{
-			if (typeRef.FullName == baseClass.FullName)
-				return true;
-
 			var arrayInterfaces = new[]
 			{
 				"System.IEnumerable",
@@ -204,10 +201,9 @@ namespace Xamarin.Forms.Build.Tasks
 		}
 
 		public static MethodReference GetImplicitOperatorTo(this TypeReference fromType, TypeReference toType, ModuleDefinition module)
-		{
-			var implicitOperatorsOnFromType = fromType.GetMethods(md => md.IsPublic && md.IsStatic && md.IsSpecialName && md.Name == "op_Implicit", module);
-			var implicitOperatorsOnToType = toType.GetMethods(md => md.IsPublic && md.IsStatic && md.IsSpecialName && md.Name == "op_Implicit", module);
-			var implicitOperators = implicitOperatorsOnFromType.Concat(implicitOperatorsOnToType).ToList();
+		{ 
+			var implicitOperators = fromType.GetMethods(md => md.IsPublic && md.IsStatic && md.IsSpecialName && md.Name == "op_Implicit",
+												module).ToList();
 			if (implicitOperators.Any()) {
 				foreach (var op in implicitOperators) {
 					var cast = op.Item1;

@@ -364,23 +364,8 @@
     <Compile Include="XStaticException.xaml.cs">
       <DependentUpon>XStaticException.xaml</DependentUpon>
     </Compile>
-     <Compile Include="CompiledTypeConverter.xaml.cs" >
-       <DependentUpon>CompiledTypeConverter.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Issues\Unreported005.xaml.cs">
-      <DependentUpon>Unreported005.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Issues\Bz47950.xaml.cs">
-      <DependentUpon>Bz47950.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Issues\Unreported006.xaml.cs">
-      <DependentUpon>Unreported006.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Issues\Bz48554.xaml.cs">
-      <DependentUpon>Bz48554.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Issues\Unreported007.xaml.cs">
-      <DependentUpon>Unreported007.xaml</DependentUpon>
+    <Compile Include="CompiledTypeConverter.xaml.cs">
+      <DependentUpon>CompiledTypeConverter.xaml</DependentUpon>
     </Compile>
     <Compile Include="Issues\Bz43301.xaml.cs">
       <DependentUpon>Bz43301.xaml</DependentUpon>
@@ -673,22 +658,7 @@
     <EmbeddedResource Include="XStaticException.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Include="CompiledTypeConverter.xaml" >
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Issues\Unreported005.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Issues\Bz47950.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Issues\Unreported006.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Issues\Bz48554.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Issues\Unreported007.xaml">
+    <EmbeddedResource Include="CompiledTypeConverter.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="Issues\Bz43301.xaml">

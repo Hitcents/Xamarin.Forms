@@ -18,14 +18,15 @@ namespace Xamarin.Forms.Xaml
 				var lineInfo = (lineInfoProvider != null) ? lineInfoProvider.XmlLineInfo : new XmlLineInfo();
 				throw new XamlParseException("you must specify a key in {StaticResource}", lineInfo);
 			}
-			var valueProvider = serviceProvider.GetService(typeof(IProvideValueTarget)) as IProvideParentValues;
+			var valueProvider = serviceProvider.GetService(typeof (IProvideValueTarget)) as IProvideParentValues;
 			if (valueProvider == null)
 				throw new ArgumentException();
-			var xmlLineInfoProvider = serviceProvider.GetService(typeof(IXmlLineInfoProvider)) as IXmlLineInfoProvider;
+			var xmlLineInfoProvider = serviceProvider.GetService(typeof (IXmlLineInfoProvider)) as IXmlLineInfoProvider;
 			var xmlLineInfo = xmlLineInfoProvider != null ? xmlLineInfoProvider.XmlLineInfo : null;
 			object resource = null;
 
-			foreach (var p in valueProvider.ParentObjects) {
+			foreach (var p in valueProvider.ParentObjects)
+			{
 				var ve = p as VisualElement;
 				var resDict = ve?.Resources ?? p as ResourceDictionary;
 				if (resDict == null)
