@@ -52,18 +52,6 @@ namespace Xamarin.Forms.Controls
 				Master = new ContentPage { Title = "Master", BackgroundColor = Color.Red },
 				Detail = CoreGallery.GetMainPage()
 			};
-
-			//// Uncomment to verify that there is no gray screen displayed between the blue splash and red MasterDetailPage.
-			//MainPage = new Bugzilla44596SplashPage(() =>
-			//{
-			//	var newTabbedPage = new TabbedPage();
-			//	newTabbedPage.Children.Add(new ContentPage { BackgroundColor = Color.Red, Content = new Label { Text = "yay" } });
-			//	MainPage = new MasterDetailPage
-			//	{
-			//		Master = new ContentPage { Title = "Master", BackgroundColor = Color.Red },
-			//		Detail = newTabbedPage
-			//	};
-			//});
 		}
 
 		protected override void OnAppLinkRequestReceived(Uri uri)

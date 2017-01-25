@@ -400,34 +400,6 @@ namespace Xamarin.Forms.ControlGallery.iOS
 		}
 	}
 
-	[Register("KVOUISlider")]
-	public class KVOUISlider : UISlider
-	{
-
-		public KVOUISlider()
-		{
-			ValueChanged += (s, e) => KVOValue = Value;
-		}
-
-		float _kVOValue;
-		[Export("kvovalue")]
-		public float KVOValue
-		{
-			get
-			{
-
-				return _kVOValue;
-			}
-			set
-			{
-
-				WillChangeValue(nameof(KVOValue).ToLower());
-				_kVOValue = Value = value;
-				DidChangeValue(nameof(KVOValue).ToLower());
-			}
-		}
-	}
-
 	public class ColorConverter : IValueConverter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
