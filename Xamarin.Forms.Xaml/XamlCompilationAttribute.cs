@@ -18,7 +18,18 @@ namespace Xamarin.Forms.Xaml
 			XamlCompilationOptions = xamlCompilationOptions;
 		}
 
+		public XamlCompilationAttribute(XamlCompilationOptions xamlCompilationOptions, string filter)
+		{
+			XamlCompilationOptions = xamlCompilationOptions;
+			Filter = filter;
+		}
+
 		public XamlCompilationOptions XamlCompilationOptions { get; set; }
+
+		/// <summary>
+		/// Filter to run a regex on assembly-wide XamlCompilationAttribute
+		/// </summary>
+		public string Filter { get; set; }
 	}
 
 	internal static class XamlCExtensions
