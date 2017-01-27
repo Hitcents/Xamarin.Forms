@@ -368,11 +368,8 @@
     <Compile Include="XStaticException.xaml.cs">
       <DependentUpon>XStaticException.xaml</DependentUpon>
     </Compile>
-     <Compile Include="CompiledTypeConverter.xaml.cs" >
-       <DependentUpon>CompiledTypeConverter.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Issues\Unreported005.xaml.cs">
-      <DependentUpon>Unreported005.xaml</DependentUpon>
+    <Compile Include="CompiledTypeConverter.xaml.cs">
+      <DependentUpon>CompiledTypeConverter.xaml</DependentUpon>
     </Compile>
     <Compile Include="Issues\Bz47950.xaml.cs">
       <DependentUpon>Bz47950.xaml</DependentUpon>
@@ -662,10 +659,7 @@
     <EmbeddedResource Include="XStaticException.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Include="CompiledTypeConverter.xaml" >
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Issues\Unreported005.xaml">
+    <EmbeddedResource Include="CompiledTypeConverter.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="Issues\Bz47950.xaml">
