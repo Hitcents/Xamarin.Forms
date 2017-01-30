@@ -1,3 +1,9 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Xml;
 using ICSharpCode.Decompiler;
 using ICSharpCode.Decompiler.Ast;
 using Microsoft.Build.Framework;
@@ -5,13 +11,6 @@ using Microsoft.Build.Utilities;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Xml;
 using Xamarin.Forms.Xaml;
 
 namespace Xamarin.Forms.Build.Tasks
@@ -174,8 +173,6 @@ namespace Xamarin.Forms.Build.Tasks
 				ReadSymbols = DebugSymbols
 			});
 
-			Regex filter = null;
-
 			CustomAttribute xamlcAttr;
 			if (assemblyDefinition.HasCustomAttributes &&
 			    (xamlcAttr =
@@ -187,17 +184,6 @@ namespace Xamarin.Forms.Build.Tasks
 					skipassembly = true;
 				if ((options & XamlCompilationOptions.Compile) == XamlCompilationOptions.Compile)
 					skipassembly = false;
-				if (xamlcAttr.ConstructorArguments.Count > 1)
-				{
-					try
-					{
-						filter = new Regex((string)xamlcAttr.ConstructorArguments[1].Value);
-					}
-					catch (Exception exc)
-					{
-						LogLine(2, "Error loading filter: " + exc);
-					}
-				}
 			}
 
 			foreach (var module in assemblyDefinition.Modules)
@@ -213,17 +199,6 @@ namespace Xamarin.Forms.Build.Tasks
 						skipmodule = true;
 					if ((options & XamlCompilationOptions.Compile) == XamlCompilationOptions.Compile)
 						skipmodule = false;
-					if (xamlcAttr.ConstructorArguments.Count > 1)
-					{
-						try
-						{
-							filter = new Regex((string)xamlcAttr.ConstructorArguments[1].Value);
-						}
-						catch (Exception exc)
-						{
-							LogLine(2, "Error loading filter: " + exc);
-						}
-					}
 				}
 
 				LogLine(2, " Module: {0}", module.Name);
@@ -243,26 +218,7 @@ namespace Xamarin.Forms.Build.Tasks
 						LogLine(2, "no type found... skipped.");
 						continue;
 					}
-
 					var skiptype = skipmodule;
-					if (!skiptype)
-					{
-						if (filter != null)
-						{
-							LogLine(2, "Checking filter {0} on {1}", filter, typeDef.FullName);
-							if (!filter.IsMatch(typeDef.FullName))
-							{
-								skiptype = true;
-							}
-						}
-
-						if (skiptype)
-						{
-							LogLine(2, "Does not match filter... skipped");
-							continue;
-						}
-					}
-
 					if (typeDef.HasCustomAttributes &&
 					    (xamlcAttr =
 						    typeDef.CustomAttributes.FirstOrDefault(
