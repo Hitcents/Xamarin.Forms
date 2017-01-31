@@ -368,8 +368,8 @@
     <Compile Include="XStaticException.xaml.cs">
       <DependentUpon>XStaticException.xaml</DependentUpon>
     </Compile>
-     <Compile Include="CompiledTypeConverter.xaml.cs" >
-       <DependentUpon>CompiledTypeConverter.xaml</DependentUpon>
+    <Compile Include="CompiledTypeConverter.xaml.cs">
+      <DependentUpon>CompiledTypeConverter.xaml</DependentUpon>
     </Compile>
     <Compile Include="Issues\Unreported005.xaml.cs">
       <DependentUpon>Unreported005.xaml</DependentUpon>
@@ -385,6 +385,9 @@
     </Compile>
     <Compile Include="Issues\Unreported007.xaml.cs">
       <DependentUpon>Unreported007.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AcceptEmptyServiceProvider.xaml.cs">
+      <DependentUpon>AcceptEmptyServiceProvider.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
@@ -671,7 +674,7 @@
     <EmbeddedResource Include="XStaticException.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Include="CompiledTypeConverter.xaml" >
+    <EmbeddedResource Include="CompiledTypeConverter.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="Issues\Unreported005.xaml">
@@ -687,6 +690,9 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="Issues\Unreported007.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AcceptEmptyServiceProvider.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>
