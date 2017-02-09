@@ -51,6 +51,12 @@ namespace Xamarin.Forms.Platform.UWP
 		CommandBar _commandBar;
 		readonly ToolbarPlacementHelper _toolbarPlacementHelper = new ToolbarPlacementHelper();
 
+		public bool ShouldShowToolbar
+		{
+			get { return _toolbarPlacementHelper.ShouldShowToolBar; }
+			set { _toolbarPlacementHelper.ShouldShowToolBar = value; }
+		}
+
 		TaskCompletionSource<CommandBar> _commandBarTcs;
 		FrameworkElement _masterPresenter;
 		FrameworkElement _detailPresenter;
@@ -235,6 +241,8 @@ namespace Xamarin.Forms.Platform.UWP
 			_detailPresenter = GetTemplateChild("DetailPresenter") as FrameworkElement;
 
 			_commandBar = GetTemplateChild("CommandBar") as CommandBar;
+			_toolbarPlacementHelper.Initialize(_commandBar, () => ToolbarPlacement, GetTemplateChild);
+			
 			UpdateMode(); 
 
 			if (_commandBarTcs != null)

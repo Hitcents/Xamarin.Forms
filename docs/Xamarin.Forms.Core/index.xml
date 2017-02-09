@@ -143,9 +143,6 @@
         <Attribute>
           <AttributeName>Xamarin.Forms.Internals.Preserve</AttributeName>
         </Attribute>
-        <Attribute>
-          <AttributeName>Xamarin.Forms.XmlnsDefinition("http://xamarin.com/schemas/2014/forms", "Xamarin.Forms")</AttributeName>
-        </Attribute>
       </Attributes>
     </Assembly>
   </Assemblies>
@@ -341,6 +338,7 @@
       <Type Name="NavigationEventArgs" Kind="Class" />
       <Type Name="NavigationMenu" Kind="Class" />
       <Type Name="NavigationPage" Kind="Class" />
+      <Type Name="On" Kind="Class" />
       <Type Name="OnIdiom`1" DisplayName="OnIdiom&lt;T&gt;" Kind="Class" />
       <Type Name="OnPlatform`1" DisplayName="OnPlatform&lt;T&gt;" Kind="Class" />
       <Type Name="OpenGLView" Kind="Class" />
@@ -441,7 +439,6 @@
       <Type Name="WebView" Kind="Class" />
       <Type Name="WebViewSource" Kind="Class" />
       <Type Name="WebViewSourceTypeConverter" Kind="Class" />
-      <Type Name="XmlnsDefinitionAttribute" Kind="Class" />
     </Namespace>
     <Namespace Name="Xamarin.Forms.Internals">
       <Type Name="CellExtensions" Kind="Class" />
@@ -464,6 +461,7 @@
     <Namespace Name="Xamarin.Forms.PlatformConfiguration">
       <Type Name="Android" Kind="Class" />
       <Type Name="iOS" Kind="Class" />
+      <Type Name="Tizen" Kind="Class" />
       <Type Name="Windows" Kind="Class" />
     </Namespace>
     <Namespace Name="Xamarin.Forms.PlatformConfiguration.AndroidSpecific">

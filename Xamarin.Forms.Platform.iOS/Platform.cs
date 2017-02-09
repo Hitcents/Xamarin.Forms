@@ -45,22 +45,7 @@ namespace Xamarin.Forms.Platform.iOS
 			{
 				if (!PageIsChildOfPlatform(sender))
 					return;
-
-				if (Forms.IsiOS8OrNewer)
-				{
-					PresentAlert(arguments);
-				}
-				else
-				{
-					UIAlertView alertView;
-					if (arguments.Accept != null)
-						alertView = new UIAlertView(arguments.Title, arguments.Message, null, arguments.Cancel, arguments.Accept);
-					else
-						alertView = new UIAlertView(arguments.Title, arguments.Message, null, arguments.Cancel);
-
-					alertView.Dismissed += (o, args) => arguments.SetResult(args.ButtonIndex != 0);
-					alertView.Show();
-				}
+				PresentAlert(arguments);
 			});
 
 			MessagingCenter.Subscribe(this, Page.ActionSheetSignalName, (Page sender, ActionSheetArguments arguments) =>
@@ -71,28 +56,8 @@ namespace Xamarin.Forms.Platform.iOS
 				var pageRoot = sender;
 				while (!Application.IsApplicationOrNull(pageRoot.RealParent))
 					pageRoot = (Page)pageRoot.RealParent;
-				var pageRenderer = GetRenderer(pageRoot);
 
-				if (Forms.IsiOS8OrNewer)
-				{
-					PresentAlert(arguments);
-				}
-				else
-				{
-					var actionSheet = new UIActionSheet(arguments.Title, null, arguments.Cancel, arguments.Destruction, arguments.Buttons.ToArray());
-
-					actionSheet.ShowInView(pageRenderer.NativeView);
-
-					actionSheet.Clicked += (o, args) =>
-					{
-						string title = null;
-						if (args.ButtonIndex != -1)
-							title = actionSheet.ButtonTitle(args.ButtonIndex);
-
-						// iOS 8 always calls WillDismiss twice, once with the real result, and again with -1.
-						arguments.Result.TrySetResult(title);
-					};
-				}
+				PresentActionSheet(arguments);
 			});
 		}
 
@@ -416,10 +381,10 @@ namespace Xamarin.Forms.Platform.iOS
 					() => arguments.SetResult(true), window));
 			}
 
-			PresentAlert(window, alert);
+			PresentPopUp(window, alert);
 		}
 
-		void PresentAlert(ActionSheetArguments arguments)
+		void PresentActionSheet(ActionSheetArguments arguments)
 		{
 			var alert = UIAlertController.Create(arguments.Title, null, UIAlertControllerStyle.ActionSheet);
 			var window = new UIWindow { BackgroundColor = Color.Transparent.ToUIColor() };
@@ -444,10 +409,10 @@ namespace Xamarin.Forms.Platform.iOS
 				alert.AddAction(CreateActionWithWindowHide(blabel, UIAlertActionStyle.Default, () => arguments.SetResult(blabel), window));
 			}
 
-			PresentAlert(window, alert, arguments);
+			PresentPopUp(window, alert, arguments);
 		}
 
-		static void PresentAlert(UIWindow window, UIAlertController alert, ActionSheetArguments arguments = null)
+		static void PresentPopUp(UIWindow window, UIAlertController alert, ActionSheetArguments arguments = null)
 		{
 			window.RootViewController = new UIViewController();
 			window.RootViewController.View.BackgroundColor = Color.Transparent.ToUIColor();
@@ -469,6 +434,12 @@ namespace Xamarin.Forms.Platform.iOS
 				alert.PopoverPresentationController.SourceView = window.RootViewController.View;
 				alert.PopoverPresentationController.SourceRect = window.RootViewController.View.Bounds;
 				alert.PopoverPresentationController.PermittedArrowDirections = 0; // No arrow
+			}
+
+			if(!Forms.IsiOS9OrNewer)
+			{
+				// For iOS 8, we need to explicitly set the size of the window
+				window.Frame = new RectangleF(0, 0, UIScreen.MainScreen.Bounds.Width, UIScreen.MainScreen.Bounds.Height);
 			}
 
 			window.RootViewController.PresentViewController(alert, true, null);

@@ -87,6 +87,7 @@
     <Compile Include="DataTemplateSelector.cs" />
     <Compile Include="DateChangedEventArgs.cs" />
     <Compile Include="DelegateLogListener.cs" />
+    <Compile Include="Internals\EffectUtilities.cs" />
     <Compile Include="EnumerableExtensions.cs" />
     <Compile Include="PlatformConfiguration\AndroidSpecific\AppCompat\Application.cs" />
     <Compile Include="PlatformConfiguration\AndroidSpecific\Application.cs" />
@@ -94,10 +95,13 @@
     <Compile Include="PlatformConfiguration\ExtensionPoints.cs" />
     <Compile Include="PlatformConfiguration\iOSSpecific\NavigationPage.cs" />
     <Compile Include="PlatformConfiguration\iOSSpecific\Entry.cs" />
+    <Compile Include="PlatformConfiguration\iOSSpecific\Picker.cs" />
     <Compile Include="PlatformConfiguration\iOSSpecific\StatusBarTextColorMode.cs" />
     <Compile Include="PlatformConfiguration\iOSSpecific\Page.cs" />
     <Compile Include="PlatformConfiguration\iOSSpecific\StatusBarHiddenMode.cs" />
     <Compile Include="PlatformConfiguration\iOSSpecific\UIStatusBarAnimation.cs" />
+    <Compile Include="PlatformConfiguration\iOSSpecific\UpdateMode.cs" />
+    <Compile Include="PlatformConfiguration\iOSSpecific\VisualElement.cs" />
     <Compile Include="PlatformConfiguration\WindowsSpecific\MasterDetailPage.cs" />
     <Compile Include="PlatformConfiguration\WindowsSpecific\CollapseStyle.cs" />
     <Compile Include="Configuration.cs" />
@@ -365,7 +369,6 @@
     <Compile Include="Tweener.cs" />
     <Compile Include="IPlatformServices.cs" />
     <Compile Include="UriTypeConverter.cs" />
-    <Compile Include="ITimer.cs" />
     <Compile Include="IIsolatedStorageFile.cs" />
     <Compile Include="Grid.cs" />
     <Compile Include="GridCalc.cs" />

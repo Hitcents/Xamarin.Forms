@@ -28,8 +28,6 @@ namespace Xamarin.Forms.Platform.iOS
 
 		public PhoneMasterDetailRenderer()
 		{
-			if (!Forms.IsiOS7OrNewer)
-				WantsFullScreenLayout = true;
 		}
 
 		IMasterDetailPageController MasterDetailPageController => Element as IMasterDetailPageController;
@@ -171,7 +169,7 @@ namespace Xamarin.Forms.Platform.iOS
 
 				if (_tapGesture != null)
 				{
-					if (_clickOffView != null && _clickOffView.GestureRecognizers.Contains(_panGesture))
+					if (_clickOffView != null && _clickOffView.GestureRecognizers.Contains(_tapGesture))
 					{
 						_clickOffView.GestureRecognizers.Remove(_tapGesture);
 						_clickOffView.Dispose();
@@ -403,9 +401,7 @@ namespace Xamarin.Forms.Platform.iOS
 
 		void IEffectControlProvider.RegisterEffect(Effect effect)
 		{
-			var platformEffect = effect as PlatformEffect;
-			if (platformEffect != null)
-				platformEffect.Container = View;
+			VisualElementRenderer<VisualElement>.RegisterEffect(effect, View);
 		}
 	}
 }

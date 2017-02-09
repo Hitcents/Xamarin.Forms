@@ -23,11 +23,18 @@ namespace Xamarin.Forms.Platform.WinRT
 		CommandBar _commandBar;
 #if WINDOWS_UWP
 		readonly ToolbarPlacementHelper _toolbarPlacementHelper = new ToolbarPlacementHelper();
+
+		public bool ShouldShowToolbar
+		{
+			get { return _toolbarPlacementHelper.ShouldShowToolBar; }
+			set { _toolbarPlacementHelper.ShouldShowToolBar = value; }
+		}
 #endif
 		TaskCompletionSource<CommandBar> _commandBarTcs;
 	    ToolbarPlacement _toolbarPlacement;
+		
 
-	    public Brush ToolbarBackground
+		public Brush ToolbarBackground
 		{
 			get { return (Brush)GetValue(ToolbarBackgroundProperty); }
 			set { SetValue(ToolbarBackgroundProperty, value); }
@@ -72,6 +79,10 @@ namespace Xamarin.Forms.Platform.WinRT
 			base.OnApplyTemplate();
 			
 			_commandBar = GetTemplateChild("CommandBar") as CommandBar;
+
+#if WINDOWS_UWP
+			_toolbarPlacementHelper.Initialize(_commandBar, () => ToolbarPlacement, GetTemplateChild);
+#endif
 
 			TaskCompletionSource<CommandBar> tcs = _commandBarTcs;
 		    tcs?.SetResult(_commandBar);
