@@ -9,6 +9,7 @@ namespace Xamarin.Forms.Platform.Android
 {
 	public class ImageRenderer : ViewRenderer<Image, AImageView>
 	{
+		ImageSource _oldSource;
 		bool _isDisposed;
 
 		IElementController ElementController => Element as IElementController;
@@ -43,7 +44,7 @@ namespace Xamarin.Forms.Platform.Android
 				SetNativeControl(view);
 			}
 
-			UpdateBitmap(e.OldElement);
+			UpdateBitmap(e.OldElement?.Source);
 			UpdateAspect();
 		}
 
@@ -52,7 +53,7 @@ namespace Xamarin.Forms.Platform.Android
 			base.OnElementPropertyChanged(sender, e);
 
 			if (e.PropertyName == Image.SourceProperty.PropertyName)
-				UpdateBitmap();
+				UpdateBitmap(_oldSource);
 			else if (e.PropertyName == Image.AspectProperty.PropertyName)
 				UpdateAspect();
 		}
@@ -63,7 +64,7 @@ namespace Xamarin.Forms.Platform.Android
 			Control.SetScaleType(type);
 		}
 
-		async void UpdateBitmap(Image previous = null)
+		async void UpdateBitmap(ImageSource oldSource)
 		{
 			if (Device.IsInvokeRequired)
 				throw new InvalidOperationException("Image Bitmap must not be updated from background thread");
@@ -73,7 +74,9 @@ namespace Xamarin.Forms.Platform.Android
 			ImageSource source = Element.Source;
 			IImageSourceHandler handler;
 
-			if (previous != null && Equals(previous.Source, Element.Source))
+			if (oldSource != null && Equals(oldSource, source))
+				return;
+			if (oldSource is FileImageSource && source is FileImageSource && ((FileImageSource)oldSource).File == ((FileImageSource)source).File)
 				return;
 
 			((IImageController)Element).SetIsLoading(true);
@@ -105,6 +108,7 @@ namespace Xamarin.Forms.Platform.Android
 			if (!_isDisposed)
 			{
 				Control.SetImageBitmap(bitmap);
+				_oldSource = source;
 				bitmap?.Dispose();
 
 				((IImageController)Element).SetIsLoading(false);
