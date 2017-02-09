@@ -26,15 +26,11 @@ namespace Xamarin.Forms.Platform.UWP
 			{
 				// We have to wait for the command bar to load so that it'll be in the control hierarchy
 				// otherwise we can't properly move it to wherever the toolbar is supposed to be
-<<<<<<< HEAD
-				_commandBar.Loaded += (sender, args) => UpdateToolbarPlacement();
-=======
 				_commandBar.Loaded += (sender, args) =>
 				{
 					UpdateToolbarPlacement();
 					UpdateIsInValidLocation();
 				};
->>>>>>> 9b18ab9fb438a88c2be8a54aa3f567a9b1c398da
 			}
 		}
 
@@ -97,8 +93,6 @@ namespace Xamarin.Forms.Platform.UWP
 					toolbar.Content = titleArea;
 				}
 			}
-<<<<<<< HEAD
-=======
 		}
 
 		// For the time being, keeping this logic for dealing with consistency between the platforms
@@ -122,7 +116,6 @@ namespace Xamarin.Forms.Platform.UWP
 			{
 				formsCommandBar.IsInValidLocation = ShouldShowToolBar;
 			}
->>>>>>> 9b18ab9fb438a88c2be8a54aa3f567a9b1c398da
 		}
 	}
 }

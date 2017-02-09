@@ -196,10 +196,10 @@ namespace Xamarin.Forms.Platform.Android
 		{
 			base.OnScrollChanged(l, t, oldl, oldt);
 
-			UpdateScrollPosition(null, Forms.Context.FromPixels(t));
+			UpdateScrollPosition(Forms.Context.FromPixels(l), Forms.Context.FromPixels(t));
 		}
 
-		internal void UpdateScrollPosition(double? x, double? y)
+		internal void UpdateScrollPosition(double x, double y)
 		{
 			if (_view != null)
 			{
