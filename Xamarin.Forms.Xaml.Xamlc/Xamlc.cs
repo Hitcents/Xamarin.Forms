@@ -62,7 +62,7 @@ namespace Xamarin.Forms.Xaml
 				KeepXamlResources = keep,
 				OptimizeIL = optimize,
 				DependencyPaths = paths,
-				ReferencePath = refs
+				ReferencePath = refs,
 			};
 			xamlc.Execute(null);
 		}

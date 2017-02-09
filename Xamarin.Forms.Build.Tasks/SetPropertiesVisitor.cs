@@ -279,6 +279,7 @@ namespace Xamarin.Forms.Build.Tasks
 					foreach (var instruction in CompileBindingPath(node, context, vardefref.VariableDefinition))
 						yield return instruction;
 
+				var acceptEmptyServiceProvider = vardefref.VariableDefinition.VariableType.GetCustomAttribute(module.Import(typeof(AcceptEmptyServiceProviderAttribute))) != null;
 				var markExt = markupExtension.Resolve();
 				var provideValueInfo = markExt.Methods.First(md => md.Name == "ProvideValue");
 				var provideValue = module.Import(provideValueInfo);
@@ -287,26 +288,34 @@ namespace Xamarin.Forms.Build.Tasks
 
 				vardefref.VariableDefinition = new VariableDefinition(module.Import(genericArguments.First()));
 				yield return Instruction.Create(OpCodes.Ldloc, context.Variables[node]);
-				foreach (var instruction in node.PushServiceProvider(context, bpRef, propertyRef, propertyDeclaringTypeRef))
-					yield return instruction;
+				if (acceptEmptyServiceProvider)
+					yield return Instruction.Create(OpCodes.Ldnull);
+				else
+					foreach (var instruction in node.PushServiceProvider(context, bpRef, propertyRef, propertyDeclaringTypeRef))
+						yield return instruction;
 				yield return Instruction.Create(OpCodes.Callvirt, provideValue);
 				yield return Instruction.Create(OpCodes.Stloc, vardefref.VariableDefinition);
 			}
 			else if (context.Variables[node].VariableType.ImplementsInterface(module.Import(typeof (IMarkupExtension))))
 			{
+				var acceptEmptyServiceProvider = context.Variables[node].VariableType.GetCustomAttribute(module.Import(typeof(AcceptEmptyServiceProviderAttribute))) != null;
 				var markExt = module.Import(typeof (IMarkupExtension)).Resolve();
 				var provideValueInfo = markExt.Methods.First(md => md.Name == "ProvideValue");
 				var provideValue = module.Import(provideValueInfo);
 
 				vardefref.VariableDefinition = new VariableDefinition(module.TypeSystem.Object);
 				yield return Instruction.Create(OpCodes.Ldloc, context.Variables[node]);
-				foreach (var instruction in node.PushServiceProvider(context, bpRef, propertyRef, propertyDeclaringTypeRef))
-					yield return instruction;
+				if (acceptEmptyServiceProvider)
+					yield return Instruction.Create(OpCodes.Ldnull);
+				else
+					foreach (var instruction in node.PushServiceProvider(context, bpRef, propertyRef, propertyDeclaringTypeRef))
+						yield return instruction;
 				yield return Instruction.Create(OpCodes.Callvirt, provideValue);
 				yield return Instruction.Create(OpCodes.Stloc, vardefref.VariableDefinition);
 			}
 			else if (context.Variables[node].VariableType.ImplementsInterface(module.Import(typeof (IValueProvider))))
 			{
+				var acceptEmptyServiceProvider = context.Variables[node].VariableType.GetCustomAttribute(module.Import(typeof(AcceptEmptyServiceProviderAttribute))) != null;
 				var valueProviderType = context.Variables[node].VariableType;
 				//If the IValueProvider has a ProvideCompiledAttribute that can be resolved, shortcut this
 				var compiledValueProviderName = valueProviderType?.GetCustomAttribute(module.Import(typeof(ProvideCompiledAttribute)))?.ConstructorArguments?[0].Value as string;
@@ -330,8 +339,11 @@ namespace Xamarin.Forms.Build.Tasks
 
 				vardefref.VariableDefinition = new VariableDefinition(module.TypeSystem.Object);
 				yield return Instruction.Create(OpCodes.Ldloc, context.Variables[node]);
-				foreach (var instruction in node.PushServiceProvider(context, bpRef, propertyRef, propertyDeclaringTypeRef))
-					yield return instruction;
+				if (acceptEmptyServiceProvider)
+					yield return Instruction.Create(OpCodes.Ldnull);
+				else
+					foreach (var instruction in node.PushServiceProvider(context, bpRef, propertyRef, propertyDeclaringTypeRef))
+						yield return instruction;
 				yield return Instruction.Create(OpCodes.Callvirt, provideValue);
 				yield return Instruction.Create(OpCodes.Stloc, vardefref.VariableDefinition);
 			}
