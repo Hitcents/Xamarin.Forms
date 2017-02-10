@@ -122,8 +122,14 @@ namespace Xamarin.Forms.Platform.iOS
 
 				var imageView = Control;
 				if (imageView != null)
+				{
 					imageView.Image = uiimage;
-				_oldSource = source;
+					_oldSource = uiimage == null ? null : source;
+				}
+				else
+				{
+					_oldSource = null;
+				}
 
 				if (!_isDisposed)
 					((IVisualElementController)Element).NativeSizeChanged();

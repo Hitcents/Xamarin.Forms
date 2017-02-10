@@ -108,11 +108,15 @@ namespace Xamarin.Forms.Platform.Android
 			if (!_isDisposed)
 			{
 				Control.SetImageBitmap(bitmap);
-				_oldSource = source;
+				_oldSource = bitmap == null ? null : source;
 				bitmap?.Dispose();
 
 				((IImageController)Element).SetIsLoading(false);
 				((IVisualElementController)Element).NativeSizeChanged();
+			}
+			else
+			{
+				_oldSource = null;
 			}
 		}
 	}
