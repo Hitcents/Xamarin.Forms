@@ -47,7 +47,7 @@ namespace Xamarin.Forms.Platform.iOS
 					oldUIImage = null;
 				}
 			}
-
+			_oldSource = null;
 			_isDisposed = true;
 
 			base.Dispose(disposing);

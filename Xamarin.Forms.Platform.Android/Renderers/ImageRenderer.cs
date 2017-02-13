@@ -24,6 +24,7 @@ namespace Xamarin.Forms.Platform.Android
 			if (_isDisposed)
 				return;
 
+			_oldSource = null;
 			_isDisposed = true;
 
 			base.Dispose(disposing);
