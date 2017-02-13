@@ -63,6 +63,10 @@ namespace Xamarin.Forms.Platform.Android
 
 		void RecycleBitmap()
 		{
+			var imageView = Control;
+			if (imageView != null)
+				imageView.SetImageBitmap(null);
+
 			if (_bitmap != null)
 			{
 				_bitmap.Recycle();
