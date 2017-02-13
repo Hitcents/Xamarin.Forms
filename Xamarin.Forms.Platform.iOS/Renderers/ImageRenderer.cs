@@ -135,7 +135,10 @@ namespace Xamarin.Forms.Platform.iOS
 					((IVisualElementController)Element).NativeSizeChanged();
 			}
 			else
+			{
 				Control.Image = null;
+				_oldSource = null;
+			}
 
 			if (!_isDisposed)
 				((IImageController)Element).SetIsLoading(false);
