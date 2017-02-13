@@ -9,6 +9,7 @@ namespace Xamarin.Forms.Platform.Android
 {
 	public class ImageRenderer : ViewRenderer<Image, AImageView>
 	{
+		Bitmap _bitmap;
 		ImageSource _oldSource;
 		bool _isDisposed;
 
@@ -24,6 +25,7 @@ namespace Xamarin.Forms.Platform.Android
 			if (_isDisposed)
 				return;
 
+			RecycleBitmap();
 			_oldSource = null;
 			_isDisposed = true;
 
@@ -59,6 +61,16 @@ namespace Xamarin.Forms.Platform.Android
 				UpdateAspect();
 		}
 
+		void RecycleBitmap()
+		{
+			if (_bitmap != null)
+			{
+				_bitmap.Recycle();
+				_bitmap.Dispose();
+				_bitmap = null;
+			}
+		}
+
 		void UpdateAspect()
 		{
 			AImageView.ScaleType type = Element.Aspect.ToScaleType();
@@ -70,8 +82,6 @@ namespace Xamarin.Forms.Platform.Android
 			if (Device.IsInvokeRequired)
 				throw new InvalidOperationException("Image Bitmap must not be updated from background thread");
 
-			Bitmap bitmap = null;
-
 			ImageSource source = Element.Source;
 			IImageSourceHandler handler;
 
@@ -79,6 +89,9 @@ namespace Xamarin.Forms.Platform.Android
 				return;
 			if (oldSource is FileImageSource && source is FileImageSource && ((FileImageSource)oldSource).File == ((FileImageSource)source).File)
 				return;
+
+			var oldBitmap = _bitmap;
+			_bitmap = null;
 
 			((IImageController)Element).SetIsLoading(true);
 
@@ -88,6 +101,7 @@ namespace Xamarin.Forms.Platform.Android
 
 			Control.SetImageResource(global::Android.Resource.Color.Transparent);
 
+			Bitmap bitmap = null;
 			if (source != null && (handler = Registrar.Registered.GetHandler<IImageSourceHandler>(source.GetType())) != null)
 			{
 				try
@@ -103,20 +117,34 @@ namespace Xamarin.Forms.Platform.Android
 				}
 			}
 
+			//NOTE: if we get here and the source changed before the image handler could load the image
 			if (Element == null || !Equals(Element.Source, source))
+			{
+				if (bitmap != null)
+				{
+					bitmap.Recycle();
+					bitmap.Dispose();
+				}
 				return;
+			}
+
+			if (oldBitmap != null)
+			{
+				oldBitmap.Recycle();
+				oldBitmap.Dispose();
+			}
 
 			if (!_isDisposed)
 			{
-				Control.SetImageBitmap(bitmap);
+				Control.SetImageBitmap(_bitmap = bitmap);
 				_oldSource = bitmap == null ? null : source;
-				bitmap?.Dispose();
 
 				((IImageController)Element).SetIsLoading(false);
 				((IVisualElementController)Element).NativeSizeChanged();
 			}
 			else
 			{
+				RecycleBitmap();
 				_oldSource = null;
 			}
 		}
