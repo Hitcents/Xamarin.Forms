@@ -9,7 +9,6 @@ namespace Xamarin.Forms.Platform.Android
 {
 	public class ImageRenderer : ViewRenderer<Image, AImageView>
 	{
-		Bitmap _bitmap;
 		ImageSource _oldSource;
 		bool _isDisposed;
 
@@ -25,7 +24,7 @@ namespace Xamarin.Forms.Platform.Android
 			if (_isDisposed)
 				return;
 
-			RecycleBitmap();
+			Control?.SetImageBitmap(null);
 			_oldSource = null;
 			_isDisposed = true;
 
@@ -61,37 +60,6 @@ namespace Xamarin.Forms.Platform.Android
 				UpdateAspect();
 		}
 
-		void RecycleBitmap()
-		{
-			try
-			{
-				if (!_isDisposed)
-				{
-					var imageView = Control;
-					if (imageView != null)
-						imageView.SetImageBitmap(null);
-				}
-			}
-			catch (ObjectDisposedException)
-			{
-				//NOTE: this was happening and we are more interested in just getting this working for now
-			}
-
-			try
-			{ 
-				if (_bitmap != null)
-				{
-					_bitmap.Recycle();
-					_bitmap.Dispose();
-					_bitmap = null;
-				}
-			}
-			catch (ObjectDisposedException)
-			{
-				//NOTE: this was happening and we are more interested in just getting this working for now
-			}
-		}
-
 		void UpdateAspect()
 		{
 			AImageView.ScaleType type = Element.Aspect.ToScaleType();
@@ -110,9 +78,6 @@ namespace Xamarin.Forms.Platform.Android
 				return;
 			if (oldSource is FileImageSource && source is FileImageSource && ((FileImageSource)oldSource).File == ((FileImageSource)source).File)
 				return;
-
-			var oldBitmap = _bitmap;
-			_bitmap = null;
 
 			((IImageController)Element).SetIsLoading(true);
 
@@ -149,24 +114,13 @@ namespace Xamarin.Forms.Platform.Android
 				return;
 			}
 
-			if (oldBitmap != null)
-			{
-				oldBitmap.Recycle();
-				oldBitmap.Dispose();
-			}
-
 			if (!_isDisposed)
 			{
-				Control.SetImageBitmap(_bitmap = bitmap);
+				Control.SetImageBitmap(bitmap);
 				_oldSource = bitmap == null ? null : source;
 
 				((IImageController)Element).SetIsLoading(false);
 				((IVisualElementController)Element).NativeSizeChanged();
-			}
-			else
-			{
-				RecycleBitmap();
-				_oldSource = null;
 			}
 		}
 	}
