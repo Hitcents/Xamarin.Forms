@@ -20,7 +20,7 @@ namespace Xamarin.Forms.Platform.Android
 
 		ViewGroup _container;
 
-		protected bool _disposed;
+		bool _disposed;
 		EventHandler<VisualElement.FocusRequestArgs> _focusChangeHandler;
 
 		SoftInput _startingInputMode;
