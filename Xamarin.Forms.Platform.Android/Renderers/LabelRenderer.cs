@@ -22,7 +22,7 @@ namespace Xamarin.Forms.Platform.Android
 
 		Color _lastUpdateColor = Color.Default;
 		FormsTextView _view;
-		bool _wasFormatted, _disposed;
+		bool _wasFormatted;
 
 		public LabelRenderer()
 		{
@@ -31,9 +31,6 @@ namespace Xamarin.Forms.Platform.Android
 
 		public override SizeRequest GetDesiredSize(int widthConstraint, int heightConstraint)
 		{
-			if (_disposed)
-				return new SizeRequest();
-
 			if (_lastSizeRequest.HasValue)
 			{
 				// if we are measuring the same thing, no need to waste the time
@@ -74,13 +71,6 @@ namespace Xamarin.Forms.Platform.Android
 		protected override TextView CreateNativeControl()
 		{
 			return new FormsTextView(Context);
-		}
-
-		protected override void Dispose(bool disposing)
-		{
-			if (disposing)
-				_disposed = true;
-			base.Dispose(disposing);
 		}
 
 		protected override void OnElementChanged(ElementChangedEventArgs<Label> e)

@@ -35,7 +35,7 @@ namespace Xamarin.Forms
 		readonly List<Animation> _children;
 		readonly Easing _easing;
 		readonly Action _finished;
-		readonly Action<IAnimatable, double> _step;
+		readonly Action<double> _step;
 		double _beginAt;
 		double _finishAt;
 		bool _finishedTriggered;
@@ -44,17 +44,17 @@ namespace Xamarin.Forms
 		{
 			_children = new List<Animation>();
 			_easing = Easing.Linear;
-			_step = (v, f) => { };
+			_step = f => { };
 		}
 
-		public Animation(Action<IAnimatable, double> callback, double start = 0.0f, double end = 1.0f, Easing easing = null, Action finished = null)
+		public Animation(Action<double> callback, double start = 0.0f, double end = 1.0f, Easing easing = null, Action finished = null)
 		{
 			_children = new List<Animation>();
 			_easing = easing ?? Easing.Linear;
 			_finished = finished;
 
-			Func<IAnimatable, double, double> transform = AnimationExtensions.Interpolate<IAnimatable>(start, end);
-			_step = (v, f) => callback(v, transform(v, f));
+			Func<double, double> transform = AnimationExtensions.Interpolate(start, end);
+			_step = f => callback(transform(f));
 		}
 
 		public IEnumerator GetEnumerator()
@@ -78,18 +78,16 @@ namespace Xamarin.Forms
 			_children.Add(animation);
 		}
 
-		public void Commit<TView>(TView owner, string name, uint rate = 16, uint length = 250, Easing easing = null, Action<TView, double, bool> finished = null, Func<TView, bool> repeat = null)
-			where TView : IAnimatable
+		public void Commit(IAnimatable owner, string name, uint rate = 16, uint length = 250, Easing easing = null, Action<double, bool> finished = null, Func<bool> repeat = null)
 		{
 			owner.Animate(name, this, rate, length, easing, finished, repeat);
 		}
 
-		public Action<TView, double> GetCallback<TView>()
-			where TView : IAnimatable
+		public Action<double> GetCallback()
 		{
-			Action<TView, double> result = (v, f) =>
+			Action<double> result = f =>
 			{
-				_step(v, _easing.Ease(f));
+				_step(_easing.Ease(f));
 				foreach (Animation animation in _children)
 				{
 					if (animation._finishedTriggered)
@@ -100,8 +98,8 @@ namespace Xamarin.Forms
 					if (val <= 0.0f) // not ready to process yet
 						continue;
 
-					Action<TView, double> callback = animation.GetCallback<TView>();
-					callback(v, val);
+					Action<double> callback = animation.GetCallback();
+					callback(val);
 
 					if (val >= 1.0f)
 					{
@@ -128,7 +126,7 @@ namespace Xamarin.Forms
 			return this;
 		}
 
-		public Animation WithConcurrent(Action<IAnimatable, double> callback, double start = 0.0f, double end = 1.0f, Easing easing = null, double beginAt = 0.0f, double finishAt = 1.0f)
+		public Animation WithConcurrent(Action<double> callback, double start = 0.0f, double end = 1.0f, Easing easing = null, double beginAt = 0.0f, double finishAt = 1.0f)
 		{
 			var child = new Animation(callback, start, end, easing);
 			child._beginAt = beginAt;

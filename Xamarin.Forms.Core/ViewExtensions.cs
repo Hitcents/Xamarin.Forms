@@ -27,7 +27,16 @@ namespace Xamarin.Forms
 				easing = Easing.Linear;
 
 			var tcs = new TaskCompletionSource<bool>();
-			view.Animate("FadeTo", (v, x) => v.Opacity = x, view.Opacity, opacity, length: length, easing: easing, finished: (v, f, a) => tcs.SetResult(a));
+			var weakView = new WeakReference<VisualElement>(view);
+			Action<double> fade = f =>
+			{
+				VisualElement v;
+				if (weakView.TryGetTarget(out v))
+					v.Opacity = f;
+			};
+
+			new Animation(fade, view.Opacity, opacity, easing).Commit(view, "FadeTo", 16, length, finished: (f, a) => tcs.SetResult(a));
+
 			return tcs.Task;
 		}
 
@@ -49,7 +58,15 @@ namespace Xamarin.Forms
 
 				return new Rectangle(x, y, w, h);
 			};
-			view.Animate("LayoutTo", (v, f) => v.Layout(computeBounds(f)), 0, 1, length: length, easing: easing, finished: (v, f, a) => tcs.SetResult(a));
+			var weakView = new WeakReference<VisualElement>(view);
+			Action<double> layout = f =>
+			{
+				VisualElement v;
+				if (weakView.TryGetTarget(out v))
+					v.Layout(computeBounds(f));
+			};
+			new Animation(layout, 0, 1, easing).Commit(view, "LayoutTo", 16, length, finished: (f, a) => tcs.SetResult(a));
+
 			return tcs.Task;
 		}
 
@@ -75,7 +92,16 @@ namespace Xamarin.Forms
 				easing = Easing.Linear;
 
 			var tcs = new TaskCompletionSource<bool>();
-			view.Animate("RotateTo", (v, f) => v.Rotation = f, view.Rotation, rotation, length: length, easing: easing, finished: (v, f, a) => tcs.SetResult(a));
+			var weakView = new WeakReference<VisualElement>(view);
+			Action<double> rotate = f =>
+			{
+				VisualElement v;
+				if (weakView.TryGetTarget(out v))
+					v.Rotation = f;
+			};
+
+			new Animation(rotate, view.Rotation, rotation, easing).Commit(view, "RotateTo", 16, length, finished: (f, a) => tcs.SetResult(a));
+
 			return tcs.Task;
 		}
 
@@ -87,7 +113,16 @@ namespace Xamarin.Forms
 				easing = Easing.Linear;
 
 			var tcs = new TaskCompletionSource<bool>();
-			view.Animate("RotateXTo", (v, f) => v.RotationX = f, view.Rotation, rotation, length: length, easing: easing, finished: (v, f, a) => tcs.SetResult(a));
+			var weakView = new WeakReference<VisualElement>(view);
+			Action<double> rotatex = f =>
+			{
+				VisualElement v;
+				if (weakView.TryGetTarget(out v))
+					v.RotationX = f;
+			};
+
+			new Animation(rotatex, view.RotationX, rotation, easing).Commit(view, "RotateXTo", 16, length, finished: (f, a) => tcs.SetResult(a));
+
 			return tcs.Task;
 		}
 
@@ -99,7 +134,16 @@ namespace Xamarin.Forms
 				easing = Easing.Linear;
 
 			var tcs = new TaskCompletionSource<bool>();
-			view.Animate("RotateYTo", (v, f) => v.RotationY = f, view.Rotation, rotation, length: length, easing: easing, finished: (v, f, a) => tcs.SetResult(a));
+			var weakView = new WeakReference<VisualElement>(view);
+			Action<double> rotatey = f =>
+			{
+				VisualElement v;
+				if (weakView.TryGetTarget(out v))
+					v.RotationY = f;
+			};
+
+			new Animation(rotatey, view.RotationY, rotation, easing).Commit(view, "RotateYTo", 16, length, finished: (f, a) => tcs.SetResult(a));
+
 			return tcs.Task;
 		}
 
@@ -111,7 +155,16 @@ namespace Xamarin.Forms
 				easing = Easing.Linear;
 
 			var tcs = new TaskCompletionSource<bool>();
-			view.Animate("ScaleTo", (v, f) => v.Scale = f, view.Scale, scale, length: length, easing: easing, finished: (v, f, a) => tcs.SetResult(a));
+			var weakView = new WeakReference<VisualElement>(view);
+			Action<double> _scale = f =>
+			{
+				VisualElement v;
+				if (weakView.TryGetTarget(out v))
+					v.Scale = f;
+			};
+
+			new Animation(_scale, view.Scale, scale, easing).Commit(view, "ScaleTo", 16, length, finished: (f, a) => tcs.SetResult(a));
+
 			return tcs.Task;
 		}
 
@@ -122,10 +175,21 @@ namespace Xamarin.Forms
 			easing = easing ?? Easing.Linear;
 
 			var tcs = new TaskCompletionSource<bool>();
-			Action<IAnimatable, double> translateX = (v, f) => ((VisualElement)v).TranslationX = f;
-			Action<IAnimatable, double> translateY = (v, f) => ((VisualElement)v).TranslationY = f;
+			var weakView = new WeakReference<VisualElement>(view);
+			Action<double> translateX = f =>
+			{
+				VisualElement v;
+				if (weakView.TryGetTarget(out v))
+					v.TranslationX = f;
+			};
+			Action<double> translateY = f =>
+			{
+				VisualElement v;
+				if (weakView.TryGetTarget(out v))
+					v.TranslationY = f;
+			};
 			new Animation { { 0, 1, new Animation(translateX, view.TranslationX, x) }, { 0, 1, new Animation(translateY, view.TranslationY, y) } }.Commit(view, "TranslateTo", 16, length, easing,
-				(v, f, a) => tcs.SetResult(a));
+				(f, a) => tcs.SetResult(a));
 
 			return tcs.Task;
 		}
