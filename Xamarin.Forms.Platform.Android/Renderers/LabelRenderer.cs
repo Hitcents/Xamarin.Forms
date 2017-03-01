@@ -4,7 +4,6 @@ using Android.Content.Res;
 using Android.Graphics;
 using Android.Text;
 using Android.Util;
-using Android.Views;
 using Android.Widget;
 using AColor = Android.Graphics.Color;
 

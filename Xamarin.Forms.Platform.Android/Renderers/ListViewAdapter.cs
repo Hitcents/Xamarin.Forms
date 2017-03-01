@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using Android.Content;
-using Android.Runtime;
 using Android.Util;
 using Android.Views;
 using Android.Widget;
@@ -35,8 +34,6 @@ namespace Xamarin.Forms.Platform.Android
 
 		IListViewController Controller => _listView;
 		ITemplatedItemsView<Cell> TemplatedItemsView => _listView;
-
-		public ListViewAdapter(IntPtr javaReference, JniHandleOwnership transfer) : base(javaReference, transfer) { }
 
 		public ListViewAdapter(Context context, AListView realListView, ListView listView) : base(context)
 		{

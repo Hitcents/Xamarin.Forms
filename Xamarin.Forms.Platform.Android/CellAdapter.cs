@@ -3,7 +3,6 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using Android.App;
 using Android.Content;
-using Android.Runtime;
 using Android.Util;
 using Android.Views;
 using Android.Widget;
@@ -22,8 +21,6 @@ namespace Xamarin.Forms.Platform.Android
 		bool _actionModeNeedsUpdates;
 		AView _contextView;
 		global::Android.Support.V7.View.ActionMode _supportActionMode;
-
-		public CellAdapter(IntPtr javaReference, JniHandleOwnership transfer) : base(javaReference, transfer) { }
 
 		protected CellAdapter(Context context)
 		{

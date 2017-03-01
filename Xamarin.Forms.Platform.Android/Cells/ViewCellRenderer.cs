@@ -122,6 +122,7 @@ namespace Xamarin.Forms.Platform.Android
 				RemoveView(_view.ViewGroup);
 				Platform.SetRenderer(_viewCell.View, null);
 				_viewCell.View.IsPlatformEnabled = false;
+				_view.ViewGroup.Dispose();
 
 				_viewCell = cell;
 				_view = Platform.CreateRenderer(_viewCell.View);
