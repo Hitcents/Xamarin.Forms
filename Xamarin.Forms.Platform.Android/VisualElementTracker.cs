@@ -99,6 +99,10 @@ namespace Xamarin.Forms.Platform.Android
 
 		void HandlePropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
+			//HACK: seeing random crashes in our app
+			if (_renderer?.ViewGroup?.Handle == IntPtr.Zero)
+				return;
+
 			if (e.PropertyName == Layout.IsClippedToBoundsProperty.PropertyName)
 			{
 				UpdateClipToBounds();
