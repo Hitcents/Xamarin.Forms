@@ -16,8 +16,6 @@ namespace Xamarin.Forms.Platform.Android
 		ITableViewController Controller => _view;
 		Cell _restoreFocus;
 
-		public TableViewModelRenderer(IntPtr javaReference, JniHandleOwnership transfer) : base(javaReference, transfer) { }
-
 		public TableViewModelRenderer(Context context, AListView listView, TableView view) : base(context)
 		{
 			_view = view;
