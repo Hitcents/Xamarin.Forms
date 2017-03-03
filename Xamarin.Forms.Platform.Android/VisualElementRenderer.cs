@@ -91,7 +91,7 @@ namespace Xamarin.Forms.Platform.Android
 
 		public override bool OnInterceptTouchEvent(MotionEvent ev)
 		{
-			if (!Element.IsEnabled || Element.InputTransparent)
+			if (Element == null || !Element.IsEnabled || Element.InputTransparent)
 				return true;
 
 			return base.OnInterceptTouchEvent(ev);
@@ -99,7 +99,7 @@ namespace Xamarin.Forms.Platform.Android
 
 		bool IOnTouchListener.OnTouch(AView v, MotionEvent e)
 		{
-			if (!Element.IsEnabled)
+			if (Element == null || !Element.IsEnabled)
 				return true;
 
 			if (Element.InputTransparent)
