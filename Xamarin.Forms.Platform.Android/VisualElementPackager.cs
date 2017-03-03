@@ -88,7 +88,9 @@ namespace Xamarin.Forms.Platform.Android
 			Performance.Start("Add view");
 			if (!sameChildren)
 			{
-				_renderer.ViewGroup.AddView(renderer.ViewGroup);
+				if (_renderer.ViewGroup.Handle != IntPtr.Zero)
+					_renderer.ViewGroup.AddView(renderer.ViewGroup);
+
 				_childViews.Add(renderer);
 			}
 			Performance.Stop("Add view");
