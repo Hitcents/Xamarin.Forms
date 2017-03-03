@@ -186,7 +186,15 @@ namespace Xamarin.Forms.Platform.Android
 			}
 
 			if (_propertyChangeHandler == null)
-				_propertyChangeHandler = OnElementPropertyChanged;
+			{
+				//HACK: we are seeing situations where INPC fires and the renderer is disposed, this fix seems to work globally
+				_propertyChangeHandler = (sender, e) =>
+				{
+					if (Handle == IntPtr.Zero)
+						return;
+					OnElementPropertyChanged(sender, e);
+				};
+			}
 
 			element.PropertyChanged += _propertyChangeHandler;
 			SubscribeGestureRecognizers(element);

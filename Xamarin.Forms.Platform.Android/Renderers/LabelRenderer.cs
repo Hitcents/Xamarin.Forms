@@ -30,6 +30,9 @@ namespace Xamarin.Forms.Platform.Android
 
 		public override SizeRequest GetDesiredSize(int widthConstraint, int heightConstraint)
 		{
+			//HACK: Seeing some places the renderer is disposed and this happens
+			if (Handle == IntPtr.Zero)
+				return new SizeRequest();
 			if (_lastSizeRequest.HasValue)
 			{
 				// if we are measuring the same thing, no need to waste the time
