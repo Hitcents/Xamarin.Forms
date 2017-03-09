@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Android.Content;
 using Android.Runtime;
 using Android.Util;
@@ -6,8 +7,6 @@ using Android.Views;
 using Android.Widget;
 using AView = Android.Views.View;
 using AListView = Android.Widget.ListView;
-using System;
-using System.Collections.Generic;
 
 namespace Xamarin.Forms.Platform.Android
 {

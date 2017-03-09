@@ -63,8 +63,10 @@ namespace Xamarin.Forms.Xaml
 				OptimizeIL = optimize,
 				DependencyPaths = paths,
 				ReferencePath = refs,
+				DebugSymbols = true,
 			};
-			xamlc.Execute(null);
+			IList<Exception> _;
+			xamlc.Execute(out _);
 		}
 
 		static void ShowHelp(OptionSet ops)
