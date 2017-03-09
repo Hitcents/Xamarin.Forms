@@ -238,7 +238,7 @@ namespace Xamarin.Forms.Platform.Android
 
 		async void OnScrollToRequested(object sender, ScrollToRequestedEventArgs e)
 		{
-			if (!_isAttached)
+			if (!_isAttached || Handle == IntPtr.Zero)
 			{
 				return;
 			}

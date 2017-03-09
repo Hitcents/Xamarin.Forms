@@ -4,7 +4,6 @@ using Android.Content.Res;
 using Android.Graphics;
 using Android.Text;
 using Android.Util;
-using Android.Views;
 using Android.Widget;
 using AColor = Android.Graphics.Color;
 
@@ -31,6 +30,9 @@ namespace Xamarin.Forms.Platform.Android
 
 		public override SizeRequest GetDesiredSize(int widthConstraint, int heightConstraint)
 		{
+			//HACK: Seeing some places the renderer is disposed and this happens
+			if (Handle == IntPtr.Zero)
+				return new SizeRequest();
 			if (_lastSizeRequest.HasValue)
 			{
 				// if we are measuring the same thing, no need to waste the time
@@ -194,33 +196,26 @@ namespace Xamarin.Forms.Platform.Android
 
 		void UpdateText()
 		{
-			try
+			if (Element.FormattedText != null)
 			{
-				if (Element.FormattedText != null)
-				{
-					FormattedString formattedText = Element.FormattedText ?? Element.Text;
+				FormattedString formattedText = Element.FormattedText ?? Element.Text;
 #pragma warning disable 618 // We will need to update this when .Font goes away
-					_view.TextFormatted = formattedText.ToAttributed(Element.Font, Element.TextColor, _view);
+				_view.TextFormatted = formattedText.ToAttributed(Element.Font, Element.TextColor, _view);
 #pragma warning restore 618
-					_wasFormatted = true;
-				}
-				else
-				{
-					if (_wasFormatted)
-					{
-						_view.SetTextColor(_labelTextColorDefault);
-						_lastUpdateColor = Color.Default;
-					}
-					_view.Text = Element.Text;
-					UpdateColor();
-					UpdateFont();
-
-					_wasFormatted = false;
-				}
+				_wasFormatted = true;
 			}
-			catch (ObjectDisposedException)
+			else
 			{
-				//Getting Cannot access a disposed object Xamarin.Forms.Platform.Android.FormsTextView here.
+				if (_wasFormatted)
+				{
+					_view.SetTextColor(_labelTextColorDefault);
+					_lastUpdateColor = Color.Default;
+				}
+				_view.Text = Element.Text;
+				UpdateColor();
+				UpdateFont();
+
+				_wasFormatted = false;
 			}
 
 			_lastSizeRequest = null;

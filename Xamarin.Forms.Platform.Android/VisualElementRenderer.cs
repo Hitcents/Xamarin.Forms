@@ -88,7 +88,7 @@ namespace Xamarin.Forms.Platform.Android
 
 		public override bool OnInterceptTouchEvent(MotionEvent ev)
 		{
-			if (Element.InputTransparent && Element.IsEnabled)
+			if (Element != null && Element.InputTransparent && Element.IsEnabled)
 				return false;
 
 			return base.OnInterceptTouchEvent(ev);
@@ -96,7 +96,7 @@ namespace Xamarin.Forms.Platform.Android
 
 		bool IOnTouchListener.OnTouch(AView v, MotionEvent e)
 		{
-			if (!Element.IsEnabled)
+			if (Element == null || !Element.IsEnabled)
 				return true;
 
 			if (Element.InputTransparent)
@@ -175,7 +175,15 @@ namespace Xamarin.Forms.Platform.Android
 			}
 
 			if (_propertyChangeHandler == null)
-				_propertyChangeHandler = OnElementPropertyChanged;
+			{
+				//HACK: we are seeing situations where INPC fires and the renderer is disposed, this fix seems to work globally
+				_propertyChangeHandler = (sender, e) =>
+				{
+					if (Handle == IntPtr.Zero)
+						return;
+					OnElementPropertyChanged(sender, e);
+				};
+			}
 
 			element.PropertyChanged += _propertyChangeHandler;
 			SubscribeGestureRecognizers(element);

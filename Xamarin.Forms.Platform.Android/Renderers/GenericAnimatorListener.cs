@@ -16,6 +16,10 @@ namespace Xamarin.Forms.Platform.Android
 			if (OnCancel != null)
 				OnCancel(animation);
 			base.OnAnimationCancel(animation);
+
+			//NOTE: this seems to fix a leak on animated modals
+			OnCancel = OnRepeat = OnEnd = null;
+			animation.RemoveListener(this);
 		}
 
 		public override void OnAnimationEnd(Animator animation)
@@ -23,6 +27,10 @@ namespace Xamarin.Forms.Platform.Android
 			if (OnEnd != null)
 				OnEnd(animation);
 			base.OnAnimationEnd(animation);
+
+			//NOTE: this seems to fix a leak on animated modals
+			OnCancel = OnRepeat = OnEnd = null;
+			animation.RemoveListener(this);
 		}
 
 		public override void OnAnimationRepeat(Animator animation)

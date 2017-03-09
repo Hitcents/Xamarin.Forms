@@ -64,10 +64,18 @@ namespace Xamarin.Forms.Platform.Android
 
 		public override SizeRequest GetDesiredSize(int widthConstraint, int heightConstraint)
 		{
+			//HACK: Seeing some places the renderer is disposed and this happens
+			if (Handle == IntPtr.Zero)
+				return new SizeRequest();
 			if (Control == null)
 				return (base.GetDesiredSize(widthConstraint, heightConstraint));
 				        
 			AView view = _container == this ? (AView)Control : _container;
+
+			//HACK: Seeing some places the view is disposed and this happens
+			if (view.Handle == IntPtr.Zero)
+				return new SizeRequest();
+
 			view.Measure(widthConstraint, heightConstraint);
 
 			return new SizeRequest(new Size(Control.MeasuredWidth, Control.MeasuredHeight), MinimumSize());

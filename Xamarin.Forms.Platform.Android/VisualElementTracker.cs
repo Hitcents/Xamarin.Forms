@@ -109,6 +109,11 @@ namespace Xamarin.Forms.Platform.Android
 
 		void HandlePropertyChanged(object sender, PropertyChangedEventArgs e)
 		{
+			//HACK: Seeing some places the renderer is disposed and this happens
+			var obj = _renderer as Java.Lang.Object;
+			if (obj != null && obj.Handle == IntPtr.Zero)
+				return;
+
 			if (e.PropertyName == Layout.IsClippedToBoundsProperty.PropertyName)
 			{
 				UpdateClipToBounds();
@@ -213,6 +218,10 @@ namespace Xamarin.Forms.Platform.Android
 				{
 					AView view = _renderer.ViewGroup;
 
+					//HACK: Seeing some places the View is disposed and this happens
+					if (view.Handle == IntPtr.Zero)
+						return;
+
 					// ReSharper disable CompareOfFloatsByEqualityOperator
 					if (oldElement.AnchorX != newElement.AnchorX)
 						UpdateAnchorX();
@@ -295,6 +304,10 @@ namespace Xamarin.Forms.Platform.Android
 
 			VisualElement view = _renderer.Element;
 			AView aview = _renderer.ViewGroup;
+
+			//HACK: Seeing some places the View is disposed and this happens
+			if (aview.Handle == IntPtr.Zero)
+				return;
 
 			if (aview is FormsViewGroup)
 			{

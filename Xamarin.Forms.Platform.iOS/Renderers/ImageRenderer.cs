@@ -28,6 +28,7 @@ namespace Xamarin.Forms.Platform.iOS
 
 	public class ImageRenderer : ViewRenderer<Image, UIImageView>
 	{
+		ImageSource _oldSource;
 		bool _isDisposed;
 
 		IElementController ElementController => Element as IElementController;
@@ -46,7 +47,7 @@ namespace Xamarin.Forms.Platform.iOS
 					oldUIImage = null;
 				}
 			}
-
+			_oldSource = null;
 			_isDisposed = true;
 
 			base.Dispose(disposing);
@@ -65,7 +66,7 @@ namespace Xamarin.Forms.Platform.iOS
 			if (e.NewElement != null)
 			{
 				SetAspect();
-				SetImage(e.OldElement);
+				SetImage(e.OldElement?.Source);
 				SetOpacity();
 			}
 
@@ -76,7 +77,7 @@ namespace Xamarin.Forms.Platform.iOS
 		{
 			base.OnElementPropertyChanged(sender, e);
 			if (e.PropertyName == Image.SourceProperty.PropertyName)
-				SetImage();
+				SetImage(_oldSource);
 			else if (e.PropertyName == Image.IsOpaqueProperty.PropertyName)
 				SetOpacity();
 			else if (e.PropertyName == Image.AspectProperty.PropertyName)
@@ -88,13 +89,12 @@ namespace Xamarin.Forms.Platform.iOS
 			Control.ContentMode = Element.Aspect.ToUIViewContentMode();
 		}
 
-		async void SetImage(Image oldElement = null)
+		async void SetImage(ImageSource oldSource)
 		{
 			var source = Element.Source;
 
-			if (oldElement != null)
+			if (oldSource != null)
 			{
-				var oldSource = oldElement.Source;
 				if (Equals(oldSource, source))
 					return;
 
@@ -122,13 +122,23 @@ namespace Xamarin.Forms.Platform.iOS
 
 				var imageView = Control;
 				if (imageView != null)
+				{
 					imageView.Image = uiimage;
+					_oldSource = uiimage == null ? null : source;
+				}
+				else
+				{
+					_oldSource = null;
+				}
 
 				if (!_isDisposed)
 					((IVisualElementController)Element).NativeSizeChanged();
 			}
 			else
+			{
 				Control.Image = null;
+				_oldSource = null;
+			}
 
 			if (!_isDisposed)
 				((IImageController)Element).SetIsLoading(false);

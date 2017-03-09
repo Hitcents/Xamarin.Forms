@@ -9,6 +9,7 @@ namespace Xamarin.Forms.Platform.Android
 {
 	public class ImageRenderer : ViewRenderer<Image, AImageView>
 	{
+		ImageSource _oldSource;
 		bool _isDisposed;
 
 		IElementController ElementController => Element as IElementController;
@@ -23,6 +24,8 @@ namespace Xamarin.Forms.Platform.Android
 			if (_isDisposed)
 				return;
 
+			Control?.SetImageBitmap(null);
+			_oldSource = null;
 			_isDisposed = true;
 
 			base.Dispose(disposing);
@@ -43,7 +46,7 @@ namespace Xamarin.Forms.Platform.Android
 				SetNativeControl(view);
 			}
 
-			UpdateBitmap(e.OldElement);
+			UpdateBitmap(e.OldElement?.Source);
 			UpdateAspect();
 		}
 
@@ -52,7 +55,7 @@ namespace Xamarin.Forms.Platform.Android
 			base.OnElementPropertyChanged(sender, e);
 
 			if (e.PropertyName == Image.SourceProperty.PropertyName)
-				UpdateBitmap();
+				UpdateBitmap(_oldSource);
 			else if (e.PropertyName == Image.AspectProperty.PropertyName)
 				UpdateAspect();
 		}
@@ -63,17 +66,17 @@ namespace Xamarin.Forms.Platform.Android
 			Control.SetScaleType(type);
 		}
 
-		async void UpdateBitmap(Image previous = null)
+		async void UpdateBitmap(ImageSource oldSource)
 		{
 			if (Device.IsInvokeRequired)
 				throw new InvalidOperationException("Image Bitmap must not be updated from background thread");
 
-			Bitmap bitmap = null;
-
 			ImageSource source = Element.Source;
 			IImageSourceHandler handler;
 
-			if (previous != null && Equals(previous.Source, Element.Source))
+			if (oldSource != null && Equals(oldSource, source))
+				return;
+			if (oldSource is FileImageSource && source is FileImageSource && ((FileImageSource)oldSource).File == ((FileImageSource)source).File)
 				return;
 
 			((IImageController)Element).SetIsLoading(true);
@@ -84,6 +87,7 @@ namespace Xamarin.Forms.Platform.Android
 
 			Control.SetImageResource(global::Android.Resource.Color.Transparent);
 
+			Bitmap bitmap = null;
 			if (source != null && (handler = Registrar.Registered.GetHandler<IImageSourceHandler>(source.GetType())) != null)
 			{
 				try
@@ -99,13 +103,21 @@ namespace Xamarin.Forms.Platform.Android
 				}
 			}
 
+			//NOTE: if we get here and the source changed before the image handler could load the image
 			if (Element == null || !Equals(Element.Source, source))
+			{
+				if (bitmap != null)
+				{
+					bitmap.Recycle();
+					bitmap.Dispose();
+				}
 				return;
+			}
 
 			if (!_isDisposed)
 			{
 				Control.SetImageBitmap(bitmap);
-				bitmap?.Dispose();
+				_oldSource = bitmap == null ? null : source;
 
 				((IImageController)Element).SetIsLoading(false);
 				((IVisualElementController)Element).NativeSizeChanged();

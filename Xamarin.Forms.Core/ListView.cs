@@ -393,23 +393,30 @@ namespace Xamarin.Forms
 
 		internal void NotifyRowTapped(int groupIndex, int inGroupIndex, Cell cell = null)
 		{
-			var group = TemplatedItems.GetGroup(groupIndex);
-
-			bool changed = _previousGroupSelected != groupIndex || _previousRowSelected != inGroupIndex;
-
-			_previousRowSelected = inGroupIndex;
-			_previousGroupSelected = groupIndex;
-			if (cell == null)
+			try
 			{
-				cell = group[inGroupIndex];
+				var group = TemplatedItems.GetGroup(groupIndex);
+
+				bool changed = _previousGroupSelected != groupIndex || _previousRowSelected != inGroupIndex;
+
+				_previousRowSelected = inGroupIndex;
+				_previousGroupSelected = groupIndex;
+				if (cell == null)
+				{
+					cell = group[inGroupIndex];
+				}
+
+				// Set SelectedItem before any events so we don't override any changes they may have made.
+				SetValueCore(SelectedItemProperty, cell.BindingContext, SetValueFlags.ClearOneWayBindings | SetValueFlags.ClearDynamicResource | (changed ? SetValueFlags.RaiseOnEqual : 0));
+
+				cell.OnTapped();
+
+				ItemTapped?.Invoke(this, new ItemTappedEventArgs(ItemsSource.Cast<object>().ElementAt(groupIndex), cell.BindingContext));
 			}
-
-			// Set SelectedItem before any events so we don't override any changes they may have made.
-			SetValueCore(SelectedItemProperty, cell.BindingContext, SetValueFlags.ClearOneWayBindings | SetValueFlags.ClearDynamicResource | (changed ? SetValueFlags.RaiseOnEqual : 0));
-
-			cell.OnTapped();
-
-			ItemTapped?.Invoke(this, new ItemTappedEventArgs(ItemsSource.Cast<object>().ElementAt(groupIndex), cell.BindingContext));
+			catch (ArgumentOutOfRangeException)
+			{
+				//NOTE: we got HockeyApp reports showing this if the list refreshes during a tap
+			}
 		}
 
 		internal void NotifyRowTapped(int index, Cell cell = null)
