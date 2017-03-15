@@ -125,6 +125,9 @@ namespace Xamarin.Forms.Platform.Android
 
 		public virtual SizeRequest GetDesiredSize(int widthConstraint, int heightConstraint)
 		{
+			//HACK: Seeing some places the renderer is disposed and this happens
+			if (Handle == IntPtr.Zero)
+				return new SizeRequest();
 			Measure(widthConstraint, heightConstraint);
 			return new SizeRequest(new Size(MeasuredWidth, MeasuredHeight), MinimumSize());
 		}
