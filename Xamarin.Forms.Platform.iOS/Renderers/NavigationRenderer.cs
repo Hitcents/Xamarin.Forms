@@ -1,12 +1,14 @@
+using CoreGraphics;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
-using CoreGraphics;
 using UIKit;
 using Xamarin.Forms.Internals;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
+using static Xamarin.Forms.PlatformConfiguration.iOSSpecific.Page;
+using PageUIStatusBarAnimation = Xamarin.Forms.PlatformConfiguration.iOSSpecific.UIStatusBarAnimation;
 using PointF = CoreGraphics.CGPoint;
 using RectangleF = CoreGraphics.CGRect;
 
@@ -152,7 +154,7 @@ namespace Xamarin.Forms.Platform.iOS
 
 			var toolbar = _secondaryToolbar;
 			// Use 0 if the NavBar is hidden or will be hidden
-			var toolbarY = NavigationBarHidden || !NavigationPage.GetHasNavigationBar(Current) ? 0 : navBarFrame.Bottom;
+			var toolbarY = NavigationBarHidden || NavigationBar.Translucent || !NavigationPage.GetHasNavigationBar(Current) ? 0 : navBarFrame.Bottom;
 			toolbar.Frame = new RectangleF(0, toolbarY, View.Frame.Width, toolbar.Frame.Height);
 
 			double trueBottom = toolbar.Hidden ? toolbarY : toolbar.Frame.Bottom;
@@ -180,13 +182,7 @@ namespace Xamarin.Forms.Platform.iOS
 		{
 			base.ViewDidLoad();
 
-			if (Forms.IsiOS7OrNewer)
-			{
-				
-				UpdateTranslucent();
-			}
-			else
-				WantsFullScreenLayout = false;
+			UpdateTranslucent();
 
 			_secondaryToolbar = new SecondaryToolbar { Frame = new RectangleF(0, 0, 320, 44) };
 			View.Add(_secondaryToolbar);
@@ -430,7 +426,7 @@ namespace Xamarin.Forms.Platform.iOS
 				UpdateTint();
 			if (e.PropertyName == NavigationPage.BarBackgroundColorProperty.PropertyName)
 				UpdateBarBackgroundColor();
-			else if (e.PropertyName == NavigationPage.BarTextColorProperty.PropertyName)
+			else if (e.PropertyName == NavigationPage.BarTextColorProperty.PropertyName || e.PropertyName == PlatformConfiguration.iOSSpecific.NavigationPage.StatusBarTextColorModeProperty.PropertyName)
 				UpdateBarTextColor();
 			else if (e.PropertyName == VisualElement.BackgroundColorProperty.PropertyName)
 				UpdateBackgroundColor();
@@ -438,15 +434,20 @@ namespace Xamarin.Forms.Platform.iOS
 				Current = ((NavigationPage)Element).CurrentPage;
 			else if (e.PropertyName == PlatformConfiguration.iOSSpecific.NavigationPage.IsNavigationBarTranslucentProperty.PropertyName)
 				UpdateTranslucent();
+			else if (e.PropertyName == PreferredStatusBarUpdateAnimationProperty.PropertyName)
+				UpdateCurrentPagePreferredStatusBarUpdateAnimation();
+		}
+
+		void UpdateCurrentPagePreferredStatusBarUpdateAnimation()
+		{
+			// Not using the extension method syntax here because for some reason it confuses the mono compiler
+			// and throws a CS0121 error
+			PageUIStatusBarAnimation animation = PlatformConfiguration.iOSSpecific.Page.PreferredStatusBarUpdateAnimation(((Page)Element).OnThisPlatform());
+			PlatformConfiguration.iOSSpecific.Page.SetPreferredStatusBarUpdateAnimation(Current.OnThisPlatform(), animation);
 		}
 
 		void UpdateTranslucent()
 		{
-			if (!Forms.IsiOS7OrNewer)
-			{
-				return;
-			}
-
 			NavigationBar.Translucent = ((NavigationPage)Element).OnThisPlatform().IsNavigationBarTranslucent();
 		}
 
@@ -559,18 +560,9 @@ namespace Xamarin.Forms.Platform.iOS
 		{
 			var barBackgroundColor = ((NavigationPage)Element).BarBackgroundColor;
 			// Set navigation bar background color
-			if (Forms.IsiOS7OrNewer)
-			{
-				NavigationBar.BarTintColor = barBackgroundColor == Color.Default
-					? UINavigationBar.Appearance.BarTintColor
-					: barBackgroundColor.ToUIColor();
-			}
-			else
-			{
-				NavigationBar.TintColor = barBackgroundColor == Color.Default
-					? UINavigationBar.Appearance.TintColor
-					: barBackgroundColor.ToUIColor();
-			}
+			NavigationBar.BarTintColor = barBackgroundColor == Color.Default
+				? UINavigationBar.Appearance.BarTintColor
+				: barBackgroundColor.ToUIColor();
 		}
 
 		void UpdateBarTextColor()
@@ -601,23 +593,22 @@ namespace Xamarin.Forms.Platform.iOS
 				NavigationBar.TitleTextAttributes = titleAttributes;
 			}
 
-			// set Tint color (i. e. Back Button arrow and Text)
-			if (Forms.IsiOS7OrNewer)
-			{
-				NavigationBar.TintColor = barTextColor == Color.Default
-					? UINavigationBar.Appearance.TintColor
-					: barTextColor.ToUIColor();
-			}
+			var statusBarColorMode = (Element as NavigationPage).OnThisPlatform().GetStatusBarTextColorMode();
 
-			if (barTextColor.Luminosity > 0.5)
-			{
-				// Use light text color for status bar
-				UIApplication.SharedApplication.StatusBarStyle = UIStatusBarStyle.LightContent;
-			}
-			else
+			// set Tint color (i. e. Back Button arrow and Text)
+			NavigationBar.TintColor = barTextColor == Color.Default || statusBarColorMode == StatusBarTextColorMode.DoNotAdjust
+				? UINavigationBar.Appearance.TintColor
+				: barTextColor.ToUIColor();
+
+			if (statusBarColorMode == StatusBarTextColorMode.DoNotAdjust || barTextColor.Luminosity <= 0.5)
 			{
 				// Use dark text color for status bar
 				UIApplication.SharedApplication.StatusBarStyle = UIStatusBarStyle.Default;
+			}
+			else
+			{
+				// Use light text color for status bar
+				UIApplication.SharedApplication.StatusBarStyle = UIStatusBarStyle.LightContent;
 			}
 		}
 
@@ -665,18 +656,13 @@ namespace Xamarin.Forms.Platform.iOS
 #pragma warning disable 0618 //retaining legacy call to obsolete code
 			var tintColor = ((NavigationPage)Element).Tint;
 #pragma warning restore 0618
-			if (Forms.IsiOS7OrNewer)
-			{
-				NavigationBar.BarTintColor = tintColor == Color.Default
-					? UINavigationBar.Appearance.BarTintColor
-					: tintColor.ToUIColor();
-				if (tintColor == Color.Default)
-					NavigationBar.TintColor = UINavigationBar.Appearance.TintColor;
-				else
-					NavigationBar.TintColor = tintColor.Luminosity > 0.5 ? UIColor.Black : UIColor.White;
-			}
+			NavigationBar.BarTintColor = tintColor == Color.Default
+				? UINavigationBar.Appearance.BarTintColor
+				: tintColor.ToUIColor();
+			if (tintColor == Color.Default)
+				NavigationBar.TintColor = UINavigationBar.Appearance.TintColor;
 			else
-				NavigationBar.TintColor = tintColor == Color.Default ? null : tintColor.ToUIColor();
+				NavigationBar.TintColor = tintColor.Luminosity > 0.5 ? UIColor.Black : UIColor.White;
 		}
 
 		void UpdateToolBarVisible()
@@ -762,8 +748,7 @@ namespace Xamarin.Forms.Platform.iOS
 
 			public ParentingViewController(NavigationRenderer navigation)
 			{
-				if (Forms.IsiOS7OrNewer)
-					AutomaticallyAdjustsScrollViewInsets = false;
+				AutomaticallyAdjustsScrollViewInsets = false;
 
 				_navigation = new WeakReference<NavigationRenderer>(navigation);
 			}
@@ -839,7 +824,13 @@ namespace Xamarin.Forms.Platform.iOS
 			public override void ViewWillAppear(bool animated)
 			{
 				UpdateNavigationBarVisibility(animated);
-				EdgesForExtendedLayout = UIRectEdge.None;
+
+				NavigationRenderer n;
+				var isTranslucent = false;
+				if (_navigation.TryGetTarget(out n))
+					isTranslucent = n.NavigationBar.Translucent;
+				EdgesForExtendedLayout = isTranslucent ? UIRectEdge.All : UIRectEdge.None;
+
 				base.ViewWillAppear(animated);
 			}
 
@@ -882,6 +873,14 @@ namespace Xamarin.Forms.Platform.iOS
 					NavigationItem.Title = Child.Title;
 				else if (e.PropertyName == NavigationPage.HasBackButtonProperty.PropertyName)
 					UpdateHasBackButton();
+				else if (e.PropertyName == PrefersStatusBarHiddenProperty.PropertyName)
+					UpdatePrefersStatusBarHidden();
+			}
+
+			void UpdatePrefersStatusBarHidden()
+			{
+				View.SetNeedsLayout();
+				ParentViewController?.View.SetNeedsLayout();
 			}
 
 			void TrackerOnCollectionChanged(object sender, EventArgs eventArgs)
@@ -978,11 +977,14 @@ namespace Xamarin.Forms.Platform.iOS
 			public override bool ShouldAutomaticallyForwardRotationMethods => true;
 		}
 
+		public override UIViewController ChildViewControllerForStatusBarHidden()
+		{
+			return (UIViewController)Platform.GetRenderer(Current);
+		}
+		
 		void IEffectControlProvider.RegisterEffect(Effect effect)
 		{
-			var platformEffect = effect as PlatformEffect;
-			if (platformEffect != null)
-				platformEffect.Container = View;
+			VisualElementRenderer<VisualElement>.RegisterEffect(effect, View);
 		}
 	}
 }

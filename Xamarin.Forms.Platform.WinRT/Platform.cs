@@ -32,6 +32,10 @@ namespace Xamarin.Forms.Platform.WinRT
 	{
 		internal static readonly BindableProperty RendererProperty = BindableProperty.CreateAttached("Renderer", typeof(IVisualElementRenderer), typeof(Platform), default(IVisualElementRenderer));
 
+#if WINDOWS_UWP
+		internal static StatusBar MobileStatusBar => ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar") ? StatusBar.GetForCurrentView() : null;
+#endif
+
 		public static IVisualElementRenderer GetRenderer(VisualElement element)
 		{
 			return (IVisualElementRenderer)element.GetValue(RendererProperty);
@@ -79,13 +83,26 @@ namespace Xamarin.Forms.Platform.WinRT
 
 			UpdateBounds();
 
-
 #if WINDOWS_UWP
-			if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+			StatusBar statusBar = MobileStatusBar;
+			if (statusBar != null)
 			{
-				StatusBar statusBar = StatusBar.GetForCurrentView();
 				statusBar.Showing += (sender, args) => UpdateBounds();
 				statusBar.Hiding += (sender, args) => UpdateBounds();
+
+				// UWP 14393 Bug: If RequestedTheme is Light (which it is by default), then the 
+				// status bar uses White Foreground with White Background. 
+				// UWP 10586 Bug: If RequestedTheme is Light (which it is by default), then the 
+				// status bar uses Black Foreground with Black Background. 
+				// Since the Light theme should have a Black on White status bar, we will set it explicitly. 
+				// This can be overriden by setting the status bar colors in App.xaml.cs OnLaunched.
+
+				if (statusBar.BackgroundColor == null && statusBar.ForegroundColor == null && Windows.UI.Xaml.Application.Current.RequestedTheme == ApplicationTheme.Light)
+				{
+					statusBar.BackgroundColor = Colors.White;
+					statusBar.ForegroundColor = Colors.Black;
+					statusBar.BackgroundOpacity = 1;
+				}
 			}
 #endif
 		}
@@ -98,9 +115,8 @@ namespace Xamarin.Forms.Platform.WinRT
 			_navModel.Clear();
 
 			_navModel.Push(newRoot, null);
-			newRoot.NavigationProxy.Inner = this;
 			SetCurrent(newRoot, false, true);
-			((Application)newRoot.RealParent).NavigationProxy.Inner = this;
+			Application.Current.NavigationProxy.Inner = this;
 		}
 
 		public IReadOnlyList<Page> NavigationStack
@@ -171,7 +187,6 @@ namespace Xamarin.Forms.Platform.WinRT
 			var tcs = new TaskCompletionSource<bool>();
 			_navModel.PushModal(page);
 			SetCurrent(page, animated, completedCallback: () => tcs.SetResult(true));
-			page.NavigationProxy.Inner = this;
 			return tcs.Task;
 		}
 
@@ -198,14 +213,14 @@ namespace Xamarin.Forms.Platform.WinRT
 			return new SizeRequest();
 		}
 
-		internal virtual Rectangle WindowBounds
+		internal virtual Rectangle ContainerBounds
 		{
 			get { return _bounds; }
 		}
 
 		internal void UpdatePageSizes()
 		{
-			Rectangle bounds = WindowBounds;
+			Rectangle bounds = ContainerBounds;
 			if (bounds.IsEmpty)
 				return;
 			foreach (Page root in _navModel.Roots)
@@ -281,13 +296,16 @@ namespace Xamarin.Forms.Platform.WinRT
 				button.Command = new MenuItemCommand(item);
 				button.DataContext = item;
 
-#if WINDOWS_UWP
-				toolBarProvider?.BindForegroundColor(button);
-#endif
 
 				ToolbarItemOrder order = item.Order == ToolbarItemOrder.Default ? ToolbarItemOrder.Primary : item.Order;
+
 				if (order == ToolbarItemOrder.Primary)
+				{
+#if WINDOWS_UWP
+					toolBarProvider?.BindForegroundColor(button);
+#endif
 					commandBar.PrimaryCommands.Add(button);
+				}
 				else
 					commandBar.SecondaryCommands.Add(button);
 			}
@@ -420,28 +438,7 @@ namespace Xamarin.Forms.Platform.WinRT
 
 		void UpdateBounds()
 		{
-			_bounds = new Rectangle(0, 0, _page.ActualWidth, _page.ActualHeight);
-#if WINDOWS_UWP
-			if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
-			{
-				StatusBar statusBar = StatusBar.GetForCurrentView();
-
-				bool landscape = Device.Info.CurrentOrientation.IsLandscape();
-				bool titleBar = CoreApplication.GetCurrentView().TitleBar.IsVisible;
-				double offset = landscape ? statusBar.OccludedRect.Width : statusBar.OccludedRect.Height;
-
-				_bounds = new Rectangle(0, 0, _page.ActualWidth - (landscape ? offset : 0), _page.ActualHeight - (landscape ? 0 : offset));
-
-				// Even if the MainPage is a ContentPage not inside of a NavigationPage, the calculated bounds
-				// assume the TitleBar is there even if it isn't visible. When UpdatePageSizes is called,
-				// _container.ActualWidth is correct because it's aware that the TitleBar isn't there, but the
-				// bounds aren't, and things can subsequently run under the StatusBar.
-				if (!titleBar)
-				{
-					_bounds.Width -= (_bounds.Width - _container.ActualWidth);
-				}
-			}
-#endif
+			_bounds = new Rectangle(0, 0, _container.ActualWidth, _container.ActualHeight);
 		}
 
 		void OnRendererSizeChanged(object sender, SizeChangedEventArgs sizeChangedEventArgs)
@@ -467,7 +464,7 @@ namespace Xamarin.Forms.Platform.WinRT
 					previousPage.Cleanup();
 			}
 
-			newPage.Layout(new Rectangle(0, 0, _page.ActualWidth, _page.ActualHeight));
+			newPage.Layout(ContainerBounds);
 
 			IVisualElementRenderer pageRenderer = newPage.GetOrCreateRenderer();
 			_container.Children.Add(pageRenderer.ContainerElement);
@@ -712,7 +709,7 @@ namespace Xamarin.Forms.Platform.WinRT
 
 			if (Device.Idiom == TargetIdiom.Phone)
 			{
-				double height = WindowBounds.Height;
+				double height = _page.ActualHeight;
 				stack.Height = height;
 				stack.Width = size.Width;
 				border.BorderThickness = new Windows.UI.Xaml.Thickness(0);
@@ -747,8 +744,41 @@ namespace Xamarin.Forms.Platform.WinRT
 				dialog.CancelCommandIndex = (uint)dialog.Commands.Count - 1;
 			}
 
-			IUICommand command = await dialog.ShowAsync();
-			options.SetResult(command.Label == options.Accept);
+			if (Device.IsInvokeRequired)
+			{
+				Device.BeginInvokeOnMainThread(async () =>
+				{
+					IUICommand command = await dialog.ShowAsyncQueue();
+					options.SetResult(command.Label == options.Accept);
+				});
+			}
+			else
+			{
+				IUICommand command = await dialog.ShowAsyncQueue();
+				options.SetResult(command.Label == options.Accept);
+			}
+		}
+	}
+	
+	// refer to http://stackoverflow.com/questions/29209954/multiple-messagedialog-app-crash for why this is used
+	// in order to allow for multiple MessageDialogs, or a crash occurs otherwise
+	public static class MessageDialogExtensions
+	{
+		static TaskCompletionSource<MessageDialog> _currentDialogShowRequest;
+
+		public static async Task<IUICommand> ShowAsyncQueue(this MessageDialog dialog)
+		{
+			while (_currentDialogShowRequest != null)
+			{
+				await _currentDialogShowRequest.Task;
+			}
+
+			var request = _currentDialogShowRequest = new TaskCompletionSource<MessageDialog>();
+			var result = await dialog.ShowAsync();
+			_currentDialogShowRequest = null;
+			request.SetResult(dialog);
+
+			return result;
 		}
 	}
 }

@@ -98,6 +98,10 @@ namespace Xamarin.Forms
 				return;
 
 			object oldContext = bindable._inheritedContext;
+
+			if (ReferenceEquals(oldContext, value))
+				return;
+
 			if (bpContext != null && oldContext == null)
 				oldContext = bpContext.Value;
 
@@ -108,9 +112,6 @@ namespace Xamarin.Forms
 			}
 			else
 			{
-				if (ReferenceEquals(oldContext, value))
-					return;
-
 				bindable._inheritedContext = value;
 			}
 
@@ -145,10 +146,8 @@ namespace Xamarin.Forms
 		protected void UnapplyBindings()
 		{
 			BindablePropertyContext context;
-			for (var i = 0; i < _properties.Count; i++)
-			{
-				context = _properties[i];
-
+			for (int i = 0, _propertiesCount = _properties.Count; i < _propertiesCount; i++) {
+				context = _properties [i];
 				if (context.Binding == null)
 					continue;
 
@@ -163,6 +162,14 @@ namespace Xamarin.Forms
 
 			BindablePropertyContext bpcontext = GetContext(targetProperty);
 			return bpcontext != null && bpcontext.Binding != null;
+		}
+
+		internal bool GetIsDefault(BindableProperty targetProperty)
+		{
+			if (targetProperty == null)
+				throw new ArgumentNullException(nameof(targetProperty));
+
+			return GetContext(targetProperty) == null;
 		}
 
 		internal object[] GetValues(BindableProperty property0, BindableProperty property1)
@@ -403,11 +410,11 @@ namespace Xamarin.Forms
 		void ApplyBindings(bool skipBindingContext)
 		{
 			BindablePropertyContext context;
-			for (var i = 0; i < _properties.Count; i++)
-			{
-				context = _properties[i];
-
-				BindingBase binding = context.Binding;
+			BindingBase binding;
+			var prop = _properties.ToArray();
+			for (int i = 0, propLength = prop.Length; i < propLength; i++) {
+				context = prop [i];
+				binding = context.Binding;
 				if (binding == null)
 					continue;
 

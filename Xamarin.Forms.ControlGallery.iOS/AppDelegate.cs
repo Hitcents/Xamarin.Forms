@@ -9,6 +9,7 @@ using UIKit;
 using Xamarin.Forms;
 using Xamarin.Forms.ControlGallery.iOS;
 using Xamarin.Forms.Controls;
+using Xamarin.Forms.Controls.Issues;
 using Xamarin.Forms.Platform.iOS;
 
 [assembly: Dependency(typeof(TestCloudService))]
@@ -16,8 +17,22 @@ using Xamarin.Forms.Platform.iOS;
 [assembly: Dependency(typeof(CacheService))]
 [assembly: ExportRenderer(typeof(DisposePage), typeof(DisposePageRenderer))]
 [assembly: ExportRenderer(typeof(DisposeLabel), typeof(DisposeLabelRenderer))]
+[assembly: ExportEffect(typeof(BorderEffect), "BorderEffect")]
 namespace Xamarin.Forms.ControlGallery.iOS
 {
+	public class BorderEffect : PlatformEffect
+	{
+		protected override void OnAttached()
+		{
+			Control.BackgroundColor = UIColor.Blue;
+		}
+
+		protected override void OnDetached()
+		{
+			Control.BackgroundColor = UIColor.Brown;
+		}
+	}
+
 	public class CacheService : ICacheService
 	{
 		public void ClearImageCache()
@@ -132,6 +147,7 @@ namespace Xamarin.Forms.ControlGallery.iOS
 	[Register("AppDelegate")]
 	public partial class AppDelegate : FormsApplicationDelegate
 	{
+		App _app;
 
 		public override bool FinishedLaunching(UIApplication uiApplication, NSDictionary launchOptions)
 		{
@@ -150,28 +166,14 @@ namespace Xamarin.Forms.ControlGallery.iOS
 			};
 
 			var app = new App();
+			_app = app;
 
-			var mdp = app.MainPage as MasterDetailPage;
-			var detail = mdp?.Detail as NavigationPage;
-			if (detail != null)
-			{
-				detail.Pushed += (sender, args) =>
-				{
-					var nncgPage = args.Page as NestedNativeControlGalleryPage;
+			// When the native control gallery loads up, it'll let us know so we can add the nested native controls
+			MessagingCenter.Subscribe<NestedNativeControlGalleryPage>(this, NestedNativeControlGalleryPage.ReadyForNativeControlsMessage, AddNativeControls);
+			MessagingCenter.Subscribe<Bugzilla40911>(this, Bugzilla40911.ReadyToSetUp40911Test, SetUp40911Test);
 
-					if (nncgPage != null)
-					{
-						AddNativeControls(nncgPage);
-					}
-
-					var nncgPage1 = args.Page as NativeBindingGalleryPage;
-
-					if (nncgPage1 != null)
-					{
-						AddNativeBindings(nncgPage1);
-					}
-				};
-			}
+			// When the native binding gallery loads up, it'll let us know so we can set up the native bindings
+			MessagingCenter.Subscribe<NativeBindingGalleryPage>(this, NativeBindingGalleryPage.ReadyForNativeBindingsMessage, AddNativeBindings);
 
 			LoadApplication(app);
 			return base.FinishedLaunching(uiApplication, launchOptions);
@@ -326,6 +328,61 @@ namespace Xamarin.Forms.ControlGallery.iOS
 			colorPicker.SetBinding("SelectedColor", new Binding("NativeLabelColor", BindingMode.TwoWay, nativeColorConverter), "ColorPicked");
 			sl?.Children.Add(colorPicker);
 			page.NativeControlsAdded = true;
+		}
+
+		#region Stuff for repro of Bugzilla case 40911
+
+		void SetUp40911Test(Bugzilla40911 page)
+		{
+			var button = new Button { Text = "Start" };
+
+			button.Clicked += (s, e) =>
+			{
+				StartPressed40911();
+			};
+
+			page.Layout.Children.Add(button);
+		}
+
+		public void StartPressed40911()
+		{
+			var loginViewController = new UIViewController { View = { BackgroundColor = UIColor.White } };
+			var button = UIButton.FromType(UIButtonType.RoundedRect);
+			button.SetTitle("Login", UIControlState.Normal);
+			button.Frame = new CGRect(20, 100, 200, 44);
+			loginViewController.View.AddSubview(button);
+
+			button.TouchUpInside += (sender, e) =>
+			{
+				Xamarin.Forms.Application.Current.MainPage = new ContentPage { Content = new Label { Text = "40911 Success" } };
+				loginViewController.DismissViewController(true, null);
+			};
+
+			var window = UIApplication.SharedApplication.KeyWindow;
+			var vc = window.RootViewController;
+			while (vc.PresentedViewController != null)
+			{
+				vc = vc.PresentedViewController;
+			}
+
+			vc.PresentViewController(loginViewController, true, null);
+		}
+
+		#endregion
+
+		[Export("navigateToTest:")]
+		public string NavigateToTest(string test)
+		{
+			// According to https://developer.xamarin.com/guides/testcloud/uitest/working-with/backdoors/
+			// this method has to return a string
+			return _app.NavigateToTestPage(test).ToString();
+		}
+
+		[Export("reset:")]
+		public string Reset(string str)
+		{
+			_app.Reset();
+			return String.Empty;
 		}
 	}
 

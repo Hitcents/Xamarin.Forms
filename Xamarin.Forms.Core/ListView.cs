@@ -1,9 +1,9 @@
 using System;
 using System.Collections;
 using System.Diagnostics;
+using System.Linq;
 using System.Windows.Input;
 using Xamarin.Forms.Platform;
-using Xamarin.Forms.Internals;
 
 namespace Xamarin.Forms
 {
@@ -71,7 +71,7 @@ namespace Xamarin.Forms
 
 		public ListView([Parameter("CachingStrategy")] ListViewCachingStrategy cachingStrategy) : this()
 		{
-			if (Device.OS == TargetPlatform.Android || Device.OS == TargetPlatform.iOS)
+			if (Device.RuntimePlatform == Device.Android || Device.RuntimePlatform == Device.iOS)
 				CachingStrategy = cachingStrategy;
 		}
 
@@ -411,7 +411,7 @@ namespace Xamarin.Forms
 
 				cell.OnTapped();
 
-				ItemTapped?.Invoke(this, new ItemTappedEventArgs(group, cell.BindingContext));
+				ItemTapped?.Invoke(this, new ItemTappedEventArgs(ItemsSource.Cast<object>().ElementAt(groupIndex), cell.BindingContext));
 			}
 			catch (ArgumentOutOfRangeException)
 			{

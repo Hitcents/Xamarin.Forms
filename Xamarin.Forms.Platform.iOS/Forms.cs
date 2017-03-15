@@ -24,10 +24,6 @@ namespace Xamarin.Forms
 		//Preserve GetCallingAssembly
 		static readonly bool nevertrue = false;
 
-		static bool? s_isiOS7OrNewer;
-
-		static bool? s_isiOS8OrNewer;
-
 		static bool? s_isiOS9OrNewer;
 
 		static Forms()
@@ -37,26 +33,6 @@ namespace Xamarin.Forms
 		}
 
 		public static bool IsInitialized { get; private set; }
-
-		internal static bool IsiOS7OrNewer
-		{
-			get
-			{
-				if (!s_isiOS7OrNewer.HasValue)
-					s_isiOS7OrNewer = UIDevice.CurrentDevice.CheckSystemVersion(7, 0);
-				return s_isiOS7OrNewer.Value;
-			}
-		}
-
-		internal static bool IsiOS8OrNewer
-		{
-			get
-			{
-				if (!s_isiOS8OrNewer.HasValue)
-					s_isiOS8OrNewer = UIDevice.CurrentDevice.CheckSystemVersion(8, 0);
-				return s_isiOS8OrNewer.Value;
-			}
-		}
 
 		internal static bool IsiOS9OrNewer
 		{
@@ -77,7 +53,6 @@ namespace Xamarin.Forms
 
 			Log.Listeners.Add(new DelegateLogListener((c, m) => Trace.WriteLine(m, c)));
 
-			Device.OS = TargetPlatform.iOS;
 			Device.PlatformServices = new IOSPlatformServices();
 			Device.Info = new IOSDeviceInfo();
 
@@ -92,9 +67,7 @@ namespace Xamarin.Forms
 
 		internal static void SendViewInitialized(this VisualElement self, UIView nativeView)
 		{
-			var viewInitialized = ViewInitialized;
-			if (viewInitialized != null)
-				viewInitialized(self, new ViewInitializedEventArgs { View = self, NativeView = nativeView });
+			ViewInitialized?.Invoke(self, new ViewInitializedEventArgs { View = self, NativeView = nativeView });
 		}
 
 		class iOSExpressionSearch : ExpressionVisitor, IExpressionSearch
@@ -141,15 +114,9 @@ namespace Xamarin.Forms
 
 			public override Size PixelScreenSize { get; }
 
-			public override Size ScaledScreenSize
-			{
-				get { return _scaledScreenSize; }
-			}
+			public override Size ScaledScreenSize => _scaledScreenSize;
 
-			public override double ScalingFactor
-			{
-				get { return _scalingFactor; }
-			}
+			public override double ScalingFactor => _scalingFactor;
 
 			protected override void Dispose(bool disposing)
 			{
@@ -160,7 +127,7 @@ namespace Xamarin.Forms
 
 		class IOSPlatformServices : IPlatformServices
 		{
-			static readonly MD5CryptoServiceProvider Checksum = new MD5CryptoServiceProvider();
+			static readonly MD5CryptoServiceProvider s_checksum = new MD5CryptoServiceProvider();
 
 			public void BeginInvokeOnMainThread(Action action)
 			{
@@ -179,7 +146,7 @@ namespace Xamarin.Forms
 
 			public string GetMD5Hash(string input)
 			{
-				var bytes = Checksum.ComputeHash(Encoding.UTF8.GetBytes(input));
+				var bytes = s_checksum.ComputeHash(Encoding.UTF8.GetBytes(input));
 				var ret = new char[32];
 				for (var i = 0; i < 16; i++)
 				{
@@ -214,7 +181,14 @@ namespace Xamarin.Forms
 			{
 				using (var client = GetHttpClient())
 				using (var response = await client.GetAsync(uri, cancellationToken))
+				{
+					if (!response.IsSuccessStatusCode)
+					{
+						Log.Warning("HTTP Request", $"Could not retrieve {uri}, status code {response.StatusCode}");
+						return null;
+					}
 					return await response.Content.ReadAsStreamAsync();
+				}
 			}
 
 			public IIsolatedStorageFile GetUserStoreForApplication()
@@ -222,10 +196,9 @@ namespace Xamarin.Forms
 				return new _IsolatedStorageFile(IsolatedStorageFile.GetUserStoreForApplication());
 			}
 
-			public bool IsInvokeRequired
-			{
-				get { return !NSThread.IsMain; }
-			}
+			public bool IsInvokeRequired => !NSThread.IsMain;
+
+			public string RuntimePlatform => Device.iOS;
 
 			public void OpenUriAction(Uri uri)
 			{
@@ -234,8 +207,7 @@ namespace Xamarin.Forms
 
 			public void StartTimer(TimeSpan interval, Func<bool> callback)
 			{
-				NSTimer timer = null;
-				timer = NSTimer.CreateRepeatingScheduledTimer(interval, t =>
+				NSTimer timer = NSTimer.CreateRepeatingTimer(interval, t =>
 				{
 					if (!callback())
 						t.Invalidate();
@@ -260,36 +232,6 @@ namespace Xamarin.Forms
 				if (v < 10)
 					return '0' + v;
 				return 'a' + v - 10;
-			}
-
-			public class _Timer : ITimer
-			{
-				readonly Timer _timer;
-
-				public _Timer(Timer timer)
-				{
-					_timer = timer;
-				}
-
-				public void Change(int dueTime, int period)
-				{
-					_timer.Change(dueTime, period);
-				}
-
-				public void Change(long dueTime, long period)
-				{
-					_timer.Change(dueTime, period);
-				}
-
-				public void Change(TimeSpan dueTime, TimeSpan period)
-				{
-					_timer.Change(dueTime, period);
-				}
-
-				public void Change(uint dueTime, uint period)
-				{
-					_timer.Change(dueTime, period);
-				}
 			}
 
 			public class _IsolatedStorageFile : IIsolatedStorageFile

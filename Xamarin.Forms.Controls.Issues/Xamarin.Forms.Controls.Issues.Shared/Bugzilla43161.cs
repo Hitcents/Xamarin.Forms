@@ -7,8 +7,9 @@ using Xamarin.UITest;
 using NUnit.Framework;
 #endif
 
-namespace Xamarin.Forms.Controls
+namespace Xamarin.Forms.Controls.Issues
 {
+
 	[Preserve(AllMembers = true)]
 	[Issue(IssueTracker.Bugzilla, 43161, "[iOS] Setting Accessory in ViewCellRenderer breaks layout", PlatformAffected.iOS)]
 	public class Bugzilla43161 : TestContentPage
@@ -51,7 +52,7 @@ namespace Xamarin.Forms.Controls
 			Content = new StackLayout { Children = { label, listView, listView2, listView3 } };
 		}
 
-#if UITEST
+#if (UITEST && __IOS__)
 		[Test]
 		public void Bugzilla43161Test()
 		{

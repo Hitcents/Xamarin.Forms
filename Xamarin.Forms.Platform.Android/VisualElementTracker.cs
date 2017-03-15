@@ -45,18 +45,28 @@ namespace Xamarin.Forms.Platform.Android
 
 		public void Dispose()
 		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		protected virtual void Dispose(bool disposing)
+		{
 			if (_disposed)
 				return;
+
 			_disposed = true;
 
-			SetElement(_element, null);
-
-			if (_renderer != null)
+			if (disposing)
 			{
-				_renderer.ElementChanged -= RendererOnElementChanged;
-				_renderer.ViewGroup.RemoveOnAttachStateChangeListener(AttachTracker.Instance);
-				_renderer = null;
-				_context = null;
+				SetElement(_element, null);
+
+				if (_renderer != null)
+				{
+					_renderer.ElementChanged -= RendererOnElementChanged;
+					_renderer.ViewGroup.RemoveOnAttachStateChangeListener(AttachTracker.Instance);
+					_renderer = null;
+					_context = null;
+				}
 			}
 		}
 
@@ -69,8 +79,8 @@ namespace Xamarin.Forms.Platform.Android
 
 			var x = (int)_context.ToPixels(view.X);
 			var y = (int)_context.ToPixels(view.Y);
-			var width = (int)_context.ToPixels(view.Width);
-			var height = (int)_context.ToPixels(view.Height);
+			var width = Math.Max(0, (int)_context.ToPixels(view.Width));
+			var height = Math.Max(0, (int)_context.ToPixels(view.Height));
 
 			var formsViewGroup = aview as FormsViewGroup;
 			if (formsViewGroup == null)

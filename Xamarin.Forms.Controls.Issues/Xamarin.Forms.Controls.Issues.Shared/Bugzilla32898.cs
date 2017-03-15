@@ -9,7 +9,7 @@ using Xamarin.UITest;
 using NUnit.Framework;
 #endif
 
-namespace Xamarin.Forms.Controls
+namespace Xamarin.Forms.Controls.Issues
 {
 	[Preserve (AllMembers = true)]
 	[Issue (IssueTracker.Bugzilla, 32898, "Memory leak when TabbedPage is popped out ")]
@@ -65,13 +65,13 @@ namespace Xamarin.Forms.Controls
 			}
 		}
 
-		#if UITEST
+#if UITEST
 		[Test]
-		public async void Issu32898Test ()
+		public async Task Issu32898Test()
 		{
-			await Task.Delay (5000);
-			RunningApp.WaitForElement (q => q.Marked ("Page1. But Page2 IsAlive = False, tab IsAlive = False"));
+			await Task.Delay(5000);
+			RunningApp.WaitForElement(q => q.Marked("Page1. But Page2 IsAlive = False, tab IsAlive = False"));
 		}
-		#endif
+#endif
 	}
 }

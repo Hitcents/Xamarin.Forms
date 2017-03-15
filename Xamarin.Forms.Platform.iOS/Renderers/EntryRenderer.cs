@@ -3,6 +3,7 @@ using System.ComponentModel;
 
 using System.Drawing;
 using UIKit;
+using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 
 namespace Xamarin.Forms.Platform.iOS
 {
@@ -44,6 +45,7 @@ namespace Xamarin.Forms.Platform.iOS
 
 				_defaultTextColor = textField.TextColor;
 				textField.BorderStyle = UITextBorderStyle.RoundedRect;
+				textField.ClipsToBounds = true;
 
 				textField.EditingChanged += OnEditingChanged;
 
@@ -62,6 +64,7 @@ namespace Xamarin.Forms.Platform.iOS
 				UpdateFont();
 				UpdateKeyboard();
 				UpdateAlignment();
+				UpdateAdjustsFontSizeToFitWidth();
 			}
 		}
 
@@ -90,6 +93,8 @@ namespace Xamarin.Forms.Platform.iOS
 				UpdateColor();
 				UpdatePlaceholder();
 			}
+			else if (e.PropertyName == PlatformConfiguration.iOSSpecific.Entry.AdjustsFontSizeToFitWidthProperty.PropertyName)
+				UpdateAdjustsFontSizeToFitWidth();
 
 			base.OnElementPropertyChanged(sender, e);
 		}
@@ -106,6 +111,12 @@ namespace Xamarin.Forms.Platform.iOS
 
 		void OnEditingEnded(object sender, EventArgs e)
 		{
+			// Typing aid changes don't always raise EditingChanged event
+			if (Control.Text != Element.Text)
+			{
+				ElementController.SetValueFromRenderer(Entry.TextProperty, Control.Text);
+			}
+
 			ElementController.SetValueFromRenderer(VisualElement.IsFocusedPropertyKey, false);
 		}
 
@@ -113,7 +124,7 @@ namespace Xamarin.Forms.Platform.iOS
 		{
 			Control.ResignFirstResponder();
 			((IEntryController)Element).SendCompleted();
-			return true;
+			return false;
 		}
 
 		void UpdateAlignment()
@@ -131,6 +142,11 @@ namespace Xamarin.Forms.Platform.iOS
 				Control.TextColor = textColor.ToUIColor();
 		}
 
+		void UpdateAdjustsFontSizeToFitWidth()
+		{
+			Control.AdjustsFontSizeToFitWidth = Element.OnThisPlatform().AdjustsFontSizeToFitWidth();
+		}
+
 		void UpdateFont()
 		{
 			Control.Font = Element.ToUIFont();
@@ -139,6 +155,7 @@ namespace Xamarin.Forms.Platform.iOS
 		void UpdateKeyboard()
 		{
 			Control.ApplyKeyboard(Element.Keyboard);
+			Control.ReloadInputViews();
 		}
 
 		void UpdatePassword()

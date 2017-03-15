@@ -189,7 +189,13 @@ namespace Xamarin.Forms.Platform.WinRT
 				LookupRelevantParents();
 				UpdateTitleColor();
 				UpdateNavigationBarBackground();
-                UpdateToolbarPlacement();
+				UpdateToolbarPlacement();
+
+#if WINDOWS_UWP
+				// Enforce consistency rules on toolbar (show toolbar if top-level page is Navigation Page)
+				_container.ShouldShowToolbar = _parentMasterDetailPage == null && _parentTabbedPage == null;
+#endif
+
 				Element.PropertyChanged += OnElementPropertyChanged;
 				((INavigationPageController)Element).PushRequested += OnPushRequested;
 				((INavigationPageController)Element).PopRequested += OnPopRequested;
@@ -304,6 +310,8 @@ namespace Xamarin.Forms.Platform.WinRT
 				_parentMasterDetailPage.PropertyChanged += MultiPagePropertyChanged;
 #if WINDOWS_UWP
 			((ITitleProvider)this).ShowTitle = _parentTabbedPage == null && _parentMasterDetailPage == null;
+
+			
 #else
 			if (Device.Idiom == TargetIdiom.Phone && _parentTabbedPage != null)
 				((ITitleProvider)this).ShowTitle = false;
@@ -427,7 +435,9 @@ namespace Xamarin.Forms.Platform.WinRT
 				_currentPage.PropertyChanged -= OnCurrentPagePropertyChanged;
 			}
 
-			_previousPage = _currentPage;
+			if (!isPopping)
+				_previousPage = _currentPage;
+
 			_currentPage = page;
 
 			if (page == null)
@@ -495,7 +505,7 @@ namespace Xamarin.Forms.Platform.WinRT
 			UpdateTitleOnParents();
 
 			bool showing = _container.TitleVisibility == Visibility.Visible;
-			bool newValue = GetIsNavBarPossible() && NavigationPage.GetHasNavigationBar(_currentPage) && !string.IsNullOrEmpty(_currentPage.Title);
+			bool newValue = GetIsNavBarPossible() && NavigationPage.GetHasNavigationBar(_currentPage);
 			if (showing == newValue)
 				return;
 

@@ -9,7 +9,7 @@ using Xamarin.UITest;
 using NUnit.Framework;
 #endif
 
-namespace Xamarin.Forms.Controls
+namespace Xamarin.Forms.Controls.Issues
 {
 	[Preserve (AllMembers = true)]
 	[Issue (IssueTracker.Bugzilla, 32615, "OnAppearing is not called on previous page when modal page is popped")]
@@ -58,7 +58,7 @@ namespace Xamarin.Forms.Controls
 
 #if UITEST
 		[Test]
-		public async void Bugzilla32615Test ()
+		public async Task Bugzilla32615Test ()
 		{
 			RunningApp.Tap (q => q.Marked ("btnModal"));
 			RunningApp.Tap (q => q.Marked ("btnPop"));
