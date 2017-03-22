@@ -92,7 +92,7 @@ namespace Xamarin.Forms.Platform.iOS
 			{
 				return ChildViewControllers[0].GetSupportedInterfaceOrientations();
 			}
-			return base.GetSupportedInterfaceOrientations();
+			return UIInterfaceOrientationMask.Portrait;
 		}
 
 		public override UIInterfaceOrientation PreferredInterfaceOrientationForPresentation()
@@ -101,7 +101,7 @@ namespace Xamarin.Forms.Platform.iOS
 			{
 				return ChildViewControllers[0].PreferredInterfaceOrientationForPresentation();
 			}
-			return base.PreferredInterfaceOrientationForPresentation();
+			return UIInterfaceOrientation.Portrait;
 		}
 
 		public override bool ShouldAutorotate()
@@ -110,7 +110,7 @@ namespace Xamarin.Forms.Platform.iOS
 			{
 				return ChildViewControllers[0].ShouldAutorotate();
 			}
-			return base.ShouldAutorotate();
+			return false;
 		}
 
 		public override bool ShouldAutorotateToInterfaceOrientation(UIInterfaceOrientation toInterfaceOrientation)
@@ -119,7 +119,7 @@ namespace Xamarin.Forms.Platform.iOS
 			{
 				return ChildViewControllers[0].ShouldAutorotateToInterfaceOrientation(toInterfaceOrientation);
 			}
-			return base.ShouldAutorotateToInterfaceOrientation(toInterfaceOrientation);
+			return toInterfaceOrientation == UIInterfaceOrientation.Portrait;
 		}
 
 		public override bool ShouldAutomaticallyForwardRotationMethods => true;
