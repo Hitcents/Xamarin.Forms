@@ -88,37 +88,21 @@ namespace Xamarin.Forms.Platform.iOS
 
 		public override UIInterfaceOrientationMask GetSupportedInterfaceOrientations()
 		{
-			if ((ChildViewControllers != null) && (ChildViewControllers.Length > 0))
-			{
-				return ChildViewControllers[0].GetSupportedInterfaceOrientations();
-			}
 			return UIInterfaceOrientationMask.Portrait;
 		}
 
 		public override UIInterfaceOrientation PreferredInterfaceOrientationForPresentation()
 		{
-			if ((ChildViewControllers != null) && (ChildViewControllers.Length > 0))
-			{
-				return ChildViewControllers[0].PreferredInterfaceOrientationForPresentation();
-			}
 			return UIInterfaceOrientation.Portrait;
 		}
 
 		public override bool ShouldAutorotate()
 		{
-			if ((ChildViewControllers != null) && (ChildViewControllers.Length > 0))
-			{
-				return ChildViewControllers[0].ShouldAutorotate();
-			}
 			return false;
 		}
 
 		public override bool ShouldAutorotateToInterfaceOrientation(UIInterfaceOrientation toInterfaceOrientation)
 		{
-			if ((ChildViewControllers != null) && (ChildViewControllers.Length > 0))
-			{
-				return ChildViewControllers[0].ShouldAutorotateToInterfaceOrientation(toInterfaceOrientation);
-			}
 			return toInterfaceOrientation == UIInterfaceOrientation.Portrait;
 		}
 
