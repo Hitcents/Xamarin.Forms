@@ -101,7 +101,7 @@ namespace Xamarin.Forms.Platform.Android
 		{
 			//HACK: Seeing some places the renderer is disposed and this happens
 			var obj = _renderer as Java.Lang.Object;
-			if (obj != null && obj.Handle == IntPtr.Zero)
+			if (obj == null || obj.Handle == IntPtr.Zero)
 				return;
 
 			if (e.PropertyName == Layout.IsClippedToBoundsProperty.PropertyName)
