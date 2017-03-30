@@ -161,10 +161,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Bugzilla51553.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bugzilla51802.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bugzilla51238.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Bugzilla51642.xaml.cs">
-      <DependentUpon>Bugzilla51642.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)CarouselAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bugzilla34561.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bugzilla34727.cs" />
