@@ -217,10 +217,18 @@ namespace Xamarin.Forms
 			OnResume();
 		}
 
-		internal Task SendSleepAsync()
+		internal async Task SendSleepAsync()
 		{
 			OnSleep();
-			return SavePropertiesAsync();
+			try
+			{
+				await SavePropertiesAsync();
+			}
+			catch (Exception exc)
+			{
+				//NOTE: we see all kinds of things here like users having disk full, etc.
+				Log.Warning("Xamarin.Forms.Application", "Error saving properties: {0}", exc);
+			}
 		}
 
 		internal void SendStart()
